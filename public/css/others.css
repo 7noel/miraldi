@@ -1,0 +1,117 @@
+/*body {
+  background: #c3c3c3 url('/img/fondo-Honda31.jpg') no-repeat  center center;
+  background-size: auto;
+}
+.panel > .panel-heading-custom {
+    background-image: none;
+    background-color: black;
+    color: white;
+    border-color: black;
+}*/
+
+.feature .name{
+	width: 40em;
+	padding: 0 10px;
+}
+.feature .value{
+	width: 20em;
+	padding: 0 10px;
+}
+.checkitem input{
+  margin-left: 10px;
+}
+.checkitem-pre_value, .checkitem-post_value{
+  width: 70px;
+}
+.checkitem-name{
+  width: 300px
+}
+
+
+.radio-success{
+    border:2px solid green;
+    box-shadow:0 0 5px 0px green inset;
+}
+.radio-warning{
+    border:2px solid yellow;
+    box-shadow:0 0 5px 0px yellow inset;
+}
+.radio-danger{
+    border:2px solid red;
+    box-shadow:0 0 5px 0px red inset;
+}
+.checkbox-info{
+    /* All browsers except webkit*/
+    transform: scale(1.5);
+    /* Webkit browsers*/
+    -webkit-transform: scale(1.5);
+}
+.divCheckitems input[type='radio'] {
+    -webkit-appearance:none;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    outline:none;
+}
+.divCheckitems input[type='radio']:hover {
+    box-shadow:0 0 5px 0px orange inset;
+}
+.divCheckitems input[type='radio']:before {
+    content:'';
+    display:block;
+    width:60%;
+    height:60%;
+    margin: 20% auto;    
+    border-radius:50%;    
+}
+.divCheckitems input[type='radio']:checked:before {
+    background:black;
+}
+.success{
+    background: green;
+    color: white;
+}
+.warning{
+    background: orange;
+    color: white;
+}
+.danger{
+    background: red;
+    color: white;
+}
+.checkitem-select .option{
+    background: white !important;
+    color: black !important;
+}
+
+.expenses .form-group {
+    margin-bottom: 0.5em;
+}/*
+body {
+  background: #c3c3c3 url('/img/logo_lg.png') no-repeat  center center !important;
+  background-size: auto;
+}*/
+.navbar-header .navbar-brand{
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+
+input[type="date"] { 
+    padding: 5px !important;
+}
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown .dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+
+}
+.dropup .dropdown-submenu .dropdown-menu {
+    bottom: 0;
+    left: 100%;
+    margin-bottom: -1px;
+}
