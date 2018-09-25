@@ -16,6 +16,100 @@ return array(
 	'tax' => [
 		'igv' => 18
 	],
+	'table_sunat' => [
+		'tipo_comprobante' => [
+			'' => 'Seleccionar',
+			'1' => 'FACTURA',
+			'2' => 'BOLETA',
+			'3' => 'NOTA DE CRÉDITO',
+			'4' => 'NOTA DE DÉBITO'
+		],
+		'sunat_transaction' => [
+			'' => 'Seleccionar',
+			'1' => 'VENTA INTERNA',
+			'2' => 'EXPORTACIÓN',
+			'3' => 'NO DOMICILIADO',
+			'4' => 'VENTA INTERNA – ANTICIPOS',
+			'5' => 'VENTA ITINERANTE',
+			'6' => 'FACTURA GUÍA',
+			'7' => 'VENTA ARROZ PILADO',
+			'8' => 'FACTURA - COMPROBANTE DE PERCEPCIÓN',
+			'10' => 'FACTURA - GUÍA REMITENTE',
+			'11' => 'FACTURA - GUÍA TRANSPORTISTA',
+			'12' => 'BOLETA DE VENTA – COMPROBANTE DE PERCEPCIÓN',
+			'13' => 'GASTO DEDUCIBLE PERSONA NATURAL'
+		],
+		'cliente_tipo_de_documento' =>[
+			'' => 'Seleccionar',
+			'6' => 'RUC - REGISTRO ÚNICO DE CONTRIBUYENTE',
+			'1' => 'DNI - DOC. NACIONAL DE IDENTIDAD',
+			'-' => 'VARIOS - VENTAS MENORES A S/.700.00 Y OTROS',
+			'4' => 'CARNET DE EXTRANJERÍA',
+			'7' => 'PASAPORTE',
+			'A' => 'CÉDULA DIPLOMÁTICA DE IDENTIDAD',
+			'0' => 'NO DOMICILIADO, SIN RUC (EXPORTACIÓN)'
+		],
+		'moneda' => [
+			'' => 'Seleccionar',
+			'1' => 'SOLES',
+			'2' => 'DÓLARES',
+			'3' => 'EUROS'
+		],
+		'percepcion_tipo'=>[
+			'' => 'Seleccionar',
+			'1' => 'PERCEPCIÓN VENTA INTERNA - TASA 2%',
+			'2' => 'PERCEPCIÓN ADQUISICIÓN DE COMBUSTIBLE-TASA 1%',
+			'3' => 'PERCEPCIÓN REALIZADA AL AGENTE DE PERCEPCIÓN CON TASA ESPECIAL - TASA 0.5%'
+		],
+		'tipo_de_nota_de_credito'=>[
+			'' => 'Seleccionar',
+			'1' => 'ANULACIÓN DE LA OPERACIÓN',
+			'2' => 'ANULACIÓN POR ERROR EN EL RUC',
+			'3' => 'CORRECCIÓN POR ERROR EN LA DESCRIPCIÓN',
+			'4' => 'DESCUENTO GLOBAL',
+			'5' => 'DESCUENTO POR ÍTEM',
+			'6' => 'DEVOLUCIÓN TOTAL',
+			'7' => 'DEVOLUCIÓN POR ÍTEM',
+			'8' => 'BONIFICACIÓN',
+			'9' => 'DISMINUCIÓN EN EL VALOR'
+		],
+		'tipo_de_nota_de_debito' => [
+			'' => 'Seleccionar',
+			'1' => 'INTERESES POR MORA',
+			'2' => 'AUMENTO DE VALOR',
+			'3' => 'PENALIDADES'
+		],
+		'unidad_de_medida' => [
+			'' => 'Seleccionar',
+			'NIU' => 'PRODUCTO',
+			'ZZ' => 'SERVICIO'
+		],
+		'tipo_de_igv' => [
+			'' => 'Seleccionar',
+			'1' => 'Gravado - Operación Onerosa',
+			'2' => 'Gravado – Retiro por premio',
+			'3' => 'Gravado – Retiro por donación',
+			'4' => 'Gravado – Retiro',
+			'5' => 'Gravado – Retiro por publicidad',
+			'6' => 'Gravado – Bonificaciones',
+			'7' => 'Gravado – Retiro por entrega a trabajadores',
+			'8' => 'Exonerado - Operación Onerosa',
+			'9' => 'Inafecto - Operación Onerosa',
+			'10' => 'Inafecto – Retiro por Bonificación',
+			'11' => 'Inafecto – Retiro',
+			'12' => 'Inafecto – Retiro por Muestras Médicas',
+			'13' => 'Inafecto - Retiro por Convenio Colectivo',
+			'14' => 'Inafecto – Retiro por premio',
+			'15' => 'Inafecto - Retiro por publicidad',
+			'16' => 'Exportación'
+		],
+		'guia_tipo' => [
+			'' => 'Seleccionar',
+			'1' => 'GUÍA DE REMISIÓN REMITENTE',
+			'2' => 'GUÍA DE REMISIÓN TRANSPORTISTA'
+		]
+
+	],
 	'icons' => [
 		'store' => '<i class="fas fa-store"></i>',
 		'view' => '<i class="fas fa-eye"></i>',
@@ -101,6 +195,42 @@ return array(
 			'create' => ['panel'=>'Nueva Condición de Pago', 'create'=>'Crear Condición de Pago'],
 			'show'   => ['panel'=>'Vizualizando Condición de Pago:'],
 			'edit'   => ['panel'=>'Editar Condición de Pago: ', 'update'=>'Actualizar Condición de Pago', 'delete'=>'Eliminar Condición de Pago']
+		],
+		'issuance_vouchers' => [
+			'index'  => ['panel'=>'Comprobantes de Venta', 'create'=>'Crear Comprobante'],
+			'create' => ['panel'=>'Nueva Comprobante de Venta', 'create'=>'Crear Comprobante de Venta'],
+			'show'   => ['panel'=>'Vizualizando Comprobante de Venta:'],
+			'edit'   => ['panel'=>'Editar Comprobante de Venta: ', 'update'=>'Actualizar Comprobante de Venta', 'delete'=>'Eliminar Comprobante de Venta']
+		],
+		'reception_vouchers' => [
+			'index'  => ['panel'=>'Comprobantes de Compra', 'create'=>'Registrar Comprobante'],
+			'create' => ['panel'=>'Nueva Comprobante de Compra', 'create'=>'Crear Comprobante de Compra'],
+			'show'   => ['panel'=>'Vizualizando Comprobante de Compra:'],
+			'edit'   => ['panel'=>'Editar Comprobante de Compra: ', 'update'=>'Actualizar Comprobante de Compra', 'delete'=>'Eliminar Comprobante de Compra']
+		],
+		'issuance_letters' => [
+			'index'  => ['panel'=>'Letras Generadas', 'create'=>'Crear Letra'],
+			'create' => ['panel'=>'Nueva Letra', 'create'=>'Crear Letra'],
+			'show'   => ['panel'=>'Vizualizando Letra:'],
+			'edit'   => ['panel'=>'Editar Letra: ', 'update'=>'Actualizar Letra', 'delete'=>'Eliminar Letra']
+		],
+		'reception_letters' => [
+			'index'  => ['panel'=>'Letras Registradas', 'create'=>'Crear Letra'],
+			'create' => ['panel'=>'Nueva Letra', 'create'=>'Crear Letra'],
+			'show'   => ['panel'=>'Vizualizando Letra:'],
+			'edit'   => ['panel'=>'Editar Letra: ', 'update'=>'Actualizar Letra', 'delete'=>'Eliminar Letra']
+		],
+		'issuance_swaps' => [
+			'index'  => ['panel'=>'Canjes generados', 'create'=>'Crear Canje'],
+			'create' => ['panel'=>'Nueva Canje', 'create'=>'Crear Canje'],
+			'show'   => ['panel'=>'Vizualizando Canje:'],
+			'edit'   => ['panel'=>'Editar Canje: ', 'update'=>'Actualizar Canje', 'delete'=>'Eliminar Canje']
+		],
+		'reception_swaps' => [
+			'index'  => ['panel'=>'Canjes Registrados', 'create'=>'Registrar Canje'],
+			'create' => ['panel'=>'Nueva Canje', 'create'=>'Registrar Canje'],
+			'show'   => ['panel'=>'Vizualizando Canje:'],
+			'edit'   => ['panel'=>'Editar Canje: ', 'update'=>'Actualizar Canje', 'delete'=>'Eliminar Canje']
 		],
 	// ],
 	// 'autorepair' => [

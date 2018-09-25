@@ -43,6 +43,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('amortization', 12,2);
             $table->decimal('exchange', 12,2);
             $table->decimal('exchange_sunat', 12,2);
+            $table->integer('order_id')->unsigned();
             $table->text('comment');
 
             $table->foreign('document_type_id')->references('id')->on('document_types');

@@ -33,7 +33,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="{{ url('/') }}"><img src="/img/logo2.jpg" alt="" height="100%"></a>
+				<a class="navbar-brand" href="{{ url('/') }}"><img src="/img/logo3.png" alt="" height="80%"></a>
 			</div>
 
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

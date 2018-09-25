@@ -31,6 +31,7 @@ class CreateCompaniesTable extends Migration {
 			$table->date('birth')->nullable();
 			$table->boolean('is_provider');
 			$table->boolean('is_my_company');
+			$table->boolean('is_shipper');
 			$table->integer('currency_id')->unsigned()->default(1);
 			$table->decimal('credit',15,2);
 

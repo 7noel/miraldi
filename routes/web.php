@@ -66,6 +66,17 @@ Route::group(['prefix'=>'finances', 'middleware'=>['auth', 'permissions'], 'name
 	Route::resource('exchanges','ExchangesController');
 	Route::resource('companies','CompaniesController');
 	Route::resource('payment_conditions','PaymentConditionsController');
+	Route::resource('proofs','ProofsController');
+	Route::get('issuance_vouchers', ['as' => 'issuance_vouchers.index','uses' => 'ProofsController@issuanceVouchers']);
+	Route::get('issuance_vouchers/create', ['as' => 'issuance_vouchers.create','uses' => 'ProofsController@create']);
+	Route::get('issuance_vouchers/edit/{id}', ['as' => 'issuance_vouchers.edit','uses' => 'ProofsController@edit']);
+	Route::get('issuance_vouchers/destroy/{id}', ['as' => 'issuance_vouchers.destroy','uses' => 'ProofsController@issuanceVouchersCreate']);
+	Route::get('reception_vouchers', ['as' => 'reception_vouchers.index','uses' => 'ProofsController@receptionVouchers']);
+	Route::get('reception_vouchers/create', ['as' => 'reception_vouchers_create','uses' => 'ProofsController@receptionVouchersCreate']);
+	
+	Route::resource('payments','PaymentsController');
+	Route::resource('amortizations','AmortizationsController');
+	Route::resource('swaps','SwapsController');
 });
 
 Route::group(['prefix'=>'guard', 'middleware'=>['auth', 'permissions'], 'namespace'=>'Security'], function(){

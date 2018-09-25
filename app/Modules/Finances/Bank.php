@@ -6,30 +6,29 @@ use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Payment extends Model implements Auditable {
+class Bank extends Model implements Auditable {
 
 	use \OwenIt\Auditing\Auditable;
 	use SoftDeletes;
 
-	protected $fillable = ['issued_at', 'number', 'is_output', 'value', 'exchange', 'bank_id', 'currency_id'];
+	protected $fillable = ['label', 'number', 'CCI', 'company_id', 'currency_id', 'value'];
 
 	public function scopeName($query, $name){
 		if (trim($name) != "") {
-			$query->where('number', 'LIKE', "%$name%");
+			$query->where('label', 'LIKE', "%$name%");
 		}
 	}
 
-	public function bank()
+	public function payments()
 	{
-		return $this->belongsTo('App\Modules\Finances\Bank');
+		return $this->hasMany('App\Modules\Finances\Payment');
 	}
 	public function currency()
 	{
 		return $this->hasOne('App\Modules\Base\Currency','id','currency_id');
 	}
-	public function amortizations()
+	public function company()
 	{
-		return $this->hasMany('App\Modules\Finances\Amortization');
+		return $this->hasOne('App\Modules\Finances\Company','id','company_id');
 	}
-
 }

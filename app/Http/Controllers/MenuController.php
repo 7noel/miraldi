@@ -42,7 +42,7 @@ class MenuController extends Controller
         return $arrayLinks;
 
     }
-    public function arrayLinks()
+    private function arrayLinks()
     {
         $links = [
             'Seguridad'=>[
@@ -81,11 +81,11 @@ class MenuController extends Controller
             ],
             'Ventas'=>[
                 ['name' => 'Cotizaciones', 'route' => 'orders.index' ],
-                // ['name' => 'Facturación', 'route' => 'sales.index' ],
+                ['name' => 'Facturación', 'route' => 'issuance_vouchers.index' ],
             ],
             'Logística'=>[
                 // ['name' => 'Ordenes de Compra', 'url' => '#' ],
-                ['name' => 'Compras', 'route' => 'purchases.index' ],
+                ['name' => 'Compras', 'route' => 'reception_vouchers.index' ],
             ],
         ];
         return $links;

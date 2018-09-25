@@ -17,7 +17,7 @@ class CreateDocumentControlsTable extends Migration {
 			$table->increments('id');
 			$table->integer('document_type_id')->unsigned();
 			$table->integer('company_id')->unsigned();
-			$table->integer('series')->unsigned();
+			$table->string('series', 10);
 			$table->integer('number')->unsigned();
 
             $table->foreign('document_type_id')->references('id')->on('document_types');

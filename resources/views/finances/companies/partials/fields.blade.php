@@ -74,10 +74,14 @@
 					<div class="form-group form-group-sm">
 						{!! Form::label('is_provider','Opciones', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-10">
-							<div class="checkbox">
-								<label>
-									{!! Form::checkbox('is_provider', '1', null,['class'=>'checkbox']) !!} Proveedor
-								</label>
-							</div>
+							<label class="checkbox-inline">
+								{!! Form::checkbox('is_provider', '1', null,['class'=>'checkbox']) !!} Proveedor
+							</label>
+							<label class="checkbox-inline">
+								{!! Form::checkbox('is_shipper', '1', null,['class'=>'checkbox']) !!} Transportista
+							</label>
+							<label class="checkbox-inline">
+								{!! Form::checkbox('is_my_company', '1', null,['class'=>'checkbox']) !!} Mi Empresa
+							</label>
 						</div>
 					</div>

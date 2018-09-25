@@ -24,6 +24,7 @@ use App\Modules\Finances\PaymentCondition;
 use App\Modules\Sales\Modelo;
 use App\Modules\HumanResources\Job;
 use App\Modules\HumanResources\Employee;
+use App\Modules\Finances\Bank;
 
 use Faker\Factory as Faker;
 
@@ -1045,6 +1046,13 @@ class AdminTableSeeder extends Seeder {
         ProductAccessory::create(['product_id' => 26, 'accessory_id' => 132]);
         ProductAccessory::create(['product_id' => 29, 'accessory_id' => 132]);
         ProductAccessory::create(['product_id' => 32, 'accessory_id' => 132]);
+
+        Bank::create(['label' => 'HERRAMAX BCP SOLES', 'number' => '194-2438503-0-42', 'CCI' => '', 'company_id' => 2, 'currency_id' => 1, 'value' => 0]);
+        Bank::create(['label' => 'IMPORTACIONES BCP SOLES', 'number' => '194-2386744-0-23', 'CCI' => '', 'company_id' => 2, 'currency_id' => 1, 'value' => 0]);
+        Bank::create(['label' => 'IMPORTACIONES BCP DOLARES', 'number' => '194-2394196-1-06', 'CCI' => '', 'company_id' => 2, 'currency_id' => 2, 'value' => 0]);
+        Bank::create(['label' => 'MIRALDI BCP SOLES', 'number' => '194-2447511-0-32', 'CCI' => '', 'company_id' => 2, 'currency_id' => 1, 'value' => 0]);
+        Bank::create(['label' => 'MIRALDI BCP DOLARES', 'number' => '194-2441216-1-56', 'CCI' => '', 'company_id' => 2, 'currency_id' => 2, 'value' => 0]);
+        Bank::create(['label' => 'MIRALDI BCP SOLES AHORROS', 'number' => '194-38124038-0-28', 'CCI' => '', 'company_id' => 2, 'currency_id' => 1, 'value' => 0]);
 
     }
 }

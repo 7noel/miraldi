@@ -1,0 +1,324 @@
+<?php namespace App\Modules\Finances;
+
+use App\Modules\Base\BaseRepo;
+use App\Modules\Finances\Proof;
+use App\Modules\Finances\ProofDetailRepo;
+use App\Modules\Base\ExpenseRepo;
+use App\Modules\Storage\MoveRepo;
+use App\Modules\Storage\Stock;
+
+class ProofRepo extends BaseRepo{
+
+	public function getModel(){
+		return new Proof;
+	}
+	public function index($filter = false, $search = false)
+	{
+		if ($filter and $search) {
+			return Proof::$filter($search)->with('company', 'document_type', 'payment_condition', 'currency')->orderBy("$filter", 'ASC')->paginate();
+		} else {
+			return Proof::orderBy('id', 'DESC')->with('company', 'document_type', 'payment_condition', 'currency')->paginate();
+		}
+	}
+
+	public function issuanceVouchers($filter = false, $search = false)
+	{
+		if ($filter and $search) {
+			return Proof::$filter($search)->with('company', 'document_type', 'payment_condition', 'currency')->orderBy("$filter", 'ASC')->where('is_issuance', true)->where('document_type_id', '!=', 5)->paginate();
+		} else {
+			return Proof::orderBy('id', 'DESC')->with('company', 'document_type', 'payment_condition', 'currency')->where('is_issuance', true)->where('document_type_id', '!=', 5)->paginate();
+		}
+	}
+
+	public function receptionVouchers($filter = false, $search = false)
+	{
+		if ($filter and $search) {
+			return Proof::$filter($search)->with('company', 'document_type', 'payment_condition', 'currency')->orderBy("$filter", 'ASC')->where('is_issuance', false)->where('document_type_id', '!=', 5)->paginate();
+		} else {
+			return Proof::orderBy('id', 'DESC')->with('company', 'document_type', 'payment_condition', 'currency')->where('is_issuance', false)->where('document_type_id', '!=', 5)->paginate();
+		}
+	}
+
+	public function save($data, $id=0)
+	{
+		$data = $this->prepareData($data);
+
+		$model = parent::save($data, $id);
+		// Registra Movimientos
+		if (isset($data['details'])) {
+			$detailRepo = new ProofDetailRepo;
+			$toDelete = $detailRepo->syncMany($data['details'], ['key' => 'proof_id', 'value' => $model->id], 'product_id');
+
+			if (1==1) {
+				$mov = new MoveRepo;
+				$mov->destroy($toDelete);
+				$mov->saveAll($model, 1);
+			}
+		}
+		$this->saveExpenses($data, $model);
+		return $model;
+	}
+
+	public function prepareData($data)
+	{
+		if ($data['document_type_id'] == 3) {
+			$data['mov'] = 0;
+		} else {
+			$data['mov'] = 1;
+		}
+
+		if ($data['is_import']) {
+			$data['type_op'] = '18'; //2152
+		} else {
+			$data['type_op'] = '02'; //2136
+		}
+		
+		
+		if (!isset($data['warehouse_id']) or $data['warehouse_id'] == '' or $data['warehouse_id'] == '0') {
+			$data['warehouse_id'] = 1;
+		}
+		if (isset($data['expenses']) and $data['is_import'] != 1) {
+			foreach ($data['expenses'] as $key => $exp) {
+				$data['expenses'][$key]['is_deleted'] = 1;
+			}
+		}
+		$gross_value = 0;
+		$expenses = 0;
+		$expenseCif = 0;
+		if (isset($data['expenses'])) {
+			foreach ($data['expenses'] as $key => $expense) {
+				if ($key < 3) {
+					$expenseCif += $expense['value'];
+				}
+				$expenses += $expense['value'];
+				//$data['expenses'][$key]['currency_id'] = 2;
+			}
+		}
+		//dd($data['expenses']);
+		if (isset($data['details'])) {
+			foreach ($data['details'] as $key => $detail) {
+				if (!isset($detail['is_deleted'])) {
+					if (!isset($detail['discount'])) {
+						$detail['discount'] = 0;
+					}
+					$data['details'][$key]['total'] = round($detail['value']*$detail['quantity']*(100-$detail['discount']))/100;
+					$gross_value += $data['details'][$key]['total'];
+				}
+			}
+		}
+		//cacular factor
+		$factor = 1;
+		if ($gross_value>0) {
+			$factor = ($gross_value + $expenses) / $gross_value;
+		}
+		if (isset($data['details'])) {
+			foreach ($data['details'] as $key => $detail) {
+				if (!isset($detail['is_deleted'])) {
+					$data['cost'] = round(($detail['value']*$factor), 2);
+				}
+			}
+		}
+		$data['gross_value'] = $gross_value;
+		$data['subtotal'] = $gross_value + $expenseCif;
+		$data['total'] = round($data['subtotal'] * (100 + config('options.tax.igv')) / 100, 2);
+		$data['tax'] = $data['total'] - $data['subtotal'];
+
+		// Obteniendo el stock_id
+		if (isset($data['details'])) {
+			foreach ($data['details'] as $key => $detail) {
+				if (!isset($detail['stock_id']) and 1 == 1) {
+					if (!isset($detail['warehouse_id'])) {
+						$detail['warehouse_id'] = $data['warehouse_id'];
+					}
+					$s = Stock::firstOrCreate(['product_id' => $detail['product_id'], 'warehouse_id' => $detail['warehouse_id']]);
+					$data['details'][$key]['stock_id'] = $s->id;
+				}
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * guarda gastos de exportacion
+	 * @param  [array] $expenses     [Data de los gastos]
+	 * @param  [int] $model_id     [id de la importación]
+	 * @param  [string] $expense_type [Modelo de la importación]
+	 * @return [boolean]               [Retorna true al terminar de guardar]
+	 */
+	protected function saveExpenses($data, $model)
+	{
+		if (isset($data['expenses'])) {
+			$expenseRepo = new ExpenseRepo;
+			$expenseRepo->syncMany($data['expenses'], ['key' => 'expense_id', 'value' => $model->id], 'name', ['key'=>'expense_type', 'value' => $model->getMorphClass()]);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Genera Comprobante Electrónico
+	 * @param  Proof $model Comprobante de Pago
+	 * @return html        Imprime Respuesta
+	 */
+	public function generarComprobante($model)
+	{
+		$data_json = $this->prepareJson($model);
+		$respuesta = $this->send($data_json);
+		$this->readRespuesta();
+	}
+
+	/**
+	 * Prepara el json a enviar a nubefact
+	 * @param  Proof $model Comprobante de pago
+	 * @return Json        data formateada para ser enviada en formato json
+	 */
+	public function prepareJson($model)
+	{
+		$numero = explode('-', $model->number);
+		$data = array(
+		    "operacion"				=> "generar_comprobante",
+		    "tipo_de_comprobante"               => $model->document_type->code,
+		    "serie"                             => $number[0],
+		    "numero"				=> $number[1],
+		    "sunat_transaction"			=> "1",
+		    "cliente_tipo_de_documento"		=> $model->company->id_type->code,
+		    "cliente_numero_de_documento"	=> $model->company->doc,
+		    "cliente_denominacion"              => $model->company->company_name,
+		    "cliente_direccion"                 => $model->company->address.' '. $model->company->ubigeo->distrito.'-'.$model->company->ubigeo->provincia.'-'.$model->company->ubigeo->departamento,
+		    "cliente_email"                     => $model->email,
+		    "cliente_email_1"                   => $model->email_1,
+		    "cliente_email_2"                   => $model->email_2,
+		    "fecha_de_emision"                  => date('d-m-Y'),
+		    "fecha_de_vencimiento"              => "",
+		    "moneda"                            => $model->currency->code,
+		    "tipo_de_cambio"                    => "",
+		    "porcentaje_de_igv"                 => "18.00",
+		    "descuento_global"                  => "",
+		    "descuento_global"                  => "",
+		    "total_descuento"                   => "",
+		    "total_anticipo"                    => "",
+		    "total_gravada"                     => $model->subtotal,
+		    "total_inafecta"                    => "",
+		    "total_exonerada"                   => "",
+		    "total_igv"                         => $model->tax,
+		    "total_gratuita"                    => "",
+		    "total_otros_cargos"                => "",
+		    "total"                             => $model->total,
+		    "percepcion_tipo"                   => "",
+		    "percepcion_base_imponible"         => "",
+		    "total_percepcion"                  => "",
+		    "total_incluido_percepcion"         => "",
+		    "detraccion"                        => "false",
+		    "observaciones"                     => "",
+		    "documento_que_se_modifica_tipo"    => "",
+		    "documento_que_se_modifica_serie"   => "",
+		    "documento_que_se_modifica_numero"  => "",
+		    "tipo_de_nota_de_credito"           => "",
+		    "tipo_de_nota_de_debito"            => "",
+		    "enviar_automaticamente_a_la_sunat" => "true",
+		    "enviar_automaticamente_al_cliente" => "false",
+		    "codigo_unico"                      => "",
+		    "condiciones_de_pago"               => "",
+		    "medio_de_pago"                     => "",
+		    "placa_vehiculo"                    => "",
+		    "orden_compra_servicio"             => "",
+		    "tabla_personalizada_codigo"        => "",
+		    "formato_de_pdf"                    => "",
+		);
+		foreach ($model->details as $key => $detail) {
+			$subtotal = $detail->quantity*$detail->value-$detail->discount;
+			$total = rounb($subtotal*1.18, 2);
+			$igv = $total - $subtotal;
+			$data['items'][] = array(
+				"unidad_de_medida"          => $detail->product->unit->code,
+				"codigo"                    => $detail->product->intern_code,
+				"descripcion"               => $detail->product->name,
+				"cantidad"                  => $detail->quantity,
+				"valor_unitario"            => $detail->value,
+				"precio_unitario"           => $detail->price,
+				"descuento"                 => $detail->discount,
+				"subtotal"                  => $subtotal,
+				"tipo_de_igv"               => $detail->igv_code,
+				"igv"                       => $igv,
+				"total"                     => $total,
+				"anticipo_regularizacion"   => "false",
+				"anticipo_documento_serie"  => "",
+				"anticipo_documento_numero" => ""
+			);
+		}
+
+		return json_encode($data);
+		
+	}
+
+	/**
+	 * Envía data json a nubefact
+	 * @param  Json $data_json data lista para ser enviada
+	 * @return Json            Respuesta de Nubefact
+	 */
+	public function send($data_json)
+	{
+		// RUTA para enviar documentos
+		$ruta = "https://demo.nubefact.com/api/v1/03989d1a-6c8c-4b71-b1cd-7d37001deaa0";
+
+		//TOKEN para enviar documentos
+		$token = "d0a80b88cde446d092025465bdb4673e103a0d881ca6479ebbab10664dbc5677";
+
+		//Invocamos el servicio de NUBEFACT
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $ruta);
+		curl_setopt(
+			$ch, CURLOPT_HTTPHEADER, array(
+			'Authorization: Token token="'.$token.'"',
+			'Content-Type: application/json',
+			)
+		);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_POSTFIELDS,$data_json);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$respuesta  = curl_exec($ch);
+		curl_close($ch);
+
+		return $respuesta;
+	}
+
+	/**
+	 * Leer Respuesta
+	 * @param  Json $respuesta respuesta de nubefact
+	 * @return html            Imprime en pantalla la respuesta
+	 */
+	public function readRespuesta($respuesta)
+	{
+		$leer_respuesta = json_decode($respuesta, true);
+		if (isset($leer_respuesta['errors'])) {
+			//Mostramos los errores si los hay
+		    echo $leer_respuesta['errors'];
+		} else {
+			//Mostramos la respuesta
+		?>
+		<h2>RESPUESTA DE SUNAT</h2>
+		    <table border="1" style="border-collapse: collapse">
+		        <tbody>
+		            <tr><th>tipo:</th><td><?php echo $leer_respuesta['tipo_de_comprobante']; ?></td></tr>
+		            <tr><th>serie:</th><td><?php echo $leer_respuesta['serie']; ?></td></tr>
+		            <tr><th>numero:</th><td><?php echo $leer_respuesta['numero']; ?></td></tr>
+		            <tr><th>enlace:</th><td><?php echo $leer_respuesta['enlace']; ?></td></tr>
+		            <tr><th>aceptada_por_sunat:</th><td><?php echo $leer_respuesta['aceptada_por_sunat']; ?></td></tr>
+		            <tr><th>sunat_description:</th><td><?php echo $leer_respuesta['sunat_description']; ?></td></tr>
+		            <tr><th>sunat_note:</th><td><?php echo $leer_respuesta['sunat_note']; ?></td></tr>
+		            <tr><th>sunat_responsecode:</th><td><?php echo $leer_respuesta['sunat_responsecode']; ?></td></tr>
+		            <tr><th>sunat_soap_error:</th><td><?php echo $leer_respuesta['sunat_soap_error']; ?></td></tr>
+		            <tr><th>pdf_zip_base64:</th><td><?php echo $leer_respuesta['pdf_zip_base64']; ?></td></tr>
+		            <tr><th>xml_zip_base64:</th><td><?php echo $leer_respuesta['xml_zip_base64']; ?></td></tr>
+		            <tr><th>cdr_zip_base64:</th><td><?php echo $leer_respuesta['cdr_zip_base64']; ?></td></tr>
+		            <tr><th>codigo_hash:</th><td><?php echo $leer_respuesta['cadena_para_codigo_qr']; ?></td></tr>
+		            <tr><th>codigo_hash:</th><td><?php echo $leer_respuesta['codigo_hash']; ?></td></tr>
+		        </tbody>
+		    </table>
+		<?php
+		}
+	}
+
+}
