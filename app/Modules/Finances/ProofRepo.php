@@ -1,6 +1,7 @@
 <?php namespace App\Modules\Finances;
 
 use App\Modules\Base\BaseRepo;
+use App\Modules\Base\DocumentControlRepo;
 use App\Modules\Finances\Proof;
 use App\Modules\Finances\ProofDetailRepo;
 use App\Modules\Base\ExpenseRepo;
@@ -42,8 +43,11 @@ class ProofRepo extends BaseRepo{
 	public function save($data, $id=0)
 	{
 		$data = $this->prepareData($data);
-
+		//dd($data);
 		$model = parent::save($data, $id);
+		if (isset($data['control_id'])) {
+			DocumentControlRepo::nextNumber($data['control_id']);
+		}
 		// Registra Movimientos
 		if (isset($data['details'])) {
 			$detailRepo = new ProofDetailRepo;
@@ -56,6 +60,11 @@ class ProofRepo extends BaseRepo{
 			}
 		}
 		$this->saveExpenses($data, $model);
+		if (isset($data['send_sunat']) and $data['send_sunat'] == 1) {
+			$respuesta = $this->generarComprobante($model);
+			$model->response_sunat = $respuesta;
+			$model->save();
+		}
 		return $model;
 	}
 
@@ -71,6 +80,13 @@ class ProofRepo extends BaseRepo{
 			$data['type_op'] = '18'; //2152
 		} else {
 			$data['type_op'] = '02'; //2136
+		}
+
+		if ($data['is_issuance']==1 and $data['number']=='') {
+			$nextNumber = DocumentControlRepo::getNextNumber($data['document_type_id'], $data['my_company'], $data['reference_id']);
+			//dd($nextNumber);
+			$data['number'] = $nextNumber->series.'-'.($nextNumber->number+1);
+			$data['control_id'] = $nextNumber->id;
 		}
 		
 		
@@ -97,6 +113,9 @@ class ProofRepo extends BaseRepo{
 		//dd($data['expenses']);
 		if (isset($data['details'])) {
 			foreach ($data['details'] as $key => $detail) {
+				if (isset($data['igv_code'])) {
+					$data['details'][$key]['igv_code'] = $data['igv_code'];
+				}
 				if (!isset($detail['is_deleted'])) {
 					if (!isset($detail['discount'])) {
 						$detail['discount'] = 0;
@@ -165,7 +184,9 @@ class ProofRepo extends BaseRepo{
 	{
 		$data_json = $this->prepareJson($model);
 		$respuesta = $this->send($data_json);
-		$this->readRespuesta();
+		return $respuesta; 
+		dd($respuesta);
+		$this->readRespuesta($respuesta);
 	}
 
 	/**
@@ -179,9 +200,9 @@ class ProofRepo extends BaseRepo{
 		$data = array(
 		    "operacion"				=> "generar_comprobante",
 		    "tipo_de_comprobante"               => $model->document_type->code,
-		    "serie"                             => $number[0],
-		    "numero"				=> $number[1],
-		    "sunat_transaction"			=> "1",
+		    "serie"                             => $numero[0],
+		    "numero"				=> $numero[1],
+		    "sunat_transaction"			=> $model->sunat_transaction,
 		    "cliente_tipo_de_documento"		=> $model->company->id_type->code,
 		    "cliente_numero_de_documento"	=> $model->company->doc,
 		    "cliente_denominacion"              => $model->company->company_name,
@@ -228,7 +249,7 @@ class ProofRepo extends BaseRepo{
 		);
 		foreach ($model->details as $key => $detail) {
 			$subtotal = $detail->quantity*$detail->value-$detail->discount;
-			$total = rounb($subtotal*1.18, 2);
+			$total = round($subtotal*1.18, 2);
 			$igv = $total - $subtotal;
 			$data['items'][] = array(
 				"unidad_de_medida"          => $detail->product->unit->code,
@@ -247,7 +268,7 @@ class ProofRepo extends BaseRepo{
 				"anticipo_documento_numero" => ""
 			);
 		}
-
+		//dd($data);
 		return json_encode($data);
 		
 	}

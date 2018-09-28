@@ -21,13 +21,16 @@ class CreateProofsTable extends Migration
             $table->boolean('is_issuance'); // true si es emitido por la empresa
             $table->boolean('mov'); // 1 ingresa mercaderia, 0 sale mercaderia
             $table->string('type_op'); // segun ello afecta el valor promedio
+            $table->integer('company_id')->unsigned();
+            $table->integer('my_company')->unsigned();
+            $table->integer('sunat_transaction')->unsigned();
+            $table->integer('igv_code')->unsigned();
             $table->integer('document_type_id')->unsigned();
             $table->string('number');
             // Guia para las compras
             $table->date('dispatch_note_date');
             $table->string('dispatch_note_number');
             $table->string('dam');
-            $table->integer('company_id')->unsigned();
             // Guia de Remisión
             $table->integer('company_store_id')->unsigned(); // sucursal del cliente
             $table->integer('transfer_reason_id')->unsigned(); // motivo de traslado
@@ -50,7 +53,12 @@ class CreateProofsTable extends Migration
             $table->integer('swap_id')->unsigned(); // id del canje para las letras
             $table->integer('reference_id')->unsigned(); // referencia id de guia (para FA y BO), de FA BO (para las NC y ND)
             $table->integer('status_id')->unsigned();
-            
+            $table->integer('status_sunat')->unsigned();
+            $table->boolean('send_sunat');
+            $table->text('response_sunat');
+            $table->string('email');
+            $table->string('email_1');
+            $table->string('email_2');
 
             $table->foreign('document_type_id')->references('id')->on('document_types');
             $table->foreign('company_id')->references('id')->on('companies');

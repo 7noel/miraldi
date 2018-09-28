@@ -20,6 +20,7 @@ use App\Modules\Storage\ProductAccessory;
 use App\Modules\Storage\Warehouse;
 use App\Modules\Logistics\Brand;
 use App\Modules\Base\DocumentType;
+use App\Modules\Base\DocumentControl;
 use App\Modules\Finances\PaymentCondition;
 use App\Modules\Sales\Modelo;
 use App\Modules\HumanResources\Job;
@@ -73,6 +74,7 @@ class AdminTableSeeder extends Seeder {
         IdType::create(['name' => 'PASAPORTE', 'symbol' => 'PAS', 'code' => '7']);
         IdType::create(['name' => 'CED. DIPLOMATICA DE IDENTIDAD', 'symbol' => 'CED', 'code' => 'A']);
         IdType::create(['name' => 'DOC.TRIB.NO.DOM.SIN.RUC', 'symbol' => 'NDO', 'code' => '0']);
+        IdType::create(['name' => 'VARIOS', 'symbol' => 'S/D', 'code' => '-']);
 
         Job::create(['name' => 'ANALISTA DE SISTEMAS']);
         Job::create(['name' => 'GERENTE GENERAL']);
@@ -93,6 +95,9 @@ class AdminTableSeeder extends Seeder {
         Employee::create(['name' => 'NOEMÍ', 'paternal_surname'=>'MALDONADO ', 'maternal_surname'=>'LLACUACHAQUI', 'full_name'=>'MALDONADO LLACUACHAQUI NOEMÍ', 'id_type_id'=>'2', 'doc'=>'', 'job_id'=>'2', 'gender'=>'0', 'address'=>'DIRECCION', 'ubigeo_id'=>'1306', 'user_id'=>'9', 'email_company' => 'nmaldonado@ddmmedical.com', 'mobile_company' => '955677442']);
 
 
+        Company::create(['company_name'=>'MIRALDI Y CIA. S.A.C.', 'id_type_id'=>'1', 'doc'=>'20501767540', 'address'=>'AV. LAS VEGAS MZA. A LOTE. 19-B (PEDRO MIOTA CON BELIZARIO)', 'ubigeo_id'=>'1307', 'country_id' => 1465, 'is_my_company'=>1]);
+        Company::create(['company_name'=>'IMPORTACIONES MIRALDI S.A.C.', 'id_type_id'=>'1', 'doc'=>'20601787700', 'address'=>'AV. LAS VEGAS MZA. A LOTE. 19B URB. INDUSTRIAL (CRUCE AV PEDRO MIOTTA Y BELISARIO SUAREZ)', 'ubigeo_id'=>'1307', 'country_id' => 1465, 'is_my_company'=>1]);
+        Company::create(['company_name'=>'HERRAMAX PERU E.I.R.L.', 'id_type_id'=>'1', 'doc'=>'20602227066', 'address'=>'JR. HUAROCHIRI NRO. 550 INT. 1025 (A UNA CUADRA DE LA PLAZA 2 DE MAYO)', 'ubigeo_id'=>'1275', 'country_id' => 1465, 'is_my_company'=>1]);
         Company::create(['company_name'=>'CENTRO DERMATOLOGICO GIOVANNI BOJANINI SOCIEDAD AN...', 'id_type_id'=>'1', 'doc'=>'20600304721', 'address'=>'CAL. ELIAS AGUIRRE NRO. 605 INT. 201', 'ubigeo_id'=>'1296', 'country_id' => 1465]);
         Company::create(['company_name'=>'CLINICA PRIMAVERA S.A.C.', 'id_type_id'=>'1', 'doc'=>'20544106971', 'address'=>'AV. PRIMAVERA NRO. 999 URB. CHACARILLA', 'ubigeo_id'=>'1304', 'country_id' => 1465]);
         Company::create(['company_name'=>'DARDAY MEDICA E.I.R.L.', 'id_type_id'=>'1', 'doc'=>'20523807821', 'address'=>'JR. CORONEL FRANCISCO BOLOGNE NRO. 463', 'ubigeo_id'=>'688', 'country_id' => 1465]);
@@ -292,13 +297,34 @@ class AdminTableSeeder extends Seeder {
 
 
 
-        DocumentType::create(['name' => 'FACTURA', 'code' => '01', 'to_sales' => '1', 'to_purchases' => '1']);
-        DocumentType::create(['name' => 'BOLETA', 'code' => '03', 'to_sales' => '1']);
-        DocumentType::create(['name' => 'NOTA DE CRÉDITO', 'code' => '07', 'to_sales' => '1', 'to_purchases' => '1']);
-        DocumentType::create(['name' => 'NOTA DE DÉBITO', 'code' => '08', 'to_sales' => '1', 'to_purchases' => '1']);
+        DocumentType::create(['name' => 'FACTURA', 'code' => '1', 'to_sales' => '1', 'to_purchases' => '1']);
+        DocumentType::create(['name' => 'BOLETA', 'code' => '2', 'to_sales' => '1']);
+        DocumentType::create(['name' => 'NOTA DE CRÉDITO', 'code' => '3', 'to_sales' => '1', 'to_purchases' => '1']);
+        DocumentType::create(['name' => 'NOTA DE DÉBITO', 'code' => '4', 'to_sales' => '1', 'to_purchases' => '1']);
         DocumentType::create(['name' => 'INVOICE', 'code' => '91', 'to_purchases' => '1']);
         DocumentType::create(['name' => 'OT', 'code' => '00']);
         DocumentType::create(['name' => 'TK', 'code' => '00']);
+
+        DocumentControl::create(['document_type_id' => 1, 'company_id' => 1, 'series'=>'F001', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 2, 'company_id' => 1, 'series'=>'B001', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 3, 'company_id' => 1, 'series'=>'FC01', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 3, 'company_id' => 1, 'series'=>'BC01', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 4, 'company_id' => 1, 'series'=>'FD01', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 4, 'company_id' => 1, 'series'=>'BD01', 'number'=>0]);
+
+        DocumentControl::create(['document_type_id' => 1, 'company_id' => 2, 'series'=>'F001', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 2, 'company_id' => 2, 'series'=>'B001', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 3, 'company_id' => 2, 'series'=>'FC01', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 3, 'company_id' => 2, 'series'=>'BC01', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 4, 'company_id' => 2, 'series'=>'FD01', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 4, 'company_id' => 2, 'series'=>'BD01', 'number'=>0]);
+
+        DocumentControl::create(['document_type_id' => 1, 'company_id' => 3, 'series'=>'F001', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 2, 'company_id' => 3, 'series'=>'B001', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 3, 'company_id' => 3, 'series'=>'FC01', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 3, 'company_id' => 3, 'series'=>'BC01', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 4, 'company_id' => 3, 'series'=>'FD01', 'number'=>0]);
+        DocumentControl::create(['document_type_id' => 4, 'company_id' => 3, 'series'=>'BD01', 'number'=>0]);
 
         PaymentCondition::create(['name' => 'CONTADO', 'to_sales' => '1', 'to_purchases' => '1']);
         PaymentCondition::create(['name' => 'CRÉDITO', 'to_sales' => '1', 'to_purchases' => '1']);
@@ -317,7 +343,7 @@ class AdminTableSeeder extends Seeder {
         UnitType::create(['name' => 'MASA']);
         UnitType::create(['name' => 'UNIDAD']);
 
-        Unit::create(['name' => 'UNIDAD', 'symbol' => 'und', 'unit_type_id' => 4, 'value' => 1, 'code' => '']);
+        Unit::create(['name' => 'UNIDAD', 'symbol' => 'und', 'unit_type_id' => 4, 'value' => 1, 'code' => 'NIU']);
         // Unit::create(['name' => 'MILLAR', 'symbol' => 'mill', 'unit_type_id' => 4, 'value' => 1000, 'code' => '13']);
         // Unit::create(['name' => 'CENTIMETRO', 'symbol' => 'cm', 'unit_type_id' => 1, 'value' => 1, 'code' => '']);
         // Unit::create(['name' => 'METRO', 'symbol' => 'mt', 'unit_type_id' => 1, 'value' => 100, 'code' => '15']);
@@ -338,9 +364,9 @@ class AdminTableSeeder extends Seeder {
         // Unit::create(['name' => 'ONZA', 'symbol' => 'oz', 'unit_type_id' => 3, 'value' => 28.349, 'code' => '']);
         // Unit::create(['name' => 'LIBRA', 'symbol' => 'lb', 'unit_type_id' => 3, 'value' => 453.59, 'code' => '02']);
 
-        Currency::create(['name' => 'SOLES', 'symbol' => 'S/', 'code' => 'PEN']);
-        Currency::create(['name' => 'DOLARES AMERICANOS', 'symbol' => 'US$', 'code' => 'USD']);
-        Currency::create(['name' => 'EUROS', 'symbol' => '€', 'code' => 'EUR']);
+        Currency::create(['name' => 'SOLES', 'symbol' => 'S/', 'code' => '1']);
+        Currency::create(['name' => 'DOLARES AMERICANOS', 'symbol' => 'US$', 'code' => '2']);
+        Currency::create(['name' => 'EUROS', 'symbol' => '€', 'code' => '3']);
 
         Exchange::create(['date' => date('Y-m-d'), 'currency_id' => 1, 'sales' => 3, 'purchase' => 3]);
 

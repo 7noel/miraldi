@@ -13,7 +13,7 @@
 							@foreach($models as $model)
 							<tr data-id="{{ $model->id }}">
 								<td>{{ $model->id }}</td>
-								<td>{{ \Carbon::createFromFormat('Y-m-d', $model->date)->formatLocalized('%d/%m/%Y') }} </td>
+								<td>{{ \Carbon::createFromFormat('Y-m-d', $model->)->formatLocalized('%d/%m/%Y') }} </td>
 								<td>{{ $model->document_type->name." ".$model->series." ".$model->number }} </td>
 								<td>{{ $model->company->company_name }} </td>
 								<td>{{ $model->total }} </td>

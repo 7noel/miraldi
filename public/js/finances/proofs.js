@@ -17,7 +17,7 @@ $(document).ready(function(){
 		$('.withoutTax').show();
 	}
 
-	if ($('#payment_condition_id').val()==1) {
+	if ($('#payment_condition_id').val()==1 || $('#payment_condition_id').val()=='') {
 		$('.due_date').hide();
 	} else {
 		$('.due_date').show();
@@ -84,7 +84,7 @@ $(document).ready(function(){
 		calcCost();
 	});
 	$(document).on('change','#payment_condition_id', function (e) {
-		if ($('#payment_condition_id').val()==1) {
+		if ($('#payment_condition_id').val()==1 || $('#payment_condition_id').val()=='') {
 			$('.due_date').hide();
 		} else {
 			$('.due_date').show();

@@ -28,12 +28,14 @@ class CreateCompaniesTable extends Migration {
 			$table->string('phone');
 			$table->string('mobile');
 			$table->string('email');
+			$table->string('email_1');
+			$table->string('email_2');
 			$table->date('birth')->nullable();
 			$table->boolean('is_provider');
 			$table->boolean('is_my_company');
 			$table->boolean('is_shipper');
 			$table->integer('currency_id')->unsigned()->default(1);
-			$table->decimal('credit',15,2);
+			$table->decimal('credit', 15, 2);
 
 			$table->foreign('id_type_id')->references('id')->on('id_types');
 			$table->foreign('ubigeo_id')->references('id')->on('ubigeos');

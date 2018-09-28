@@ -1,15 +1,18 @@
 					{!! Form::hidden('is_proof', $is_proof, ['id'=>'is_proof']) !!}
 					{!! Form::hidden('is_issuance', $is_issuance, ['id'=>'is_issuance']) !!}
+					{!! Form::hidden('sunat_transaction', $sunat_transaction, ['class'=>'form-control']) !!}
+					{!! Form::hidden('igv_code', 1, ['class'=>'form-control']) !!}
 
 					<div class="form-group form-group-sm">
 						<div class="col-sm-2">
-							{!! Form::label('sunat_transaction_code','Tipo Venta:', ['class'=>'control-label']) !!}
-							{!! Form::select('sunat_transaction_code', config('options.table_sunat.sunat_transaction'), null, ['class'=>'form-control']) !!}
+							{!! Form::label('my_company','Mi Empresa:', ['class'=>'control-label']) !!}
+							{!! Form::select('my_company', $my_companies, null, ['class'=>'form-control']) !!}
 						</div>
 						<div class="col-sm-2">
-							{!! Form::label('igv_code','Tipo IGV:', ['class'=>'control-label']) !!}
-							{!! Form::select('igv_code', config('options.table_sunat.tipo_de_igv'), null, ['class'=>'form-control']) !!}
-						</div>						
+							<label class="checkbox-inline">
+								{!! Form::checkbox('send_sunat', '1', null,['class'=>'checkbox']) !!} Enviar a SUNAT
+							</label>
+						</div>
 					</div>
 					<div class="form-group form-group-sm">
 						<div class="col-sm-4">
@@ -65,7 +68,7 @@
 						{!! Form::hidden('reference_id', null) !!}
 						<div class="col-sm-2">
 						{!! Form::label('reference_number','Referencia', ['class'=>'control-label']) !!}
-							{!! Form::text('reference_number', ((isset($model->reference_id)) ? $model->reference->number : ''), ['class'=>'form-control']) !!}
+							{!! Form::text('reference_number', ((isset($model->reference)) ? $model->reference->number : ''), ['class'=>'form-control']) !!}
 						</div>
 						<div class="col-sm-2">
 						{!! Form::label('note_type_id','Motivo de Nota', ['class'=>'control-label']) !!}
@@ -95,6 +98,8 @@
 
 
 					<div class="expenses isImport">
+					</div>
+					<template id="expenses">
 						<div class="form-group form-group-sm">
 							{!! Form::label('expenses[0][value]','Gastos FOB', ['class'=>'col-sm-2 control-label']) !!}
 							<div class="col-sm-2">
@@ -181,7 +186,7 @@
 								</div>
 							</div>
 						</div>
-					</div>
+					</template>
 					
 
-					@include('logistics.purchases.partials.details')
+					@include('finances.proofs.partials.details')

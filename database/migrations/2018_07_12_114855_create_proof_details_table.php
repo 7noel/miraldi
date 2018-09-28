@@ -25,6 +25,7 @@ class CreateProofDetailsTable extends Migration
             $table->decimal('discount', 15, 2);
             $table->decimal('cost', 15, 2);
             $table->decimal('total',15,2);
+            $table->integer('igv_code')->unsigned();
             $table->text('comment');
 
             $table->foreign('proof_id')->references('id')->on('proofs');

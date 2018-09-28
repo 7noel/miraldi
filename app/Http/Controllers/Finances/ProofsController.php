@@ -41,9 +41,14 @@ class ProofsController extends Controller {
 	public function create()
 	{
 		// dd(\Request::route()->action['as']);
+		$my_companies = $this->companyRepo->getListMyCompany();
 		$is_issuance = 1;
 		$is_proof = 1;
+		$sunat_transaction = 1;
+		$igv_code = 1;
 		if (\Request::route()->action['as'] == 'issuance_vouchers.create') {
+			$sunat_transaction = 1;
+			$igv_code = 1;
 			$is_issuance = 1;
 			$is_proof = 1;
 		} elseif (\Request::route()->action['as'] == 'reception_vouchers.create') {
@@ -54,7 +59,7 @@ class ProofsController extends Controller {
 		$currencies = $this->currencyRepo->getList('symbol');
 		$payment_conditions = $this->paymentConditionRepo->getList();
 		$sellers = $this->employeeRepo->getListSellers();
-		return view('finances.proofs.create', compact('is_issuance', 'is_proof', 'document_types', 'currencies', 'payment_conditions', 'sellers'));
+		return view('finances.proofs.create', compact('is_issuance', 'is_proof', 'document_types', 'currencies', 'payment_conditions', 'sellers', 'my_companies', 'sunat_transaction', 'igv_code'));
 	}
 	public function index()
 	{
@@ -73,23 +78,35 @@ class ProofsController extends Controller {
 
 	public function store()
 	{
-		dd(\Request::all());
+		//dd(\Request::all());
 		$this->repo->save(\Request::all());
 		return \Redirect::route('purchases.index');
 	}
 
 	public function show($id)
 	{
-		//
+		$model = $this->repo->findOrFail($id);
+		$p='p';
+		dd(json_decode($model->response_sunat));
 	}
 
 	public function edit($id)
 	{
 		$model = $this->repo->findOrFail($id);
+		$my_companies = $this->companyRepo->getListMyCompany();
+		
+		$sunat_transaction = $model->sunat_transaction;
+		$igv_code = $model;
+		$is_issuance = $model->is_issuance;
+		$is_proof = 1;
+		if ($model->document_type_id == 5) {
+			$is_proof = 0;
+		}
 		$document_types = $this->documentTypeRepo->getList2();
 		$currencies = $this->currencyRepo->getList('symbol');
 		$payment_conditions = $this->paymentConditionRepo->getList();
-		return view('partials.edit', compact('model','document_types', 'currencies', 'payment_conditions', 'warehouses','items'));
+		$sellers = $this->employeeRepo->getListSellers();
+		return view('finances.proofs.edit', compact('model','document_types', 'currencies', 'payment_conditions', 'sellers', 'warehouses','items', 'is_issuance', 'is_proof', 'my_companies', 'sunat_transaction', 'igv_code'));
 	}
 
 	public function update($id)
