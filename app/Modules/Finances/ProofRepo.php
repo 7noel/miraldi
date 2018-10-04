@@ -175,26 +175,57 @@ class ProofRepo extends BaseRepo{
 		}
 	}
 
+	public function consultarCpe($model, $anulacion = 0)
+	{
+		$numero = explode('-', $model->number);
+		$data = [
+			"operacion" => ($anulacion == 0) ? "consultar_comprobante" : "consultar_anulacion",
+			"tipo_de_comprobante" => $model->document_type->code,
+			"serie" => $numero[0],
+			"numero" => $numero[1]
+		];
+		$data = json_encode($data);
+		$respuesta = $this->send($data);
+		return $respuesta;
+
+	}
+
+	public function generarAnulacion($model)
+	{
+		$numero = explode('-', $model->number);
+		$data = [
+			"operacion" => "generar_anulacion",
+			"tipo_de_comprobante" => $model->document_type->code,
+			"serie" => $numero[0],
+			"numero" => $numero[1],
+			"motivo" => "ERROR DEL SISTEMA",
+			"codigo_unico"=>""
+		];
+		$data = json_encode($data);
+		$respuesta = $this->send($data);
+		return $respuesta;
+	}
+
 	/**
 	 * Genera Comprobante Electrónico
 	 * @param  Proof $model Comprobante de Pago
-	 * @return html        Imprime Respuesta
+	 * @return html        Retorna Respuesta
 	 */
 	public function generarComprobante($model)
 	{
-		$data_json = $this->prepareJson($model);
-		$respuesta = $this->send($data_json);
+		$data = $this->prepareCpe($model);
+		$respuesta = $this->send($data);
 		return $respuesta; 
-		dd($respuesta);
-		$this->readRespuesta($respuesta);
+		//dd($respuesta);
+		//$this->readRespuesta($respuesta);
 	}
 
 	/**
 	 * Prepara el json a enviar a nubefact
 	 * @param  Proof $model Comprobante de pago
-	 * @return Json        data formateada para ser enviada en formato json
+	 * @return Array        array lista para ser formateada y enviada en formato json
 	 */
-	public function prepareJson($model)
+	public function prepareCpe($model)
 	{
 		$numero = explode('-', $model->number);
 		$data = array(
@@ -269,17 +300,18 @@ class ProofRepo extends BaseRepo{
 			);
 		}
 		//dd($data);
-		return json_encode($data);
+		return $data;
 		
 	}
 
 	/**
 	 * Envía data json a nubefact
-	 * @param  Json $data_json data lista para ser enviada
+	 * @param  Array $data data lista para ser enviada
 	 * @return Json            Respuesta de Nubefact
 	 */
-	public function send($data_json)
+	public function send($data)
 	{
+		$data_json = json_encode($data);
 		// RUTA para enviar documentos
 		$ruta = "https://demo.nubefact.com/api/v1/03989d1a-6c8c-4b71-b1cd-7d37001deaa0";
 
