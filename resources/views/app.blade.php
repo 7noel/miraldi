@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{{ config('app.name', 'Laravel') }}</title>
+	<title>{{ ( (isset(session('my_company')->company_name)) ? session('my_company')->company_name : config('app.name', 'Laravel')) }}</title>
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 	{!! Html::style('//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css') !!}
 	{!! Html::style('css/autocomplete.css') !!}
@@ -82,6 +82,7 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="{{ url('/guard/change_password') }}">Cambiar Contraseña</a></li>
+							<li><a href="{{ url('/select_company') }}">Cambiar Empresa</a></li>
 							<li class="divider"></li>
 							<li>
 								<a href="{{ url('/logout') }}"

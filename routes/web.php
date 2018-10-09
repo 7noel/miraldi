@@ -52,6 +52,9 @@ Route::group(['middleware'=>['auth']], function(){
 	Route::get('api/stocks/autocompleteAjax/{stock_id}', ['as' => 'stocksAutocomplete','uses' => 'Storage\ProductsController@ajaxAutocomplete2']);
 	Route::get('api/products/getById/{id}', ['as' => 'productsGetById','uses' => 'Storage\ProductsController@ajaxGetById']);
 	Route::get('audit/{model}/{id}', ['as' => 'audit','uses' => 'Security\AuditController@getAudit']);
+
+	Route::get('/select_company', ['as' => 'select_company','uses' => 'HomeController@select_company']);
+	Route::post('/change_company', ['as' => 'change_company','uses' => 'HomeController@change_company']);
 });
 
 Route::group(['prefix'=>'admin', 'middleware'=>['auth', 'permissions'], 'namespace'=>'Admin'], function(){
@@ -132,3 +135,8 @@ Route::get('enviar', ['as' => 'enviar', function () {
 
     return "Se envío el email";
 }]);
+
+Route::get('test', function() {
+    // Session::put('progress', '54%');
+    dd(Session::get('progress'));
+});

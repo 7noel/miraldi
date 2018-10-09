@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Modules\Storage\MoveRepo;
+use App\Modules\Finances\CompanyRepo;
 
 class HomeController extends Controller
 {
@@ -25,6 +26,9 @@ class HomeController extends Controller
      */
     public function index()
     {
+        // $companyRepo = new CompanyRepo;
+        // session(['my_company' => $companyRepo->find(1)]);
+        //dd(session('my_company'));
         return view('home');
     }
 
@@ -73,5 +77,22 @@ class HomeController extends Controller
         }
         dd($model);
         return $model;
+    }
+
+    public function select_company()
+    {
+        $companyRepo = new CompanyRepo;
+        $companies = $companyRepo->getListMyCompany();
+        // dd(session('my_company'));
+        return view('admin.select_company', compact('companies'));
+    }
+    public function change_company()
+    {
+        $id = \Request::only('company')['company'];
+        $companyRepo = new CompanyRepo;
+        $newCompany = $companyRepo->find($id);
+        session(['my_company'=>$newCompany]);
+        return redirect('/select_company');
+        
     }
 }

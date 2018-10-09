@@ -43,6 +43,10 @@ class CreateProofsTable extends Migration
             $table->decimal('exchange', 10, 4); // tipo de cambio dolar
             $table->decimal('exchange2', 10, 4); // tipó de cambio euro
             $table->boolean('with_tax'); // true si los montos unitarios es incluido igv
+            $table->decimal('total_descuento', 12,2);
+            $table->decimal('total_anticipo', 12,2);
+            $table->decimal('total_gravada', 12,2);
+            $table->decimal('total_gratuita', 12,2);
             $table->decimal('gross_value', 12,2);
             $table->decimal('subtotal',14,2);
             $table->decimal('tax',14,2);

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Modules\Security\UserRepo;
+use App\Modules\Finances\CompanyRepo;
 
 class MenuController extends Controller
 {
@@ -14,9 +15,16 @@ class MenuController extends Controller
 
     public function __construct(UserRepo $repo) {
         $this->repo = $repo;
+        if (null == session('my_company')) {
+            $c = new CompanyRepo;
+            session(['my_company' => $c->find(1)]);
+        }
+        //session(['my_company' => 1]);
+        // $value = session('my_company');
     }
     public function links()
     {
+        //session(['my_company' => 100]);
         //$arrayLinks = [];
         $arrayLinks = $this->arrayLinks();
 
@@ -89,6 +97,12 @@ class MenuController extends Controller
             ],
         ];
         return $links;
+    }
+
+    public function companies()
+    {
+        $c = new CompanyRepo;
+        return $c->getOtherCompanies(1);
     }
 
 }
