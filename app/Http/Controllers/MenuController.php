@@ -77,6 +77,9 @@ class MenuController extends Controller
                 ['name' => 'Documentos', 'route' => 'id_types.index' ],
             ],
             'Finanzas'=>[
+                ['name' => 'Emite Letras', 'route' => 'issuance_letters.index' ],
+                ['name' => 'Recibe Letras', 'route' => 'reception_letters.index' ],
+                
                 ['name' => 'Empresas', 'route' => 'companies.index' ],
                 // ['name' => 'Cuentas por Cobrar', 'url' => '#' ],
                 // ['name' => 'Cuentas por Pagar', 'url' => '#' ],
@@ -88,7 +91,8 @@ class MenuController extends Controller
                 ['name' => 'Medios de Pago', 'route' => 'payment_conditions.index' ],
             ],
             'Ventas'=>[
-                ['name' => 'Cotizaciones', 'route' => 'orders.index' ],
+                ['name' => 'Cotizaciones', 'route' => 'quotes.index' ],
+                ['name' => 'Pedidos', 'route' => 'orders.index' ],
                 ['name' => 'Facturación', 'route' => 'issuance_vouchers.index' ],
             ],
             'Logística'=>[

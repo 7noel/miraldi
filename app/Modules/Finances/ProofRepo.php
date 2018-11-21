@@ -3,6 +3,7 @@
 use App\Modules\Base\BaseRepo;
 use App\Modules\Base\DocumentControlRepo;
 use App\Modules\Finances\Proof;
+use App\Modules\Sales\Order;
 use App\Modules\Finances\ProofDetailRepo;
 use App\Modules\Base\ExpenseRepo;
 use App\Modules\Storage\MoveRepo;
@@ -13,38 +14,27 @@ class ProofRepo extends BaseRepo{
 	public function getModel(){
 		return new Proof;
 	}
-	public function index($filter = false, $search = false)
-	{
-		if ($filter and $search) {
-			return Proof::$filter($search)->with('company', 'document_type', 'payment_condition', 'currency')->orderBy("$filter", 'ASC')->paginate();
-		} else {
-			return Proof::orderBy('id', 'DESC')->with('company', 'document_type', 'payment_condition', 'currency')->paginate();
-		}
-	}
 
-	public function issuanceVouchers($filter = false, $search = false)
+	public function findWithAmortizations($id)
 	{
-		if ($filter and $search) {
-			return Proof::$filter($search)->with('company', 'document_type', 'payment_condition', 'currency')->orderBy("$filter", 'ASC')->where('is_issuance', true)->where('document_type_id', '!=', 5)->paginate();
-		} else {
-			return Proof::orderBy('id', 'DESC')->with('company', 'document_type', 'payment_condition', 'currency')->where('is_issuance', true)->where('document_type_id', '!=', 5)->paginate();
-		}
+		return Proof::where('id', $id)->with('amortizations.payment')->first();
 	}
-
-	public function receptionVouchers($filter = false, $search = false)
+	public function index($filter = false, $search = false, $proof_type = 0)
 	{
 		if ($filter and $search) {
-			return Proof::$filter($search)->with('company', 'document_type', 'payment_condition', 'currency')->orderBy("$filter", 'ASC')->where('is_issuance', false)->where('document_type_id', '!=', 5)->paginate();
+			return Proof::$filter($search)->with('company', 'document_type', 'payment_condition', 'currency')->where('proof_type', $proof_type)->orderBy("$filter", 'ASC')->paginate();
 		} else {
-			return Proof::orderBy('id', 'DESC')->with('company', 'document_type', 'payment_condition', 'currency')->where('is_issuance', false)->where('document_type_id', '!=', 5)->paginate();
+			return Proof::orderBy('id', 'DESC')->with('company', 'document_type', 'payment_condition', 'currency')->where('proof_type', $proof_type)->paginate();
 		}
 	}
 
 	public function save($data, $id=0)
 	{
 		$data = $this->prepareData($data);
-		//dd($data);
 		$model = parent::save($data, $id);
+		if (isset($data['order_id'])) {
+			$ot = Order::where('id', $data['order_id'])->update(['proof_id' => $model->id]);
+		}
 		if (isset($data['control_id'])) {
 			DocumentControlRepo::nextNumber($data['control_id']);
 		}
@@ -68,8 +58,22 @@ class ProofRepo extends BaseRepo{
 		return $model;
 	}
 
+	public function getNextNumber($document_type_id, $my_company = 1)
+	{
+		$doc = DocumentControlRepo::getNextNumber($document_type_id, $my_company);
+		$last = Proof::where('my_company', $my_company)->where('document_type_id', $document_type_id)->where('series', $doc->series)->orderBy('number', 'desc')->first();
+		if ($last) {
+			return ['id' => $doc->id, 'series' => $doc->series, 'number'=> ($last->number + 1)];
+		} else {
+			return ['id' => $doc->id, 'series' => $doc->series, 'number'=> 1];
+		}
+	}
+
 	public function prepareData($data)
 	{
+		if ($data['my_company'] == '') {
+			$data['my_company'] = session('my_company')->id;
+		}
 		if ($data['document_type_id'] == 3) {
 			$data['mov'] = 0;
 		} else {
@@ -82,11 +86,14 @@ class ProofRepo extends BaseRepo{
 			$data['type_op'] = '02'; //2136
 		}
 
-		if ($data['is_issuance']==1 and $data['number']=='') {
-			$nextNumber = DocumentControlRepo::getNextNumber($data['document_type_id'], $data['my_company'], $data['reference_id']);
+		if ($data['proof_type'] == 1 and $data['sn'] == '') {
+			// $nextNumber = DocumentControlRepo::getNextNumber($data['document_type_id'], $data['my_company'], $data['reference_id']);
 			//dd($nextNumber);
-			$data['number'] = $nextNumber->series.'-'.($nextNumber->number+1);
-			$data['control_id'] = $nextNumber->id;
+			$sn = $this->getNextNumber($data['document_type_id'], $data['my_company']);
+			$data['series'] = $sn['series'];
+			$data['number'] = $sn['number'];
+			$data['sn'] = $sn['series'] . '-' . $sn['number'];
+			$data['control_id'] = $sn['id'];
 		}
 		
 		
@@ -111,33 +118,54 @@ class ProofRepo extends BaseRepo{
 			}
 		}
 		//dd($data['expenses']);
+		$gross_value = 0;
+		$subtotal = 0;
+		$d_items = 0;
+		$total = 0;
 		if (isset($data['details'])) {
 			foreach ($data['details'] as $key => $detail) {
 				if (isset($data['igv_code'])) {
 					$data['details'][$key]['igv_code'] = $data['igv_code'];
 				}
 				if (!isset($detail['is_deleted'])) {
-					if (!isset($detail['discount'])) {
-						$detail['discount'] = 0;
-					}
-					$data['details'][$key]['total'] = round($detail['value']*$detail['quantity']*(100-$detail['discount']))/100;
-					$gross_value += $data['details'][$key]['total'];
+					$p = $detail['value'] * (100 + config('options.tax.igv')) / 100;
+					$vt = round( $detail['value'] * $detail['quantity'] * (100-$detail['d1']) * (100-$detail['d2']) / 100 )/100;
+					$t = round($vt * (100 + config('options.tax.igv')) / 100, 2);
+					$discount = $detail['value']*$detail['quantity'] - $vt;
+					$data['details'][$key]['price'] = round($p, 2);
+					$data['details'][$key]['discount'] = round($discount, 2);
+					$data['details'][$key]['total'] = round($vt, 2);
+
+					$d_items += $discount;
+					$gross_value += $detail['value'] * $detail['quantity'];
+					$subtotal += round($vt, 2);
+					$total += round($t, 2);
+
+					// if (!isset($detail['discount'])) {
+					// 	$detail['discount'] = 0;
+					// }
+					// $data['details'][$key]['total'] = round($detail['value']*$detail['quantity']*(100-$detail['discount']))/100;
+					// $gross_value += $data['details'][$key]['total'];
 				}
 			}
 		}
 		//cacular factor
-		$factor = 1;
-		if ($gross_value>0) {
-			$factor = ($gross_value + $expenses) / $gross_value;
-		}
-		if (isset($data['details'])) {
-			foreach ($data['details'] as $key => $detail) {
-				if (!isset($detail['is_deleted'])) {
-					$data['cost'] = round(($detail['value']*$factor), 2);
+		if ($data['proof_type'] == 2) {
+			$factor = 1;
+			if ($gross_value>0) {
+				$factor = ($gross_value + $expenses) / $gross_value;
+			}
+			$data['factor'] = $factor;
+			if (isset($data['details'])) {
+				foreach ($data['details'] as $key => $detail) {
+					if (!isset($detail['is_deleted'])) {
+						$data['details'][$key]['cost'] = round(($detail['value']*$factor), 2);
+					}
 				}
 			}
 		}
 		$data['gross_value'] = $gross_value;
+		$data['discount_items'] = $d_items;
 		$data['subtotal'] = $gross_value + $expenseCif;
 		$data['total'] = round($data['subtotal'] * (100 + config('options.tax.igv')) / 100, 2);
 		$data['tax'] = $data['total'] - $data['subtotal'];

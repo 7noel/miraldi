@@ -4,14 +4,23 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use App\Modules\Finances\PaymentConditionRepo;
+use App\Modules\Finances\AmortizationRepo;
+use App\Modules\Finances\ProofRepo;
+use App\Modules\Finances\BankRepo;
+use App\Modules\Base\CurrencyRepo;
 
-class PaymentConditionsController extends Controller {
+class AmortizationsController extends Controller {
 
 	protected $repo;
+	protected $proofRepo;
+	protected $bankRepo;
+	protected $currencyRepo;
 
-	public function __construct(PaymentConditionRepo $repo) {
+	public function __construct(AmortizationRepo $repo, ProofRepo $proofRepo, BankRepo $bankRepo, CurrencyRepo $currencyRepo) {
 		$this->repo = $repo;
+		$this->proofRepo = $proofRepo;
+		$this->bankRepo = $bankRepo;
+		$this->currencyRepo = $currencyRepo;
 	}
 
 	public function index()
@@ -53,5 +62,14 @@ class PaymentConditionsController extends Controller {
 		$model = $this->repo->destroy($id);
 		if (\Request::ajax()) {	return $model; }
 		return redirect()->route('finances.payment_conditions.index');
+	}
+
+	public function byProof($proof_id)
+	{
+		$model = $this->proofRepo->findWithAmortizations($proof_id);
+		$banks = $this->bankRepo->getList('label');
+		$currencies = $this->currencyRepo->getList('symbol');
+		return view('finances.amortizations.by_proof', compact('model', 'banks', 'currencies'));
+		dd($banks);
 	}
 }

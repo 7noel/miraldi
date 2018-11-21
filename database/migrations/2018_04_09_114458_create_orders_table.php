@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->boolean('mov');
             $table->string('type_op');
             $table->integer('document_type_id')->unsigned();
+            $table->integer('my_company')->unsigned();
             $table->integer('company_id')->unsigned();
             $table->integer('payment_condition_id')->unsigned();
             $table->integer('currency_id')->unsigned();
@@ -37,13 +38,14 @@ class CreateOrdersTable extends Migration
             $table->boolean('with_tax');
             $table->decimal('gross_value', 12,2);
             $table->decimal('discount', 12,2);
+            $table->decimal('discount_items',15,2);
             $table->decimal('subtotal', 12,2);
             $table->decimal('tax', 12,2);
             $table->decimal('total', 12,2);
             $table->decimal('amortization', 12,2);
             $table->decimal('exchange', 12,2);
             $table->decimal('exchange_sunat', 12,2);
-            $table->integer('order_id')->unsigned();
+            $table->integer('proof_id')->unsigned();
             $table->text('comment');
 
             $table->foreign('document_type_id')->references('id')->on('document_types');

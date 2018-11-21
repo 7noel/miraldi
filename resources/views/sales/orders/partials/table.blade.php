@@ -15,8 +15,8 @@
 							<td>{{ $model->status }}</td>
 							<td>{{ $model->currency->symbol." ".$model->total}} </td>
 							<td>
-								@if(\Auth::user()->is_superuser)
-								<a href="{{ route('audit', ['model' => $model->getMorphClass(), 'id' => $model->id]) }}" target="_blank" class="btn btn-default btn-xs" title="Histórico">{!! config('options.icons.history') !!}</a>
+								@if($model->proof_id == 0)
+								<a href="{{ route('issuance_vouchers.by_order', $model->id) }}" target="_blank" class="btn btn-default btn-xs" title="Generar Comnprobante">{!! config('options.icons.invoice') !!}</a>
 								@endif
 								@if($model->checked_at)
 								<a href="{{ route( 'print_order' , $model->id ) }}" target="_blank" class="btn btn-success btn-xs" title="Imprimir">{!! config('options.icons.printer') !!} </a>

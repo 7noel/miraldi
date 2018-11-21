@@ -4,7 +4,14 @@ return array(
 		''=>'Status',
 		'1'=>'Activo',
 		'3'=>'A pedido',
-		'2'=>'Inactivo'
+		'2'=>'Inactivo',
+	],
+	'proof_types' => [
+		'0' => 'Ninguno',
+		'1' => 'issuance_vouchers',
+		'2' => 'reception_vouchers',
+		'3' => 'issuance_letters',
+		'4' => 'reception_letters',
 	],
 	'mov' => [
 		'' => 'Seleccionar',
@@ -133,7 +140,8 @@ return array(
 		'config' => '<i class="fas fa-cog"></i>',
 		'history' => '<i class="fas fa-history"></i>',
 		'check' => '<i class="fas fa-check"></i>',
-		'external' => '<i class="fas fa-external-link-square-alt"></i>'
+		'external' => '<i class="fas fa-external-link-square-alt"></i>',
+		'invoice' => '<i class="fas fa-file-invoice"></i>',
 	],
 	'bank_accounts' => [
 		['label' => 'Cuenta Corriente Dólares Interbank',
@@ -282,11 +290,17 @@ return array(
 		],
 	// ],
 	// 'sales' => [
-		'orders' => [
+		'quotes' => [
 			'index'  => ['panel'=>'Cotizaciones', 'create'=>'Crear Cotización'],
 			'create' => ['panel'=>'Nuevo Cotización', 'create'=>'Crear Cotización'],
 			'show'   => ['panel'=>'Vizualizando Cotización:'],
 			'edit'   => ['panel'=>'Editar Cotización: ', 'update'=>'Actualizar Cotización', 'delete'=>'Eliminar Cotización']
+		],
+		'orders' => [
+			'index'  => ['panel'=>'Pedidos', 'create'=>'Crear Pedido'],
+			'create' => ['panel'=>'Nuevo Pedido', 'create'=>'Crear Pedido'],
+			'show'   => ['panel'=>'Vizualizando Pedido:'],
+			'edit'   => ['panel'=>'Editar Pedido: ', 'update'=>'Actualizar Pedido', 'delete'=>'Eliminar Pedido']
 		],
 	// ],
 	// 'guard' => [

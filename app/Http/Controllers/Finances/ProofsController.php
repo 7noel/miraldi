@@ -11,6 +11,7 @@ use App\Modules\Finances\CompanyRepo;
 use App\Modules\Finances\PaymentConditionRepo;
 use App\Modules\Storage\WarehouseRepo;
 use App\Modules\HumanResources\EmployeeRepo;
+use App\Modules\Sales\OrderRepo;
 
 class ProofsController extends Controller {
 
@@ -21,8 +22,12 @@ class ProofsController extends Controller {
 	protected $paymentConditionRepo;
 	protected $warehouseRepo;
 	protected $employeeRepo;
+	protected $orderRepo;
 
-	public function __construct(EmployeeRepo $employeeRepo, ProofRepo $repo, DocumentTypeRepo $documentTypeRepo, CurrencyRepo $currencyRepo, CompanyRepo $companyRepo, PaymentConditionRepo $paymentConditionRepo, WarehouseRepo $warehouseRepo) {
+	protected $proof_type;
+	protected $doc;
+
+	public function __construct(EmployeeRepo $employeeRepo, ProofRepo $repo, DocumentTypeRepo $documentTypeRepo, CurrencyRepo $currencyRepo, CompanyRepo $companyRepo, PaymentConditionRepo $paymentConditionRepo, WarehouseRepo $warehouseRepo, OrderRepo $orderRepo) {
 		$this->repo = $repo;
 		$this->documentTypeRepo = $documentTypeRepo;
 		$this->currencyRepo = $currencyRepo;
@@ -30,6 +35,9 @@ class ProofsController extends Controller {
 		$this->paymentConditionRepo = $paymentConditionRepo;
 		$this->warehouseRepo = $warehouseRepo;
 		$this->employeeRepo = $employeeRepo;
+		$this->orderRepo = $orderRepo;
+
+		$this->getType();
 	}
 
 	public function issuanceVouchers()
@@ -42,45 +50,43 @@ class ProofsController extends Controller {
 	{
 		// dd(\Request::route()->action['as']);
 		$my_companies = $this->companyRepo->getListMyCompany();
-		$is_issuance = 1;
-		$is_proof = 1;
+		$proof_type = $this->proof_type;
 		$sunat_transaction = 1;
 		$igv_code = 1;
-		if (\Request::route()->action['as'] == 'issuance_vouchers.create') {
-			$sunat_transaction = 1;
-			$igv_code = 1;
-			$is_issuance = 1;
-			$is_proof = 1;
-		} elseif (\Request::route()->action['as'] == 'reception_vouchers.create') {
-			$is_issuance = 0;
-			$is_proof = 1;
-		}
 		$document_types = $this->documentTypeRepo->getList2();
 		$currencies = $this->currencyRepo->getList('symbol');
 		$payment_conditions = $this->paymentConditionRepo->getList();
 		$sellers = $this->employeeRepo->getListSellers();
-		return view('finances.proofs.create', compact('is_issuance', 'is_proof', 'document_types', 'currencies', 'payment_conditions', 'sellers', 'my_companies', 'sunat_transaction', 'igv_code'));
-	}
-	public function index()
-	{
-		dd("facturas");
-		$models = $this->repo->index('date', \Request::get('name'));
-		return view('partials.index',compact('models'));
+		return view('partials.create', compact('proof_type', 'document_types', 'currencies', 'payment_conditions', 'sellers', 'my_companies', 'sunat_transaction', 'igv_code'));
 	}
 
-	public function create2()
+
+	public function byOrder($order_id)
 	{
+		$model = $this->orderRepo->findOrFail($order_id);
+		$my_companies = $this->companyRepo->getListMyCompany();
+
+		$sunat_transaction = 1;
+		$igv_code = 1;
+		$proof_type = $this->proof_type;
 		$document_types = $this->documentTypeRepo->getList2();
 		$currencies = $this->currencyRepo->getList('symbol');
 		$payment_conditions = $this->paymentConditionRepo->getList();
-		return view('partials.create', compact('document_types', 'currencies', 'payment_conditions'));
+		$sellers = $this->employeeRepo->getListSellers();
+		return view('partials.create', compact('model', 'order_id', 'document_types', 'currencies', 'payment_conditions', 'sellers', 'warehouses','items', 'proof_type', 'my_companies', 'sunat_transaction', 'igv_code'));
+	}
+
+	public function index()
+	{
+		$models = $this->repo->index('number', \Request::get('name'), $this->proof_type);
+		return view('partials.index',compact('models'));
 	}
 
 	public function store()
 	{
 		//dd(\Request::all());
 		$this->repo->save(\Request::all());
-		return \Redirect::route('purchases.index');
+		return redirect()->route($this->doc.'.index');
 	}
 
 	public function show($id)
@@ -94,32 +100,28 @@ class ProofsController extends Controller {
 	{
 		$model = $this->repo->findOrFail($id);
 		$my_companies = $this->companyRepo->getListMyCompany();
-		
+
 		$sunat_transaction = $model->sunat_transaction;
-		$igv_code = $model;
-		$is_issuance = $model->is_issuance;
-		$is_proof = 1;
-		if ($model->document_type_id == 5) {
-			$is_proof = 0;
-		}
+		$igv_code = $model->igv_code;
+		$proof_type = $this->proof_type;
 		$document_types = $this->documentTypeRepo->getList2();
 		$currencies = $this->currencyRepo->getList('symbol');
 		$payment_conditions = $this->paymentConditionRepo->getList();
 		$sellers = $this->employeeRepo->getListSellers();
-		return view('finances.proofs.edit', compact('model','document_types', 'currencies', 'payment_conditions', 'sellers', 'warehouses','items', 'is_issuance', 'is_proof', 'my_companies', 'sunat_transaction', 'igv_code'));
+		return view('partials.edit', compact('model','document_types', 'currencies', 'payment_conditions', 'sellers', 'warehouses','items', 'proof_type', 'my_companies', 'sunat_transaction', 'igv_code'));
 	}
 
 	public function update($id)
 	{
 		$this->repo->save(\Request::all(), $id);
-		return \Redirect::route('purchases.index');
+		return redirect()->route($this->doc.'.index');
 	}
 
 	public function destroy($id)
 	{
 		$model = $this->repo->destroy($id);
 		if (\Request::ajax()) {	return $model; }
-		return redirect()->route('purchases.index');
+		return redirect()->route($this->doc.'.index');
 	}
 	public function createByCompany($company_id)
 	{
@@ -128,5 +130,17 @@ class ProofsController extends Controller {
 		$payment_conditions = $this->paymentConditionRepo->getList();
 		$company = $this->companyRepo->findOrFail($company_id);
 		return view('partials.create', compact('document_types', 'currencies', 'payment_conditions', 'company'));
+	}
+	public function getType()
+	{
+		$this->doc = explode('.', \Request::route()->getName())[0];
+		$array = [
+			'issuance_vouchers' => 1,
+			'reception_vouchers' => 2,
+			'issuance_letters' => 3,
+			'reception_letters' => 4,
+		];
+		$this->proof_type = isset($array[$this->doc]) ? $array[$this->doc] : 0;
+		return true;
 	}
 }

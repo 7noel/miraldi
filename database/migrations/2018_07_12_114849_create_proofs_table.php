@@ -18,7 +18,7 @@ class CreateProofsTable extends Migration
             $table->increments('id');
             $table->date('issued_at'); // fecha de emision
             $table->boolean('is_import'); // true si es una importacion
-            $table->boolean('is_issuance'); // true si es emitido por la empresa
+            $table->integer('proof_type')->unsigned(); // typo de documento
             $table->boolean('mov'); // 1 ingresa mercaderia, 0 sale mercaderia
             $table->string('type_op'); // segun ello afecta el valor promedio
             $table->integer('company_id')->unsigned();
@@ -26,6 +26,8 @@ class CreateProofsTable extends Migration
             $table->integer('sunat_transaction')->unsigned();
             $table->integer('igv_code')->unsigned();
             $table->integer('document_type_id')->unsigned();
+            $table->string('sn');
+            $table->string('series');
             $table->string('number');
             // Guia para las compras
             $table->date('dispatch_note_date');
@@ -48,6 +50,8 @@ class CreateProofsTable extends Migration
             $table->decimal('total_gravada', 12,2);
             $table->decimal('total_gratuita', 12,2);
             $table->decimal('gross_value', 12,2);
+            $table->decimal('discount', 12,2);
+            $table->decimal('discount_items',15,2);
             $table->decimal('subtotal',14,2);
             $table->decimal('tax',14,2);
             $table->decimal('total',14,2);

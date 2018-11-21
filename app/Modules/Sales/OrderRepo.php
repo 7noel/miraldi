@@ -32,6 +32,9 @@ class OrderRepo extends BaseRepo{
 	}
 	public function prepareData($data)
 	{
+		if ($data['my_company'] == '') {
+			$data['my_company'] = session('my_company')->id;
+		}
 		$data['document_type_id'] = 6;
 		$data['mov'] = 0;
 		$data['type_op'] = '01'; //2135
@@ -41,25 +44,36 @@ class OrderRepo extends BaseRepo{
 		
 		//Calculando totales
 		$gross_value = 0;
-		$discount = 0;
 		$subtotal = 0;
+		$d_items = 0;
 		$total = 0;
 		if (isset($data['details'])) {
 			foreach ($data['details'] as $key => $detail) {
-				$data['details'][$key]['total'] = round($detail['value']*$detail['quantity']*(100-$detail['discount']))/100;
 				if (!isset($detail['is_deleted'])) {
-					if ($data['with_tax']) {
-						$total += round($detail['price']*$detail['quantity']*(100-$detail['discount']))/100; //total = q*p*(100-d)/100 + total;
-						$subtotal = $total * 100 / (100 + config('options.tax.igv'));
-						$gross_value += $detail['price']*100/(100 + config('options.tax.igv'))*$detail['quantity'];
-						$discount += $detail['price']*100/(100 + config('options.tax.igv'))*$detail['quantity']*$detail['discount']/100;
-						// discount = (q*v*d)/100 + discount;
-					} else {
-						$gross_value += round($detail['value']*$detail['quantity'], 2);
-						$discount += round($detail['value']*$detail['quantity']*$detail['discount'])/100;
-						$subtotal = $gross_value - $discount;
-						$total = round($data['subtotal'] * (100 + config('options.tax.igv')) / 100, 2);
-					}
+					$p = $detail['value'] * (100 + config('options.tax.igv')) / 100;
+					$vt = round( $detail['value'] * $detail['quantity'] * (100-$detail['d1']) * (100-$detail['d2']) / 100 )/100;
+					$t = round($vt * (100 + config('options.tax.igv')) / 100, 2);
+					$discount = $detail['value']*$detail['quantity'] - $vt;
+					$data['details'][$key]['price'] = round($p, 2);
+					$data['details'][$key]['discount'] = round($discount, 2);
+					$data['details'][$key]['total'] = round($vt, 2);
+
+					$d_items += $discount;
+					$gross_value += $detail['value'] * $detail['quantity'];
+					$subtotal += round($vt, 2);
+					$total += round($t, 2);
+					// if ($data['with_tax']) {
+					// 	$total += round($detail['price']*$detail['quantity']*(100-$detail['discount']))/100; //total = q*p*(100-d)/100 + total;
+					// 	$subtotal = $total * 100 / (100 + config('options.tax.igv'));
+					// 	$gross_value += $detail['price']*100/(100 + config('options.tax.igv'))*$detail['quantity'];
+					// 	$discount += $detail['price']*100/(100 + config('options.tax.igv'))*$detail['quantity']*$detail['discount']/100;
+					// 	// discount = (q*v*d)/100 + discount;
+					// } else {
+					// 	$gross_value += round($detail['value']*$detail['quantity'], 2);
+					// 	$discount += round($detail['value']*$detail['quantity']*$detail['discount'])/100;
+					// 	$subtotal = $gross_value - $discount;
+					// 	$total = round($data['subtotal'] * (100 + config('options.tax.igv')) / 100, 2);
+					// }
 					
 				}
 
@@ -75,8 +89,8 @@ class OrderRepo extends BaseRepo{
 			$data['gross_value'] = round($gross_value, 2);
 			// $data['discount'] = round($discount, 2);
 			$data['subtotal'] = round($subtotal, 2);
-			$data['discount'] = $data['gross_value'] - $data['subtotal'];
-			$data['total'] = round($data['subtotal'] * (100 + config('options.tax.igv')) / 100, 2);
+			$data['discount_items'] = $d_items;
+			$data['total'] = round($total, 2);
 			$data['tax'] = $data['total'] - $data['subtotal'];
 		}
 

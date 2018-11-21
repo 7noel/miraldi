@@ -11,7 +11,7 @@ class OrderDetail extends Model implements Auditable
 	use \OwenIt\Auditing\Auditable;
 	use SoftDeletes;
 
-	protected $fillable = ['order_id', 'product_id', 'unit_id', 'price', 'value', 'quantity', 'discount', 'total', 'comment'];
+	protected $fillable = ['order_id', 'product_id', 'unit_id', 'price', 'value', 'quantity', 'discount', 'd1', 'd2', 'total', 'comment'];
 
 	public function parent()
 	{

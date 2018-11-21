@@ -35,16 +35,17 @@ class OrdersController extends Controller {
 
 	public function create()
 	{
+		$my_companies = $this->companyRepo->getListMyCompany();
 		$payment_conditions = $this->paymentConditionRepo->getList();
 		$currencies = $this->currencyRepo->getList('symbol');
 		$sellers = $this->employeeRepo->getListSellers();
-		return view('partials.create', compact('payment_conditions', 'currencies', 'sellers'));
+		return view('partials.create', compact('payment_conditions', 'currencies', 'sellers', 'my_companies'));
 	}
 
 	public function store()
 	{
 		$model = $this->repo->save(\Request::all());
-		$this->sendAlert($model);
+		//$this->sendAlert($model);
 		return \Redirect::route('orders.index');
 	}
 
@@ -56,11 +57,12 @@ class OrdersController extends Controller {
 	public function edit($id)
 	{
 		$model = $this->repo->findOrFail($id);
+		$my_companies = $this->companyRepo->getListMyCompany();
 		$payment_conditions = $this->paymentConditionRepo->getList();
 		$currencies = $this->currencyRepo->getList('symbol');
 		$sellers = $this->employeeRepo->getListSellers();
 		$details = [];
-		return view('partials.edit', compact('model', 'payment_conditions', 'currencies', 'sellers'));
+		return view('partials.edit', compact('model', 'payment_conditions', 'currencies', 'sellers', 'my_companies'));
 	}
 
 	public function update($id)

@@ -69,17 +69,25 @@ Route::group(['prefix'=>'finances', 'middleware'=>['auth', 'permissions'], 'name
 	Route::resource('exchanges','ExchangesController');
 	Route::resource('companies','CompaniesController');
 	Route::resource('payment_conditions','PaymentConditionsController');
-	Route::resource('proofs','ProofsController');
-	Route::get('issuance_vouchers', ['as' => 'issuance_vouchers.index','uses' => 'ProofsController@issuanceVouchers']);
-	Route::get('issuance_vouchers/create', ['as' => 'issuance_vouchers.create','uses' => 'ProofsController@create']);
-	Route::get('issuance_vouchers/edit/{id}', ['as' => 'issuance_vouchers.edit','uses' => 'ProofsController@edit']);
-	Route::get('issuance_vouchers/destroy/{id}', ['as' => 'issuance_vouchers.destroy','uses' => 'ProofsController@issuanceVouchersCreate']);
-	Route::get('reception_vouchers', ['as' => 'reception_vouchers.index','uses' => 'ProofsController@receptionVouchers']);
-	Route::get('reception_vouchers/create', ['as' => 'reception_vouchers_create','uses' => 'ProofsController@receptionVouchersCreate']);
+
+	Route::get('issuance_vouchers/by_order/{order_id}', ['as' => 'issuance_vouchers.by_order', 'uses' => 'ProofsController@byOrder']);
+	Route::resource('issuance_vouchers','ProofsController');
+	Route::resource('reception_vouchers','ProofsController');
+	Route::resource('issuance_letters','ProofsController');
+	Route::resource('reception_letters','ProofsController');
+	// Route::get('issuance_vouchers', ['as' => 'issuance_vouchers.index','uses' => 'ProofsController@issuanceVouchers']);
+	// Route::get('issuance_vouchers/create', ['as' => 'issuance_vouchers.create','uses' => 'ProofsController@create']);
+	// Route::get('issuance_vouchers/edit/{id}', ['as' => 'issuance_vouchers.edit','uses' => 'ProofsController@edit']);
+	// Route::get('issuance_vouchers/destroy/{id}', ['as' => 'issuance_vouchers.destroy','uses' => 'ProofsController@issuanceVouchersCreate']);
+	// Route::get('reception_vouchers', ['as' => 'reception_vouchers.index','uses' => 'ProofsController@receptionVouchers']);
+	// Route::get('reception_vouchers/create', ['as' => 'reception_vouchers_create','uses' => 'ProofsController@receptionVouchersCreate']);
 	
 	Route::resource('payments','PaymentsController');
 	Route::resource('amortizations','AmortizationsController');
-	Route::resource('swaps','SwapsController');
+	Route::get('amortizations/by_proof/{proof_id}', ['as' => 'amortizations.byProof', 'uses' => 'AmortizationsController@byProof']);
+	Route::resource('issuance_swaps','SwapsController');
+	Route::get('issuance_swaps/by_proof/{proof_id}', ['as' => 'issuance_swaps.byProof', 'uses' => 'SwapsController@byProof']);
+	Route::resource('reception_swaps','SwapsController');
 });
 
 Route::group(['prefix'=>'guard', 'middleware'=>['auth', 'permissions'], 'namespace'=>'Security'], function(){
@@ -107,6 +115,7 @@ Route::group(['prefix'=>'humanresources', 'middleware'=>['auth', 'permissions'],
 });
 
 Route::group(['prefix'=>'sales', 'middleware'=>['auth', 'permissions'], 'namespace'=>'Sales'], function(){
+	Route::resource('quotes','OrdersController');
 	Route::resource('orders','OrdersController');
 	Route::get('orders/print/{id}', ['as' => 'print_order','uses' => 'OrdersController@print']);
 	Route::get('orders/createByCompany/{company_id}', ['as' => 'create_order_by_company','uses' => 'OrdersController@createByCompany']);
@@ -137,6 +146,6 @@ Route::get('enviar', ['as' => 'enviar', function () {
 }]);
 
 Route::get('test', function() {
-    // Session::put('progress', '54%');
-    dd(Session::get('progress'));
+	// Session::put('progress', '54%');
+	dd(Session::get('progress'));
 });
