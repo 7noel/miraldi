@@ -15,6 +15,7 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('company_id')->unsigned();
             $table->date('issued_at');
             $table->string('number');
             $table->boolean('is_output');
@@ -22,6 +23,13 @@ class CreatePaymentsTable extends Migration
             $table->decimal('exchange', 7, 4);
             $table->integer('bank_id')->unsigned();
             $table->integer('currency_id')->unsigned();
+
+            $table->string('tipo_operacion');
+            $table->string('cta_origen');
+            $table->string('cta_destino');
+            $table->string('titular_destino');
+            $table->integer('currency2_id')->unsigned();
+            $table->decimal('monto', 12, 2);
 
             $table->foreign('bank_id')->references('id')->on('banks');
             $table->foreign('currency_id')->references('id')->on('currencies');

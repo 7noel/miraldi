@@ -5,14 +5,20 @@ use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Modules\Finances\SwapRepo;
+use App\Modules\Finances\CompanyRepo;
+use App\Modules\Base\CurrencyRepo;
 use App\Modules\Finances\Proof;
 
 class SwapsController extends Controller {
 
 	protected $repo;
+	protected $companyRepo;
+	protected $currencyRepo;
 
-	public function __construct(SwapRepo $repo) {
+	public function __construct(SwapRepo $repo, CompanyRepo $companyRepo, CurrencyRepo $currencyRepo) {
 		$this->repo = $repo;
+		$this->companyRepo = $companyRepo;
+		$this->currencyRepo = $currencyRepo;
 	}
 
 	public function index()
@@ -56,7 +62,10 @@ class SwapsController extends Controller {
 
 			return $this->edit($proof->swap_id);
 		}
-		return view('partials.create', compact('model', 'proof'));
+		$my_companies = $this->companyRepo->getListMyCompany();
+		$currencies = $this->currencyRepo->getList('symbol');
+		$company = $proof->company;
+		return view('partials.create', compact('proof', 'company', 'my_companies', 'currencies'));
 	}
 
 	public function destroy($id)

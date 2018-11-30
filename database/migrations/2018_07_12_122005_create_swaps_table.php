@@ -15,6 +15,9 @@ class CreateSwapsTable extends Migration
     {
         Schema::create('swaps', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('my_company')->unsigned();
+            $table->integer('company_id')->unsigned();
+            $table->integer('is_output')->unsigned();
             $table->integer('currency_id')->unsigned();
             $table->boolean('is_cancel');
             $table->decimal('amount_proofs', 12, 2);

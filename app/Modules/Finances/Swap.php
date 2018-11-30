@@ -11,7 +11,7 @@ class Swap extends Model implements Auditable {
 	use \OwenIt\Auditing\Auditable;
 	use SoftDeletes;
 
-	protected $fillable = ['currency_id', 'is_cancel', 'amount_proofs', 'amount_letters'];
+	protected $fillable = ['my_company', 'company_id', 'is_output', 'currency_id', 'is_cancel', 'amount_proofs', 'amount_letters'];
 
 	public function scopeName($query, $name){
 		if (trim($name) != "") {
@@ -22,6 +22,14 @@ class Swap extends Model implements Auditable {
 	public function proofs()
 	{
 		return $this->hasMany('App\Modules\Finances\Proof');
+	}
+	public function mycompany()
+	{
+		return $this->hasOne('App\Modules\Finances\Company','id','my_company');
+	}
+	public function company()
+	{
+		return $this->hasOne('App\Modules\Finances\Company','id','company_id');
 	}
 
 }
