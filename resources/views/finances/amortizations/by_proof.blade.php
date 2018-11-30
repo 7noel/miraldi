@@ -9,7 +9,7 @@
 				<div class="panel-heading panel-heading-custom">PAGO DE UN COMPROBANTE DE PAGO</div>
 				<div class="panel-body">
 					@include('partials.messages')
-					{!! Form::model($model, ['route'=>[ 'issuance_vouchers.update' , $model], 'method'=>'PUT', 'class'=>'form-horizontal']) !!}
+					{!! Form::model($model, ['route'=>[ 'amortizations.update' , $model], 'method'=>'PUT', 'class'=>'form-horizontal']) !!}
 					@if(Request::url() != URL::previous())
 					<input type="hidden" name="last_page" value="{{ URL::previous() }}">
 					@endif

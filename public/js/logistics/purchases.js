@@ -174,17 +174,20 @@ function calcTotalOrder () {
 	var discount = 0;
 	var subtotal = 0;
 	var total = 0;
-	var q,p,d;
+	var q,p,d,v;
 	$('#tableItems tr').each(function (index, vtr) {
 		q = parseFloat($(vtr).find('.txtCantidad').val());
 		p = parseFloat($(vtr).find('.txtPrecio').val());
+		v = parseFloat($(vtr).find('.txtValue').val());
 		//d = parseFloat($(vtr).find('.txtDscto').val());
 		d = 0;
-		gross_value = Math.round(q*p*100)/100 + gross_value;
+		gross_value += Math.round(q*p*100)/100;
+		subtotal += Math.round(q*v*100)/100;
 		//discount = Math.round(q*p*d)/100 + discount;
 	});
 
-	$('#mGrossValue').text(gross_value.toFixed(2));
+	$('#mGrossValue').text(subtotal.toFixed(2));
+	$('#mSubTotal').text(subtotal.toFixed(2));
 	$('#mDiscount').text(discount.toFixed(2));
 	calcCost();
 }
@@ -277,7 +280,7 @@ function calcCost() {
 	$('#factor').val($factor.toFixed(4))
 	const $c0 = $('#currency_id').val();
 	const $cc = $('#currency_cost').val();
-	$('#tableItems tr .txtPrecio').each(function (index, d) {
+	$('#tableItems tr .txtValue').each(function (index, d) {
 		$(d).parent().parent().find('.cost').val( ($(d).val() * $factor).toFixed(2) );
 		$(d).parent().parent().find('.txtCost').val( ( currencyConverter($c0, $cc, $(d).val()) * $factor).toFixed(2) );
 	});

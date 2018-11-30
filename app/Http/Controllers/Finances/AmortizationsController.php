@@ -53,15 +53,15 @@ class AmortizationsController extends Controller {
 
 	public function update($id)
 	{
-		$this->repo->save(\Request::all(), $id);
-		return \Redirect::route('payment_conditions.index');
+		$this->repo->saveAll(\Request::all(), $id);
+		return \Redirect::route('issuance_vouchers.index');
 	}
 
 	public function destroy($id)
 	{
 		$model = $this->repo->destroy($id);
 		if (\Request::ajax()) {	return $model; }
-		return redirect()->route('finances.payment_conditions.index');
+		return redirect()->route('issuance_vouchers.index');
 	}
 
 	public function byProof($proof_id)

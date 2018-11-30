@@ -72,7 +72,7 @@ class CreateProofsTable extends Migration
             $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('payment_condition_id')->references('id')->on('payment_conditions');
             $table->foreign('currency_id')->references('id')->on('currencies');
-            $table->foreign('seller_id')->references('id')->on('employees');
+            // $table->foreign('seller_id')->references('id')->on('employees');
             $table->timestamps();
             $table->softDeletes();
         });

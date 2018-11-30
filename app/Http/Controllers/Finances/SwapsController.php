@@ -4,13 +4,14 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
-use App\Modules\Finances\PaymentConditionRepo;
+use App\Modules\Finances\SwapRepo;
+use App\Modules\Finances\Proof;
 
-class PaymentConditionsController extends Controller {
+class SwapsController extends Controller {
 
 	protected $repo;
 
-	public function __construct(PaymentConditionRepo $repo) {
+	public function __construct(SwapRepo $repo) {
 		$this->repo = $repo;
 	}
 
@@ -28,7 +29,7 @@ class PaymentConditionsController extends Controller {
 	public function store()
 	{
 		$this->repo->save(\Request::all());
-		return \Redirect::route('payment_conditions.index');
+		return \Redirect::route('swaps.index');
 	}
 
 	public function show($id)
@@ -45,13 +46,23 @@ class PaymentConditionsController extends Controller {
 	public function update($id)
 	{
 		$this->repo->save(\Request::all(), $id);
-		return \Redirect::route('payment_conditions.index');
+		return \Redirect::route('swaps.index');
+	}
+
+	public function byProof($proof_id)
+	{
+		$proof = Proof::find($proof_id);
+		if ($proof->swap_id) {
+
+			return $this->edit($proof->swap_id);
+		}
+		return view('partials.create', compact('model', 'proof'));
 	}
 
 	public function destroy($id)
 	{
 		$model = $this->repo->destroy($id);
 		if (\Request::ajax()) {	return $model; }
-		return redirect()->route('payment_conditions.index');
+		return redirect()->route('swaps.index');
 	}
 }

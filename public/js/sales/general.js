@@ -153,7 +153,9 @@ function calcTotalOrder () {
 			d1 = parseFloat($(vtr).find('.txtDscto').val());
 			d2 = parseFloat($(vtr).find('.txtDscto2').val());
 			vt = Math.round(q*v*(100-d1)*(100-d2)/100) / 100 // total por item
-			t = Math.round(vt * 118) / 100
+			t = q*(Math.round(vt/q * 118) / 100)
+			console.log(vt)
+			console.log(t)
 			discount = Math.round(100*q*v)/100 - vt;
 
 			gross_value += Math.round(100*q*v)/100;

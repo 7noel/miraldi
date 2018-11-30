@@ -128,16 +128,21 @@ class ProofRepo extends BaseRepo{
 					$data['details'][$key]['igv_code'] = $data['igv_code'];
 				}
 				if (!isset($detail['is_deleted'])) {
-					$p = $detail['value'] * (100 + config('options.tax.igv')) / 100;
-					$vt = round( $detail['value'] * $detail['quantity'] * (100-$detail['d1']) * (100-$detail['d2']) / 100 )/100;
-					$t = round($vt * (100 + config('options.tax.igv')) / 100, 2);
-					$discount = $detail['value']*$detail['quantity'] - $vt;
+					$q = $detail['quantity'];
+					$v = $detail['value'];
+					$d1 = isset($detail['d1']) ? $detail['d1'] : 0 ;
+					$d2 = isset($detail['d2']) ? $detail['d2'] : 0 ;
+					$p = $v * (100 + config('options.tax.igv')) / 100;
+					$vt = round( $v * $q * (100-$d1) * (100-$d2) / 100 )/100;
+					$t = $q * round($vt/$q * (100 + config('options.tax.igv'))) /100;
+					// dd($t);
+					$discount = $v*$q - $vt;
 					$data['details'][$key]['price'] = round($p, 2);
 					$data['details'][$key]['discount'] = round($discount, 2);
 					$data['details'][$key]['total'] = round($vt, 2);
 
 					$d_items += $discount;
-					$gross_value += $detail['value'] * $detail['quantity'];
+					$gross_value += $v * $q;
 					$subtotal += round($vt, 2);
 					$total += round($t, 2);
 
@@ -149,6 +154,11 @@ class ProofRepo extends BaseRepo{
 				}
 			}
 		}
+		$data['gross_value'] = $gross_value;
+		$data['discount_items'] = $d_items;
+		$data['subtotal'] = $gross_value + $expenseCif;
+		$data['total'] = $total;
+		$data['tax'] = $data['total'] - $data['subtotal'];
 		//cacular factor
 		if ($data['proof_type'] == 2) {
 			$factor = 1;
@@ -163,12 +173,14 @@ class ProofRepo extends BaseRepo{
 					}
 				}
 			}
+			if ($factor != 1) {
+				$data['gross_value'] = $gross_value;
+				$data['discount_items'] = $d_items;
+				$data['subtotal'] = $gross_value + $expenseCif;
+				$data['total'] = round($data['subtotal'] * (100 + config('options.tax.igv')) / 100, 2);
+				$data['tax'] = $data['total'] - $data['subtotal'];
+			}
 		}
-		$data['gross_value'] = $gross_value;
-		$data['discount_items'] = $d_items;
-		$data['subtotal'] = $gross_value + $expenseCif;
-		$data['total'] = round($data['subtotal'] * (100 + config('options.tax.igv')) / 100, 2);
-		$data['tax'] = $data['total'] - $data['subtotal'];
 
 		// Obteniendo el stock_id
 		if (isset($data['details'])) {
