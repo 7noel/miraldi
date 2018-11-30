@@ -53,7 +53,7 @@ class ProofsController extends Controller {
 		$proof_type = $this->proof_type;
 		$sunat_transaction = 1;
 		$igv_code = 1;
-		$document_types = $this->documentTypeRepo->getList2();
+		$document_types = $this->documentTypeRepo->getList();
 		$currencies = $this->currencyRepo->getList('symbol');
 		$payment_conditions = $this->paymentConditionRepo->getList();
 		$sellers = $this->employeeRepo->getListSellers();

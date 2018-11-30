@@ -29,17 +29,17 @@
 						</div>
 						<div class="col-sm-2">
 							{!! Form::label('currency_id','Moneda', ['class'=>'control-label']) !!}
-							{!! Form::select('currency_id',$currencies , ((isset($model)) ? $model->currency_id : '2'), ['class'=>'form-control']) !!}
+							{!! Form::select('currency_id',$currencies , ((isset($model)) ? $model->currency_id : '1'), ['class'=>'form-control']) !!}
 						</div>
 						<div class="col-sm-2">
 							{!! Form::label('exchange','Cambio (US$)', ['class'=>'control-label']) !!}
-							{!! Form::text('exchange', ((isset($model)) ? $model->exchange : '2'), ['class'=>'form-control']) !!}
+							{!! Form::text('exchange', null, ['class'=>'form-control']) !!}
 						</div>
 					</div>
 					<div class="form-group form-group-sm">
 						<div class="col-sm-2">
-							{!! Form::label('date','Fecha', ['class'=>'control-label']) !!}
-							{!! Form::date('date', ((isset($model->date)) ? $model->date->formatLocalized('%Y-%m-%d') : date('Y-m-d')), ['class'=>'form-control col-sm-2']) !!}
+							{!! Form::label('issued_at','Fecha', ['class'=>'control-label']) !!}
+							{!! Form::date('issued_at', ((isset($model->issued_at)) ? $model->issued_at : date('Y-m-d')), ['class'=>'form-control col-sm-2']) !!}
 						</div>
 						<div class="col-sm-2">
 							{!! Form::label('document_type_id','Documento', ['class'=>'control-label']) !!}
@@ -86,6 +86,21 @@
 							<label class="checkbox-inline">
 								{!! Form::checkbox('send_sunat', '1', null,['class'=>'checkbox']) !!} Enviar a SUNAT
 							</label>
+						</div>
+					</div>
+
+					<div class="form-group form-group-sm isImport">
+						<div class="col-sm-2">
+							{!! Form::label('email','Email', ['class'=>'control-label']) !!}
+							{!! Form::email('email', null, ['class'=>'form-control']) !!}
+						</div>
+						<div class="col-sm-2">
+							{!! Form::label('email_1','Email 1', ['class'=>'control-label']) !!}
+							{!! Form::email('email_1', null, ['class'=>'form-control']) !!}
+						</div>
+						<div class="col-sm-2">
+							{!! Form::label('email_2','Email 2', ['class'=>'control-label']) !!}
+							{!! Form::email('email_2', null, ['class'=>'form-control']) !!}
 						</div>
 					</div>
 					@include('finances.issuance_vouchers.partials.details')

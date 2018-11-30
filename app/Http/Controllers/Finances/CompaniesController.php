@@ -109,6 +109,7 @@ class CompaniesController extends Controller {
 				'value' => $model->company_name,
 				'id' => $model->id,
 				'country_id' =>$model->country_id,
+				'id_type_id' =>$model->id_type_id,
 				'label' => $model->id_type->symbol.' '.$model->doc.' '.$model->company_name
 			];
 		}

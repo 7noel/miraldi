@@ -28,9 +28,9 @@ $(document).ready(function(){
 		minLength: 4,
 		select: function(event, ui){
 			$('#company_id').val(ui.item.id);
-			$('#company_doc').val(ui.item.document_type_id);
+			$('#company_doc').val(ui.item.id_type_id);
 			$('#lstSeller').focus();
-			if (ui.item.document_type_id == 1) {
+			if (ui.item.id_type_id == 1) {
 				if ($('#document_type_id').val() == '' || $('#document_type_id').val() == 2) {
 					$('#document_type_id').val(1)
 				}

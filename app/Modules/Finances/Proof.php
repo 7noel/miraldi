@@ -11,7 +11,7 @@ class Proof extends Model implements Auditable {
 	use \OwenIt\Auditing\Auditable;
 	use SoftDeletes;
 
-	protected $fillable = ['issued_at', 'is_import', 'proof_type', 'mov', 'type_op', 'document_type_id', 'sn', 'series', 'number', 'dispatch_note_date', 'dispatch_note_number', 'dam','my_company', 'company_id', 'company_store_id', 'transfer_reason_id', 'shipper_id', 'payment_condition_id', 'expired_at', 'currency_id', 'exchange', 'exchange2', 'discount', 'discount_items', 'with_tax', 'gross_value', 'subtotal', 'tax', 'total', 'factor', 'amortization', 'seller_id', 'swap_id', 'reference_id','status_id', 'sunat_transaction', 'igv_code', 'response_sunat'];
+	protected $fillable = ['issued_at', 'is_import', 'proof_type', 'mov', 'type_op', 'document_type_id', 'sn', 'series', 'number', 'dispatch_note_date', 'dispatch_note_number', 'dam','my_company', 'company_id', 'company_store_id', 'transfer_reason_id', 'shipper_id', 'payment_condition_id', 'expired_at', 'currency_id', 'exchange', 'exchange2', 'discount', 'discount_items', 'with_tax', 'gross_value', 'subtotal', 'tax', 'total', 'factor', 'amortization', 'seller_id', 'swap_id', 'reference_id','status_id', 'sunat_transaction', 'igv_code', 'response_sunat', 'email', 'email_1', 'email_2'];
 
 	public function scopeName($query, $name){
 		if (trim($name) != "") {

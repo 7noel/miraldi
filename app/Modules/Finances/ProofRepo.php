@@ -43,14 +43,14 @@ class ProofRepo extends BaseRepo{
 			$detailRepo = new ProofDetailRepo;
 			$toDelete = $detailRepo->syncMany($data['details'], ['key' => 'proof_id', 'value' => $model->id], 'product_id');
 
-			if (1==1) {
+			if (1==0) {
 				$mov = new MoveRepo;
 				$mov->destroy($toDelete);
 				$mov->saveAll($model, 1);
 			}
 		}
 		$this->saveExpenses($data, $model);
-		if (isset($data['send_sunat']) and $data['send_sunat'] == 1) {
+		if (isset($data['send_sunat']) and $data['send_sunat'] == 1 and $data['proof_type'] == 1) {
 			$respuesta = $this->generarComprobante($model);
 			$model->response_sunat = $respuesta;
 			$model->save();
@@ -224,7 +224,6 @@ class ProofRepo extends BaseRepo{
 			"serie" => $numero[0],
 			"numero" => $numero[1]
 		];
-		$data = json_encode($data);
 		$respuesta = $this->send($data);
 		return $respuesta;
 
@@ -241,7 +240,6 @@ class ProofRepo extends BaseRepo{
 			"motivo" => "ERROR DEL SISTEMA",
 			"codigo_unico"=>""
 		];
-		$data = json_encode($data);
 		$respuesta = $this->send($data);
 		return $respuesta;
 	}
@@ -267,12 +265,11 @@ class ProofRepo extends BaseRepo{
 	 */
 	public function prepareCpe($model)
 	{
-		$numero = explode('-', $model->number);
 		$data = array(
 		    "operacion"				=> "generar_comprobante",
 		    "tipo_de_comprobante"               => $model->document_type->code,
-		    "serie"                             => $numero[0],
-		    "numero"				=> $numero[1],
+		    "serie"                             => $model->series,
+		    "numero"				=> $model->number,
 		    "sunat_transaction"			=> $model->sunat_transaction,
 		    "cliente_tipo_de_documento"		=> $model->company->id_type->code,
 		    "cliente_numero_de_documento"	=> $model->company->doc,
@@ -309,7 +306,7 @@ class ProofRepo extends BaseRepo{
 		    "tipo_de_nota_de_credito"           => "",
 		    "tipo_de_nota_de_debito"            => "",
 		    "enviar_automaticamente_a_la_sunat" => "true",
-		    "enviar_automaticamente_al_cliente" => "false",
+		    "enviar_automaticamente_al_cliente" => "true",
 		    "codigo_unico"                      => "",
 		    "condiciones_de_pago"               => "",
 		    "medio_de_pago"                     => "",
@@ -323,7 +320,8 @@ class ProofRepo extends BaseRepo{
 			$total = round($subtotal*1.18, 2);
 			$igv = $total - $subtotal;
 			$data['items'][] = array(
-				"unidad_de_medida"          => $detail->product->unit->code,
+				"unidad_de_medida"          => 'NIU',
+				// "unidad_de_medida"          => $detail->product->unit->code,
 				"codigo"                    => $detail->product->intern_code,
 				"descripcion"               => $detail->product->name,
 				"cantidad"                  => $detail->quantity,
