@@ -412,4 +412,14 @@ class ProofRepo extends BaseRepo{
 		}
 	}
 
+	public function autocomplete1($term, $company_id)
+	{
+		return Proof::where('sn','like',"%$term%")->where('company_id', $company_id)->where('status_id', 0)->where('payment_condition_id', 3)->whereIn('proof_type', [1, 3])->with('document_type', 'currency')->get();
+	}
+
+	public function autocomplete2($term, $company_id)
+	{
+		return Proof::where('sn','like',"%$term%")->where('company_id', $company_id)->where('status_id', 0)->where('payment_condition_id', 3)->whereIn('proof_type', [2, 4])->with('document_type', 'currency')->get();
+	}
+
 }

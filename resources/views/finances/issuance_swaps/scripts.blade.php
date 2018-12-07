@@ -1,1 +1,1 @@
-{!! Html::script('js/sales/general.js') !!}
+{!! Html::script('js/finances/swaps.js') !!}

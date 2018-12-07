@@ -143,4 +143,18 @@ class ProofsController extends Controller {
 		$this->proof_type = isset($array[$this->doc]) ? $array[$this->doc] : 0;
 		return true;
 	}
+	public function ajaxAutocomplete1($company_id)
+	{
+		$term = \Input::get('term');
+		$models = $this->repo->autocomplete1($term, $company_id);
+		$result = [];
+		foreach ($models as $model) {
+			$result[]=[
+				'value' => $model->document_type->name.' '.$model->sn,
+				'id' => $model,
+				'label' => $model->document_type->name.' '.$model->sn
+			];
+		}
+		return \Response::json($result);
+	}
 }
