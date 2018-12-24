@@ -9,7 +9,7 @@ class Company extends Model implements Auditable {
 	use \OwenIt\Auditing\Auditable;
 	use SoftDeletes;
 
-	protected $fillable = ['company_name', 'brand_name', 'name', 'paternal_surname', 'maternal_surname', 'id_type_id', 'doc', 'address', 'ubigeo_id', 'phone', 'mobile', 'email', 'birth', 'is_provider','is_my_company', 'is_shipper', 'country_id'];
+	protected $fillable = ['company_name', 'brand_name', 'name', 'paternal_surname', 'maternal_surname', 'id_type_id', 'doc', 'address', 'ubigeo_id', 'phone', 'mobile', 'email', 'contact','birth', 'is_provider','is_my_company', 'is_shipper', 'country_id'];
 
 	public function id_type()
     {

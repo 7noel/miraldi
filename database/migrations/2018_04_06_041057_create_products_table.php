@@ -29,6 +29,7 @@ class CreateProductsTable extends Migration {
 
 			$table->decimal('last_purchase', 15, 2);
 			$table->decimal('profit_margin', 10, 2);
+			$table->decimal('admin_expense', 10, 2);
 			$table->decimal('value', 15, 2);
 			$table->boolean('use_set_value');
 			$table->boolean('is_downloadable');

@@ -189,6 +189,9 @@ return [
         //DomPDF
         Barryvdh\DomPDF\ServiceProvider::class,
 
+        //Cyber-duck
+        Cyberduck\LaravelExcel\ExcelServiceProvider::class,
+
     ],
 
     /*
