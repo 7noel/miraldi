@@ -51,6 +51,8 @@ Route::group(['middleware'=>['auth']], function(){
 	Route::get('api/products/autocompleteAjax', ['as' => 'productsAutocomplete','uses' => 'Storage\ProductsController@ajaxAutocomplete']);
 	Route::get('api/stocks/autocompleteAjax/{stock_id}', ['as' => 'stocksAutocomplete','uses' => 'Storage\ProductsController@ajaxAutocomplete2']);
 	Route::get('api/products/getById/{id}', ['as' => 'productsGetById','uses' => 'Storage\ProductsController@ajaxGetById']);
+	Route::get('api/proofs/autocompleteAjax/1/{company_id}', ['as' => 'api_proofs_1','uses' => 'Finances\ProofsController@ajaxAutocomplete1']);
+	Route::get('api/proofs/autocompleteAjax/2/{company_id}', ['as' => 'api_proofs_2','uses' => 'Finances\ProofsController@ajaxAutocomplete2']);
 	Route::get('audit/{model}/{id}', ['as' => 'audit','uses' => 'Security\AuditController@getAudit']);
 
 	Route::get('/select_company', ['as' => 'select_company','uses' => 'HomeController@select_company']);

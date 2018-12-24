@@ -38,8 +38,8 @@
 					</div>
 					<div class="form-group form-group-sm">
 						<div class="col-sm-2">
-							{!! Form::label('date','Fecha', ['class'=>'control-label']) !!}
-							{!! Form::date('date', ((isset($model->date)) ? $model->date->formatLocalized('%Y-%m-%d') : date('Y-m-d')), ['class'=>'form-control col-sm-2']) !!}
+							{!! Form::label('issued_at','Fecha', ['class'=>'control-label']) !!}
+							{!! Form::date('issued_at', ((isset($model->date)) ? $model->date->formatLocalized('%Y-%m-%d') : date('Y-m-d')), ['class'=>'form-control col-sm-2']) !!}
 						</div>
 						<div class="col-sm-2">
 							{!! Form::label('document_type_id','Documento', ['class'=>'control-label']) !!}

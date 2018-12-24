@@ -142,7 +142,7 @@ function calcTotalOrder () {
 	var d_items = 0;
 	var subtotal = 0;
 	var total = 0;
-	var q,p,d1,d2,t;
+	var q,p,d1,d2,t,pu;
 	$('#tableItems tr').each(function (index, vtr) {
 		if (!($(vtr).find('.isdeleted').is(':checked'))) {
 			q = parseFloat($(vtr).find('.txtCantidad').val());
@@ -153,7 +153,7 @@ function calcTotalOrder () {
 			d1 = parseFloat($(vtr).find('.txtDscto').val());
 			d2 = parseFloat($(vtr).find('.txtDscto2').val());
 			vt = Math.round(q*v*(100-d1)*(100-d2)/100) / 100 // total por item
-			t = q*(Math.round(vt/q * 118) / 100)
+			t = Math.round(vt*118) / 100;
 			console.log(vt)
 			console.log(t)
 			discount = Math.round(100*q*v)/100 - vt;
