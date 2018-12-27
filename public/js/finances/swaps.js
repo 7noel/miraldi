@@ -75,6 +75,19 @@ function addRowProof() {
 	}
 }
 
+function addRowLetter() {
+	var items = $('#items_l').val();
+	if (items>0) {
+		if ($("input[name='proofs["+(items-1)+"][id]']").val() == "") {
+			$("input[name='proofs["+(items-1)+"][txtProof]']").focus()
+		} else{
+			renderTemplateRowProof()
+		}
+	} else{
+		renderTemplateRowProof()
+	}
+}
+
 function validateItem (myElement, id) {
 	n = $(myElement).parent().parent().find(id).val();
 	n = Math.round(parseFloat(n)*100)/100;
@@ -200,7 +213,7 @@ function isProofEnabled (myElement, product_id) {
 }
 function isLetterEnabled (myElement, product_id) {
 	var b = true
-	$('#tableLetters tr .productId').each(function (index, d) {
+	$('#tableLetters tr .letterId').each(function (index, d) {
 		if ($(d).val() == product_id) {
 			alert("Este producto ya fue registrado");
 			setTimeout(function(){

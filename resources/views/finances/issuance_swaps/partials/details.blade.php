@@ -73,8 +73,8 @@
 									<th class="col-sm-4">NroLetra</th>
 									<th class="col-sm-2">Emisión</th>
 									<th class="col-sm-2">Vencimiento</th>
-									<th class="col-sm-1">Moneda</th>
-									<th class="col-sm-1">Importe</th>
+									<th class="col-sm-1">Monto</th>
+									<th class="col-sm-1">Interéses</th>
 									<th class="col-sm-1">Acciones</th>
 								</tr>
 							</thead>
@@ -104,16 +104,13 @@
 
 						<template id="template-row-letter">
 							<tr>
-								{!! Form::hidden('data1', null, ['class'=>'productId','data-productid'=>'']) !!}
-								{!! Form::hidden('data2', null, ['class'=>'unitId','data-unitid'=>'']) !!}
-								<td><span class='form-control input-sm intern_code text-right' data-labelid></span></td>
-								<td>{!! Form::text('data3', null, ['class'=>'form-control input-sm txtProduct', 'data-product'=>'', 'required'=>'required']); !!}</td>
-								<td>{!! Form::text('data4', null, ['class'=>'form-control input-sm txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
-								<td class="withTax">{!! Form::text('data5', null, ['class'=>'form-control input-sm txtPrecio text-right', 'data-precio'=>'']) !!}</td>
-								<td class="withoutTax">{!! Form::text('data7', null, ['class'=>'form-control input-sm txtValue text-right', 'data-value'=>'']) !!}</td>
-								<td>{!! Form::text('data6', null, ['class'=>'form-control input-sm txtDscto text-right', 'data-dscto'=>'']) !!}</td>
+								{!! Form::hidden('data1', null, ['class'=>'letterId','data-letterId'=>'']) !!}
+								<td>{!! Form::text('data3', null, ['class'=>'form-control input-sm txtSn', 'data-sn'=>'', 'required']); !!}</td>
+								<td>{!! Form::date('data4', null, ['class'=>'form-control input-sm txtEmision text-right', 'data-emision'=>'', 'required']) !!}</td>
+								<td>{!! Form::date('data5', null, ['class'=>'form-control input-sm txtExpired text-right', 'data-expired'=>'', 'required']) !!}</td>
+								<td>{!! Form::number('data6', null, ['class'=>'form-control input-sm txtTotal text-right', 'data-total'=>'', 'required']) !!}</td>
+								<td>{!! Form::number('data7', null, ['class'=>'form-control input-sm txt text-right', 'data-interest'=>'']) !!}</td>
 								<td>{!! Form::text('data8', null, ['class'=>'form-control input-sm txtDscto2 text-right', 'data-dscto2'=>'']) !!}</td>
-								<!-- <td> <span class='form-control input-sm txtTotal text-right' data-total></span> </td> -->
 								<td class="text-center form-inline">
 									<a href="#" class="btn btn-danger btn-xs btn-delete-item" title="Eliminar">{!! config('options.icons.remove') !!}</a>
 									<input type="checkbox" name="data8" data-isdeleted class="isdeleted hidden">
