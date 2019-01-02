@@ -103,9 +103,9 @@ class AdminTableSeeder extends Seeder {
 
 
 
-        Company::create(['company_name'=>'MIRALDI Y CIA. S.A.C.', 'id_type_id'=>'1', 'doc'=>'20501767540', 'address'=>'AV. LAS VEGAS MZA. A LOTE. 19-B (PEDRO MIOTA CON BELIZARIO)', 'ubigeo_id'=>'1307', 'country_id' => 1465, 'is_my_company'=>1]);
         Company::create(['company_name'=>'IMPORTACIONES MIRALDI S.A.C.', 'id_type_id'=>'1', 'doc'=>'20601787700', 'address'=>'AV. LAS VEGAS MZA. A LOTE. 19B URB. INDUSTRIAL (CRUCE AV PEDRO MIOTTA Y BELISARIO SUAREZ)', 'ubigeo_id'=>'1307', 'country_id' => 1465, 'is_my_company'=>1]);
         Company::create(['company_name'=>'HERRAMAX PERU E.I.R.L.', 'id_type_id'=>'1', 'doc'=>'20602227066', 'address'=>'JR. HUAROCHIRI NRO. 550 INT. 1025 (A UNA CUADRA DE LA PLAZA 2 DE MAYO)', 'ubigeo_id'=>'1275', 'country_id' => 1465, 'is_my_company'=>1]);
+        Company::create(['company_name'=>'MIRALDI Y CIA. S.A.C.', 'id_type_id'=>'1', 'doc'=>'20501767540', 'address'=>'AV. LAS VEGAS MZA. A LOTE. 19-B (PEDRO MIOTA CON BELIZARIO)', 'ubigeo_id'=>'1307', 'country_id' => 1465, 'is_my_company'=>1]);
 
 
 
@@ -372,9 +372,9 @@ class AdminTableSeeder extends Seeder {
         Brand::create(['name' => 'TSE', 'is_car' => '0']);
         Brand::create(['name' => 'ZOLL', 'is_car' => '0']);
 
-        Warehouse::create(['name' => 'ALMACEN MIRALDI', 'ubigeo_id' => 1309, 'address' => 'DIRECCION']);
         Warehouse::create(['name' => 'ALMACEN IMPORTACIONES', 'ubigeo_id' => 1309, 'address' => 'DIRECCION']);
         Warehouse::create(['name' => 'ALMACEN HERRAMAX', 'ubigeo_id' => 1309, 'address' => 'DIRECCION']);
+        Warehouse::create(['name' => 'ALMACEN MIRALDI', 'ubigeo_id' => 1309, 'address' => 'DIRECCION']);
 
 
         Bank::create(['label' => 'HERRAMAX BCP SOLES', 'number' => '194-2438503-0-42', 'CCI' => '', 'company_id' => 2, 'currency_id' => 1, 'value' => 0]);

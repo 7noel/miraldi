@@ -24,31 +24,33 @@
               @php $i=0; @endphp
               @if(!isset($model))
               @php $i++; @endphp
-              <tr data-id="">
-                <input type="hidden" name="stocks[1][warehouse_id]" value="1">
-                <td align="center">1</td>
-                <td align="center">0</td>
-                <!-- <td><input type="text" name="stocks[1][stock_min]" value="" class="form-control input-sm"></td> -->
-                <td>{!! Form::number('stocks['.$i.'][stock_min]', 0, ['class'=>"form-control input-sm"]) !!}</td>
-                <!-- <td><input type="text" name="stocks[1][stock_max]" value="" class="form-control input-sm"></td> -->
-                <td>{!! Form::number('stocks['.$i.'][stock_max]', 0, ['class'=>"form-control input-sm"]) !!}</td>
-                <td align="center">0.00</td>
-              </tr>
+                @for ($i = 1; $i < 4; $i++)
+                <tr data-id="">
+                  <input type="hidden" name="stocks[{{ $i }}][warehouse_id]" value="{{ $i }}">
+                  <td align="center">{{ $i }}</td>
+                  <td align="center">0</td>
+                  <!-- <td><input type="text" name="stocks[1][stock_min]" value="" class="form-control input-sm"></td> -->
+                  <td>{!! Form::number('stocks['.$i.'][stock_min]', 0, ['class'=>"form-control input-sm"]) !!}</td>
+                  <!-- <td><input type="text" name="stocks[1][stock_max]" value="" class="form-control input-sm"></td> -->
+                  <td>{!! Form::number('stocks['.$i.'][stock_max]', 0, ['class'=>"form-control input-sm"]) !!}</td>
+                  <td align="center">0.00</td>
+                </tr>
+                @endfor
               @else
-              @foreach($model->stocks as $key => $stock)
-              <tr data-id="{{ $stock->id }}">
-                <input type="hidden" name="stocks[{{ $key }}][id]" value="{{ $stock->id }}">
-                <input type="hidden" name="stocks[{{ $key }}][warehouse_id]" value="{{ $stock->warehouse_id }}">
-                <td align="center">{{ $stock->warehouse_id }}</td>
-                <td align="center">{{ $stock->stock }}</td>
-                <!-- <td><input type="text" name="stocks[{{ $key }}][stock_min]" value="{{ $stock->stock_min }}" class="form-control input-sm"></td> -->
-                <td>{!! Form::number('stocks['.$i.'][stock_min]', $stock->stock_min, ['class'=>"form-control input-sm"]) !!}</td>
-                <!-- <td><input type="text" name="stocks[{{ $key }}][stock_max]" value="{{ $stock->stock_max }}" class="form-control input-sm"></td> -->
-                <td>{!! Form::number('stocks['.$i.'][stock_max]', $stock->stock_max, ['class'=>"form-control input-sm"]) !!}</td>
-                <td align="center">{{ $stock->avarage_value }}</td>
-              </tr>
-              @php $i++; @endphp
-              @endforeach
+                @foreach($model->stocks as $key => $stock)
+                <tr data-id="{{ $stock->id }}">
+                  <input type="hidden" name="stocks[{{ $key }}][id]" value="{{ $stock->id }}">
+                  <input type="hidden" name="stocks[{{ $key }}][warehouse_id]" value="{{ $stock->warehouse_id }}">
+                  <td align="center">{{ $stock->warehouse_id }}</td>
+                  <td align="center">{{ $stock->stock }}</td>
+                  <!-- <td><input type="text" name="stocks[{{ $key }}][stock_min]" value="{{ $stock->stock_min }}" class="form-control input-sm"></td> -->
+                  <td>{!! Form::number('stocks['.$i.'][stock_min]', $stock->stock_min, ['class'=>"form-control input-sm"]) !!}</td>
+                  <!-- <td><input type="text" name="stocks[{{ $key }}][stock_max]" value="{{ $stock->stock_max }}" class="form-control input-sm"></td> -->
+                  <td>{!! Form::number('stocks['.$i.'][stock_max]', $stock->stock_max, ['class'=>"form-control input-sm"]) !!}</td>
+                  <td align="center">{{ $stock->avarage_value }}</td>
+                </tr>
+                @php $i++; @endphp
+                @endforeach
               @endif
             </tbody>
           </table>
@@ -56,6 +58,7 @@
       </div>
     </div>
   </div>
+  @if(1==0)
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="headingTwo">
       <h4 class="panel-title">
@@ -138,6 +141,7 @@
     </div>
   </div>
 </div>
+@endif
 
             <template id="template-row-accessory">
               <tr data-id="">

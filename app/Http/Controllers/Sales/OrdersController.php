@@ -87,7 +87,8 @@ class OrdersController extends Controller {
 	{
 		$model = $this->repo->findOrFail($id);
 		\PDF::setOptions(['isPhpEnabled' => true]);
-		$pdf = \PDF::loadView('pdfs.order_pdf', compact('model'));
+		$pdf = \PDF::loadView('pdfs.order', compact('model'));
+		//$pdf = \PDF::loadView('pdfs.order_pdf', compact('model'));
 		return $pdf->stream();
 	}
 	/**

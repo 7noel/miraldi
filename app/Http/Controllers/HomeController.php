@@ -86,6 +86,7 @@ class HomeController extends Controller
                 'admin_expense' => $p->GastosAdmin,
                 'profit_margin' => $p->Utilidad,
                 'value' => $p->ValorVenta,
+                'use_set_value' => '1',
                 // 'use_set_value' => $p->PrecioLista,
                 'is_downloadable' => 1,
                 'status' => $p->Estado,
