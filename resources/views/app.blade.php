@@ -7,9 +7,8 @@
 	<title>{{ ( (isset(session('my_company')->company_name)) ? session('my_company')->company_name : config('app.name', 'Laravel')) }}</title>
 	<!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous"> -->
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-	<!-- {!! Html::style('//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css') !!} -->
-	<!-- {!! Html::style('css/autocomplete.css') !!} -->
-	{!! Html::style('css/jquery.css') !!}
+	{!! Html::style('//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css') !!}
+	{!! Html::style('css/autocomplete.css') !!}
 	{!! Html::style('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css') !!}
 	{!! Html::style('css/others.css') !!}
 
@@ -109,10 +108,8 @@
 
 	@yield('content')
 	<!-- Scripts -->
-	<!-- {!! Html::script('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js') !!} -->
-	<!-- {!! Html::script('//code.jquery.com/ui/1.11.4/jquery-ui.js') !!} -->
-	{!! Html::script('js/jquery.js') !!}
-	{!! Html::script('js/jquery-ui.js') !!}
+	{!! Html::script('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js') !!}
+	{!! Html::script('//code.jquery.com/ui/1.11.4/jquery-ui.js') !!}
 	{!! Html::script('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js') !!}
 	{!! Html::script('js/admin.js') !!}
 	{!! Html::script('js/delete.js') !!}

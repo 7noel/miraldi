@@ -1,3 +1,5 @@
+var descuento1 = 0;
+var descuento2 = 0;
 var addAccessory = false;
 $(document).ready(function(){
 	if ($('#company_doc').val() == 1) {
@@ -75,6 +77,7 @@ $(document).ready(function(){
 	});
 
 	$('#btnAddProduct').click(function(e){
+		alert("presiono boton")
 		addRowProduct();
 	});
 });
@@ -87,6 +90,8 @@ function setRowProduct($this, $p) {
 		$($this).parent().parent().find('.unitId').val($p.unit_id);
 		$($this).parent().parent().find('.txtValue').val($p.value);
 		$($this).parent().parent().find('.txtPrecio').val(($p.value*1.18).toFixed(2));
+		$($this).parent().parent().find('.txtDscto').val(window.descuento1);
+		$($this).parent().parent().find('.txtDscto2').val(window.descuento2);
 		$($this).parent().parent().find('.intern_code').text($p.intern_code);
 		$($this).parent().parent().find('.txtCantidad').focus();
 	}
@@ -116,6 +121,8 @@ function validateItem (myElement, id) {
 	n = Math.round(parseFloat(n)*100)/100;
 	if (isNaN(n)) {n=0.00};
 	$(myElement).parent().parent().find(id).val(n.toFixed(2));
+	if (id=='.txtDscto') {window.descuento1 = n.toFixed(2)}
+	if (id=='.txtDscto2') {window.descuento2 = n.toFixed(2)}
 	return n;
 }
 function calcTotalItem (myElement) {
