@@ -85,8 +85,8 @@ function setRowProduct($this, $p) {
 		$($this).parent().parent().find('.productId').val($p.id);
 		$($this).parent().parent().find('.txtProduct').val($p.name);
 		$($this).parent().parent().find('.unitId').val($p.unit_id);
-		$($this).parent().parent().find('.txtPrecio').val($p.value);
-		$($this).parent().parent().find('.txtValue').val(($p.value*1.18).toFixed(2));
+		$($this).parent().parent().find('.txtValue').val($p.value);
+		$($this).parent().parent().find('.txtPrecio').val(($p.value*1.18).toFixed(2));
 		$($this).parent().parent().find('.intern_code').text($p.intern_code);
 		$($this).parent().parent().find('.txtCantidad').focus();
 	}
