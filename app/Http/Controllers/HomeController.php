@@ -112,7 +112,8 @@ class HomeController extends Controller
                 'avarage_value'=>$product->last_purchase,
             ]);
         }
-
+// $controller = app()->make('App\Http\Controllers\HomeController');
+// app()->call([$controller, 'beta'], []);
         echo "Productos agregados \n";
         */
         $cs = \DB::connection('masaki')->select("select * from provedor where Datos1 != ''");
