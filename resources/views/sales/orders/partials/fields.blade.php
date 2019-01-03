@@ -1,14 +1,7 @@
 					<div class="form-group form-group-sm">
-						{!! Form::hidden('with_tax', 0, ['id'=>'with_tax']) !!}
-						{!! Form::label('txtcompany','Compañía:', ['class'=>'col-sm-2 control-label']) !!}
+						{!! Form::label('my_company','Mi Empresa:', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-4">
-							@if(isset($company))
-								{!! Form::hidden('company_id', $company->id, ['id'=>'company_id']) !!}
-								{!! Form::text('company', $company->company_name, ['class'=>'form-control', 'id'=>'txtCompany', 'required']) !!}
-							@else
-								{!! Form::hidden('company_id', null, ['id'=>'company_id']) !!}
-								{!! Form::text('company', ((isset($model->company_id)) ? $model->company->company_name : null), ['class'=>'form-control', 'id'=>'txtCompany', 'required']) !!}
-							@endif
+						{!! Form::select('my_company', $my_companies, (isset($model->my_company) ? $model->my_company : session('my_company')->id), ['class'=>'form-control']) !!}
 						</div>
 						{!! Form::label('txtSeller','Vendedor', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-4">
@@ -20,6 +13,17 @@
 						</div>
 					</div>
 					<div class="form-group form-group-sm">
+						{!! Form::hidden('with_tax', 0, ['id'=>'with_tax']) !!}
+						{!! Form::label('txtcompany','Cliente:', ['class'=>'col-sm-2 control-label']) !!}
+						<div class="col-sm-4">
+							@if(isset($company))
+								{!! Form::hidden('company_id', $company->id, ['id'=>'company_id']) !!}
+								{!! Form::text('company', $company->company_name, ['class'=>'form-control', 'id'=>'txtCompany', 'required']) !!}
+							@else
+								{!! Form::hidden('company_id', null, ['id'=>'company_id']) !!}
+								{!! Form::text('company', ((isset($model->company_id)) ? $model->company->company_name : null), ['class'=>'form-control', 'id'=>'txtCompany', 'required']) !!}
+							@endif
+						</div>
 						{!! Form::label('attention','Atención', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-4">
 						{!! Form::text('attention', null, ['class'=>'form-control']) !!}
@@ -34,6 +38,9 @@
 						<div class="col-sm-2">
 						{!! Form::select('payment_condition_id', $payment_conditions, ((isset($model->payment_condition_id)) ? $model->payment_condition_id : 1),['class'=>'form-control', 'id'=>'lstPaymentCondition']); !!}
 						</div>
+						<div class="col-sm-2">
+						{!! Form::text('condition', null, ['class'=>'form-control', 'id'=>'condition']); !!}
+						</div>
 					</div>
 					<div class="form-group form-group-sm">
 						{!! Form::label('comment','Comentarios', ['class'=>'col-sm-2 control-label']) !!}
@@ -42,21 +49,17 @@
 						</div>
 					</div>
 					<div class="form-group form-group-sm">
-						{!! Form::label('my_company','Mi Empresa:', ['class'=>'col-sm-2 control-label']) !!}
-						<div class="col-sm-2">
-						{!! Form::select('my_company', $my_companies, (isset($model->my_company) ? $model->my_company : session('my_company')->id), ['class'=>'form-control']) !!}
-						</div>
 						{!! Form::label('status','Status:', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-7 status-checked">
-							@if(\Auth::user()->is_superuser)
+							@if(1==1)
 							<label class="checkbox-inline" title="Verificado por Administración">
 								{!! Form::checkbox('checked_at', (isset($model)) ? $model->checked_at : "on") !!} Verificado
 							</label>
 							@endif
+							@if(1==0)
 							<label class="checkbox-inline" title="Aprobado por el Cliente">
 								{!! Form::checkbox('approved_at', (isset($model)) ? $model->approved_at : "on") !!} Aprobado
 							</label>
-							@if(\Auth::user()->is_superuser)
 							<label class="checkbox-inline" title="Facturado al Cliente">
 								{!! Form::checkbox('invoiced_at', (isset($model)) ? $model->invoiced_at : "on") !!} Facturado
 							</label>
