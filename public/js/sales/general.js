@@ -76,7 +76,7 @@ $(document).ready(function(){
 		calcTotalOrder();
 	});
 
-	$('#btnAddProduct').click(function(e){
+	$('#btnAddProduct').bind("click touchstart", function(e){
 		alert("presiono boton")
 		addRowProduct();
 	});
