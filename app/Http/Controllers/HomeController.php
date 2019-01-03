@@ -37,6 +37,7 @@ class HomeController extends Controller
     }
     public function beta()
     {
+        /*
         $fam = [
             "AUTOMOTRIZ"=>1,
             "CERRAJERIA PARA MADERA Y VIDRIO"=>2,
@@ -113,7 +114,7 @@ class HomeController extends Controller
         }
 
         echo "Productos agregados \n";
-
+        */
         $cs = \DB::connection('masaki')->select("select * from provedor where Datos1 != ''");
         $i_f = 0;
         $i_n = 0;
