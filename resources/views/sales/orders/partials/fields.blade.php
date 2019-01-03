@@ -1,4 +1,3 @@
-							<?php dd(\Auth::user()->employee); ?>
 					<div class="form-group form-group-sm">
 						{!! Form::hidden('with_tax', 0, ['id'=>'with_tax']) !!}
 						{!! Form::label('txtcompany','Compañía:', ['class'=>'col-sm-2 control-label']) !!}
