@@ -12,7 +12,7 @@
 						</div>
 						{!! Form::label('txtSeller','Vendedor', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-4">
-							@if(\Auth::user()->employee->job_id == 8)
+							@if(\Auth::user()->employee->job_id == 8 or \Auth::user()->id==3)
 							{!! Form::select('seller_id', [\Auth::user()->employee->id => \Auth::user()->employee->full_name], \Auth::user()->employee->id, ['class'=>'form-control', 'id'=>'lstSeller']); !!}
 							@else
 							{!! Form::select('seller_id', $sellers, ((isset($model->seller_id)) ? $model->seller_id : null),['class'=>'form-control', 'id'=>'lstSeller']); !!}
