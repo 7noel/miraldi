@@ -33,6 +33,11 @@ class TicketRepo extends BaseRepo{
 	public function prepareData($data)
 	{
 		$data['document_type_id'] = 6;
+		foreach ($data['details'] as $key => $detail) {
+			if (trim($detail['stock_id']) == '') {
+				unset($data['details'][$key]);
+			}
+		}
 		// $data['mov'] = 0;
 		// $data['type_op'] = '01'; //2135
 		// if (!isset($data['warehouse_id']) or $data['warehouse_id'] == '' or $data['warehouse_id'] == '0') {

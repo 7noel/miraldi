@@ -5,10 +5,11 @@
 							<thead>
 								<tr>
 									<th class="col-sm-1">#</th>
+									<th class="col-sm-1">Almacén</th>
 									<th class="col-sm-5">Descripción</th>
 									<th class="col-sm-1">Cantidad</th>
 									<th class="col-sm-1">Unidad</th>
-									<th class="col-sm-2">Acciones</th>
+									<th class="col-sm-1">Acciones</th>
 								</tr>
 							</thead>
 							<tbody id="tableItems">
@@ -19,9 +20,10 @@
 									{!! Form::hidden("details[$i][stock_id]", $detail->product_id, ['class'=>'productId','data-productid'=>'']) !!}
 									{!! Form::hidden("details[$i][unit_id]", $detail->unit_id, ['class'=>'unitId','data-unitid'=>'']) !!}
 									<td><span class='form-control input-sm intern_code text-right' data-labelid>{{ $detail->stock->product->intern_code }}</span></td>
+									<td><span class='form-control input-sm warehouse_id text-center' data-warehouseId>{{ $detail->stock->warehouse_id }}</span></td>
 									<td>{!! Form::text("details[$i][txtProduct]", $detail->stock->product->name, ['class'=>'form-control input-sm txtProduct', 'data-product'=>'', 'required'=>'required', 'disabled']); !!}</td>
-									<td><span class='form-control input-sm txtUnit text-center' data-total> {{ $detail->stock->product->unit->symbol }} </span></td>
 									<td>{!! Form::text("details[$i][quantity]", $detail->quantity, ['class'=>'form-control input-sm txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
+									<td><span class='form-control input-sm txtUnit text-center' data-total> {{ $detail->stock->product->unit->symbol }} </span></td>
 									<td class="text-center form-inline">
 										<div class="checkbox">
 											<label><input type="checkbox" name="details[{{$i}}][is_deleted]" data-isdeleted class="isdeleted"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></label>
@@ -38,6 +40,7 @@
 								{!! Form::hidden('data1', null, ['class'=>'productId','data-productid'=>'']) !!}
 								{!! Form::hidden('data2', null, ['class'=>'unitId','data-unitid'=>'']) !!}
 								<td> <span class='form-control input-sm intern_code text-right' data-labelid></span> </td>
+								<td><span class='form-control input-sm warehouse_id text-center' data-warehouseId></span></td>
 								<td>{!! Form::text('data3', null, ['class'=>'form-control input-sm txtProduct', 'data-product'=>'', 'required'=>'required']); !!}</td>
 								<td>{!! Form::text('data4', null, ['class'=>'form-control input-sm txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
 								<td> <span class='form-control input-sm txtUnit text-center' data-labelunit></span> </td>
