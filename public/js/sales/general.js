@@ -77,7 +77,6 @@ $(document).ready(function(){
 	});
 
 	$('#btnAddProduct').bind("click touchstart", function(e){
-		alert("presiono boton")
 		addRowProduct();
 	});
 });
