@@ -4,11 +4,11 @@
 						<table class="table table-condensed">
 							<thead>
 								<tr>
-									<th class="col-sm-2">Código</th>
-									<th class="col-sm-4">Descripción</th>
+									<th class="col-sm-2">Código Int</th>
+									<th class="col-xs-8 col-md-4 ">Descripción</th>
 									<th class="col-sm-1">Cantidad</th>
 									<th class="col-sm-1 withTax">Precio</th>
-									<th class="col-sm-1 withoutTax">Valor</th>
+									<th class="col-sm-1 withoutTax">Valor Unit</th>
 									<th class="col-sm-1">Dscto1(%)</th>
 									<th class="col-sm-1">Dscto2(%)</th>
 									<th class="col-sm-1">Acciones</th>
@@ -47,7 +47,7 @@
 								{!! Form::hidden('data1', null, ['class'=>'productId','data-productid'=>'']) !!}
 								{!! Form::hidden('data2', null, ['class'=>'unitId','data-unitid'=>'']) !!}
 								<td><span class='form-control input-sm intern_code text-right' data-labelid></span></td>
-								<td>{!! Form::text('data3', null, ['class'=>'form-control input-sm txtProduct', 'data-product'=>'', 'required'=>'required']); !!}</td>
+								<td>{!! Form::text('data3', null, ['class'=>'col-sm-4 form-control input-sm txtProduct', 'data-product'=>'', 'required'=>'required']); !!}</td>
 								<td>{!! Form::text('data4', null, ['class'=>'form-control input-sm txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
 								<td class="withTax">{!! Form::text('data5', null, ['class'=>'form-control input-sm txtPrecio text-right', 'data-precio'=>'']) !!}</td>
 								<td class="withoutTax">{!! Form::text('data7', null, ['class'=>'form-control input-sm txtValue text-right', 'data-value'=>'']) !!}</td>

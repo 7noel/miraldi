@@ -115,3 +115,6 @@ input[type="date"] {
     left: 100%;
     margin-bottom: -1px;
 }
+.txtProduct{
+    min-width: 250px;
+}
