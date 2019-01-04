@@ -31,7 +31,9 @@ class CreateCompaniesTable extends Migration {
 			$table->string('email_1');
 			$table->string('email_2');
 			$table->string('contact');
+			$table->string('comment');
 			$table->date('birth')->nullable();
+			$table->boolean('is_client');
 			$table->boolean('is_provider');
 			$table->boolean('is_my_company');
 			$table->boolean('is_shipper');

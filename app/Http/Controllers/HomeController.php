@@ -115,7 +115,7 @@ class HomeController extends Controller
 // $controller = app()->make('App\Http\Controllers\HomeController');
 // app()->call([$controller, 'beta'], []);
         echo "Productos agregados \n";
-        */
+        
         $cs = \DB::connection('masaki')->select("select * from provedor where Datos1 != ''");
         $i_f = 0;
         $i_n = 0;
@@ -191,7 +191,33 @@ class HomeController extends Controller
         // dd($collection);
 // $controller = app()->make('App\Http\Controllers\HomeController');
 // app()->call([$controller, 'beta'], []);
-
+*/
+        $i=0;
+        $ts = \DB::connection('masaki')->select("select * from transpor where Codigo>619");
+        foreach ($ts as $key => $t) {
+            if (is_null(Company::where('doc',$t->RUC)->where('id_type_id', 1)->first())) {
+                $url = "http://api.noelhh.com/sunat/ruc/".$t->RUC;
+                $json = file_get_contents($url);
+                $obj = json_decode($json);
+                if (isset($obj->ruc)) {
+                    Company::updateOrCreate(['doc' => $t->RUC, 'id_type_id' => 1], [
+                        'company_name' => $t->Nombre,
+                        'name' => $t->Nombre,
+                        'id_type_id' => 1,
+                        'doc' => $t->RUC,
+                        'address' => $obj->direccion,
+                        'ubigeo_id' => $obj->ubigeo->id,
+                        'country_id' => 1465,
+                        'phone' => trim($t->Telefonos),
+                        'mobile' => trim($t->Celular),
+                        'contact' => $t->Contacto1,
+                        'comment' => $t->Fax,
+                        'is_shipper' => '1',
+                    ]);
+                }
+            }
+            
+        }
     }
     public function beta2()
     {
