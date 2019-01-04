@@ -108,8 +108,10 @@
 
 	@yield('content')
 	<!-- Scripts -->
-	{!! Html::script('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js') !!}
-	{!! Html::script('//code.jquery.com/ui/1.11.4/jquery-ui.js') !!}
+	<!-- {!! Html::script('//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js') !!} -->
+	<!-- {!! Html::script('//code.jquery.com/ui/1.11.4/jquery-ui.js') !!} -->
+	{!! Html::script('https://code.jquery.com/jquery-1.12.4.js') !!}
+	{!! Html::script('https://code.jquery.com/ui/1.12.1/jquery-ui.js') !!}
 	{!! Html::script('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js') !!}
 	{!! Html::script('js/admin.js') !!}
 	{!! Html::script('js/delete.js') !!}
