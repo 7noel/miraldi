@@ -1,6 +1,6 @@
 						<a href="#" id="btnAddProduct" class="btn btn-success btn-sm" title="Agregar Producto">{!! config('options.icons.add') !!} Agregar</a>
 						@php $i=0; @endphp
-						
+						<div class="table-responsive">
 						<table class="table table-condensed">
 							<thead>
 								<tr>
@@ -41,6 +41,7 @@
 							@endif
 							</tbody>
 						</table>
+						</div>
 						<template id="template-row-item">
 							<tr>
 								{!! Form::hidden('data1', null, ['class'=>'productId','data-productid'=>'']) !!}

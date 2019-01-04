@@ -28,7 +28,7 @@ $(document).ready(function(){
 	$('#txtCompany').autocomplete({
 		source: "/api/companies/autocompleteAjax/",
 		minLength: 4,
-		open: function(event, ui){
+		select: function(event, ui){
 			$('#company_id').val(ui.item.id);
 			$('#company_doc').val(ui.item.id_type_id);
 			$('#lstSeller').focus();
