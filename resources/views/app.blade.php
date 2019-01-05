@@ -34,7 +34,17 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="{{ url('/') }}"><img src="/img/logo3.png" alt="" height="80%"></a>
+				@if(isset(session('my_company')->id))
+					@if(session('my_company')->id == 3)
+					<a class="navbar-brand" href="{{ url('/') }}"><img src="/img/logo3.png" alt="" height="80%"></a>
+					@elseif(session('my_company')->id == 2)
+					<a class="navbar-brand" href="{{ url('/') }}"><img src="/img/logo2.png" alt="" height="80%"></a>
+					@else
+					<a class="navbar-brand" href="{{ url('/') }}"><img src="/img/logo1.png" alt="" height="80%"></a>
+					@endif
+				@else
+					<a class="navbar-brand" href="{{ url('/') }}"><img src="/img/logo1.png" alt="" height="80%"></a>
+				@endif
 			</div>
 
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

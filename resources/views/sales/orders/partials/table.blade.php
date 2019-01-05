@@ -23,7 +23,7 @@
 								@else
 								<a href="#" class="btn btn-success btn-xs" title="Imprimir" disabled="disabled">{!! config('options.icons.printer') !!}</a>
 								@endif
-								<a href="{{ route( str_replace('index', 'edit', Request::route()->getAction()['as']) , $model) }}" class="btn btn-primary btn-xs" title="Editar">{!! config('options.icons.edit') !!}</a>
+								<a href="{{ route( 'orders.edit' , $model) }}" class="btn btn-primary btn-xs" title="Editar">{!! config('options.icons.edit') !!}</a>
 								<a href="#" class="btn-delete btn btn-danger btn-xs" title="Eliminar">{!! config('options.icons.remove') !!}</a>
 							</td>
 						</tr>

@@ -138,4 +138,23 @@ class OrderRepo extends BaseRepo{
 		}
 		return $data;
 	}
+
+	public function filter($filter)
+	{
+		$q = Order::where('created_at', '>=', $filter->f1)->where('created_at', '<=', $filter->f2);
+		if ($filter->id > 0) {
+			return Order::where('id', $filter->id)->get();
+		} else {
+			if($filter->seller_id > 0) {
+				$q->where('seller_id', $filter->seller_id);
+			}
+			if($filter->status > 0) {
+				$q->where('status', $filter->status);
+			}
+			if($filter->my_company > 0) {
+				$q->where('my_company', $filter->my_company);
+			}
+			return $q->get();
+		}
+	}
 }

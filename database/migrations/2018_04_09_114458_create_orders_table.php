@@ -20,6 +20,8 @@ class CreateOrdersTable extends Migration
             $table->integer('document_type_id')->unsigned();
             $table->integer('my_company')->unsigned();
             $table->integer('company_id')->unsigned();
+            $table->integer('branch_id')->unsigned();
+            $table->integer('shipper_id')->unsigned();
             $table->integer('payment_condition_id')->unsigned();
             $table->integer('currency_id')->unsigned();
             $table->string('attention');
@@ -46,6 +48,7 @@ class CreateOrdersTable extends Migration
             $table->decimal('exchange', 12,2);
             $table->decimal('exchange_sunat', 12,2);
             $table->integer('proof_id')->unsigned();
+            $table->integer('user_id')->unsigned();
             $table->text('comment');
 
             $table->foreign('document_type_id')->references('id')->on('document_types');

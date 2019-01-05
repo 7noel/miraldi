@@ -11,7 +11,7 @@ class Order extends Model implements Auditable
 	use \OwenIt\Auditing\Auditable;
 	use SoftDeletes;
 
-	protected $fillable = ['company_id', 'my_company', 'document_type_id', 'payment_condition_id', 'currency_id', 'seller_id', 'attention', 'matter', 'approved_at', 'checked_at', 'invoiced_at', 'sent_at', 'canceled_at', 'gross_value', 'discount', 'discount_items', 'subtotal', 'tax', 'total', 'amortization', 'exchange', 'exchange_sunat', 'comment', 'status', 'delivery_period', 'installation_period', 'delivery_place', 'offer_period', 'mov', 'type_op', 'proof_id'];
+	protected $fillable = ['company_id', 'branch_id', 'shipper_id', 'my_company', 'document_type_id', 'payment_condition_id', 'currency_id', 'seller_id', 'attention', 'matter', 'approved_at', 'checked_at', 'invoiced_at', 'sent_at', 'canceled_at', 'gross_value', 'discount', 'discount_items', 'subtotal', 'tax', 'total', 'amortization', 'exchange', 'exchange_sunat', 'comment', 'status', 'delivery_period', 'installation_period', 'delivery_place', 'offer_period', 'mov', 'type_op', 'proof_id', 'user_id'];
 
 	public function scopeName($query, $name){
 		if (trim($name) != "") {
@@ -23,9 +23,21 @@ class Order extends Model implements Auditable
 	{
 		return $this->belongsTo('App\Modules\Finances\Proof');
 	}
+	public function mycompany()
+	{
+		return $this->hasOne('App\Modules\Finances\Company','id','my_company');
+	}
 	public function company()
 	{
 		return $this->hasOne('App\Modules\Finances\Company','id','company_id');
+	}
+	public function shipper()
+	{
+		return $this->hasOne('App\Modules\Finances\Company','id','shipper_id');
+	}
+	public function user()
+	{
+		return $this->hasOne('App\Modules\Security\Company','id','user_id');
 	}
 	public function document_type()
 	{

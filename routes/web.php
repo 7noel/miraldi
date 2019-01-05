@@ -117,6 +117,8 @@ Route::group(['prefix'=>'humanresources', 'middleware'=>['auth', 'permissions'],
 });
 
 Route::group(['prefix'=>'sales', 'middleware'=>['auth', 'permissions'], 'namespace'=>'Sales'], function(){
+	Route::get('orders/filter', ['as' => 'orders.filter2','uses' => 'OrdersController@filter']);
+	Route::post('orders/filter', ['as' => 'orders.filter','uses' => 'OrdersController@filter']);
 	Route::resource('quotes','OrdersController');
 	Route::resource('orders','OrdersController');
 	Route::get('orders/print/{id}', ['as' => 'print_order','uses' => 'OrdersController@print']);

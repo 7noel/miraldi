@@ -26,7 +26,24 @@ class OrdersController extends Controller {
 		$this->employeeRepo = $employeeRepo;
 		$this->companyRepo = $companyRepo;
 	}
-
+	public function filter()
+	{
+		$models = [];
+		$filter = (object) [];
+		$status = ['' => 'Seleccionar'] + config('options.order_status');
+		$sellers = $this->employeeRepo->getListSellers();
+		$my_companies = $this->companyRepo->getListMyCompany();
+		$payment_conditions = $this->paymentConditionRepo->getList();
+		// $filter = \Request::all();
+		$filter = (object) \Request::all();
+		if((array) $filter) {
+			$models = $this->repo->filter($filter);
+		} else {
+			$filter->f1 = date('Y-m-d');
+			$filter->f2 = date('Y-m-d');
+		}
+		return view('sales.orders.filter',compact('models', 'filter', 'status', 'sellers', 'my_companies', 'payment_conditions'));
+	}
 	public function index()
 	{
 		$models = $this->repo->index('name', \Request::get('name'));
