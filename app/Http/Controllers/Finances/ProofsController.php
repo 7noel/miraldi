@@ -78,7 +78,7 @@ class ProofsController extends Controller {
 
 	public function index()
 	{
-		$models = $this->repo->index('number', \Request::get('name'), $this->proof_type);
+		$models = $this->repo->index('sn', \Request::get('name'), $this->proof_type);
 		return view('partials.index',compact('models'));
 	}
 

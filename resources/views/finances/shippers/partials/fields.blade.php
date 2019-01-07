@@ -64,27 +64,20 @@
 					<div class="form-group form-group-sm">
 						{!! Form::label('email','Email', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-3">
-						{!! Form::text('email', null, ['class'=>'form-control']) !!}
+						{!! Form::email('email', null, ['class'=>'form-control']) !!}
 						</div>
-						{!! Form::label('birth','Nacimiento', ['class'=>'col-sm-2 control-label']) !!}
+						{!! Form::label('email_1','Email_1', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-3">
-						{!! Form::date('birth', null, ['class'=>'form-control']) !!}
+						{!! Form::email('emai_l', null, ['class'=>'form-control']) !!}
 						</div>
 					</div>
-<!-- 					<div class="form-group form-group-sm">
-						{!! Form::label('is_provider','Opciones', ['class'=>'col-sm-2 control-label']) !!}
-						<div class="col-sm-10">
-							<label class="checkbox-inline">
-								{!! Form::checkbox('is_client', '1', null,['class'=>'checkbox']) !!} Cliente
-							</label>
-							<label class="checkbox-inline">
-								{!! Form::checkbox('is_provider', '1', null,['class'=>'checkbox']) !!} Proveedor
-							</label>
-							<label class="checkbox-inline">
-								{!! Form::checkbox('is_shipper', '1', null,['class'=>'checkbox']) !!} Transportista
-							</label>
-							<label class="checkbox-inline">
-								{!! Form::checkbox('is_my_company', '1', null,['class'=>'checkbox']) !!} Mi Empresa
-							</label>
+					<div class="form-group form-group-sm">
+						{!! Form::label('bank_bcp','Cuenta BCP', ['class'=>'col-sm-2 control-label']) !!}
+						<div class="col-sm-3">
+						{!! Form::text('bank_bcp', null, ['class'=>'form-control']) !!}
 						</div>
-					</div> -->
+						{!! Form::label('bank_other','Otra Cuenta', ['class'=>'col-sm-2 control-label']) !!}
+						<div class="col-sm-3">
+						{!! Form::text('bank_other', null, ['class'=>'form-control']) !!}
+						</div>
+					</div>

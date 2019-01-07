@@ -192,8 +192,34 @@ class HomeController extends Controller
 // $controller = app()->make('App\Http\Controllers\HomeController');
 // app()->call([$controller, 'beta'], []);
 */
+        $cs = \DB::connection('masaki')->select("select * from clientes where CodCliente=2633");
+        $i_f = 0;
+        $i_n = 0;
+        foreach ($cs as $key => $c) {
+            $ad = substr(trim($c->Direccion), 0, (-1)*strlen(trim($c->Distrito)));
+            // dd(utf8_decode($c->Direccion));
+            Company::updateOrCreate(['doc' => ($c->RUC>0) ? $c->RUC : $c->DNI, 'id_type_id' => ($c->RUC>0) ? 1 : 2], [
+                'company_name' => $c->NombreRaz,
+                'name' => $c->Nombre,
+                'paternal_surname' => $c->ApellidoPat,
+                'maternal_surname' => $c->ApellidoMat,
+                'id_type_id' => ($c->RUC>0) ? 1 : 2,
+                'doc' => ($c->RUC>0) ? $c->RUC : $c->DNI,
+                'address' => $ad,
+                'country_id' => 1465,
+                'phone' => trim($c->Telefonos.' '.$c->Telefono1),
+                'mobile' => trim($c->Celular.' '.$c->Celular1),
+                'email' => $c->Email,
+                'contact' => $c->Contacto1,
+                'is_provider' => '0',
+            ]);
+
+                $i_n++;
+        }
+        dd($cs);
+
         $i=0;
-        $ts = \DB::connection('masaki')->select("select * from transpor where Codigo>619");
+        $ts = \DB::connection('masaki')->select("select * from transpor where Codigo > 619");
         foreach ($ts as $key => $t) {
             if (is_null(Company::where('doc',$t->RUC)->where('id_type_id', 1)->first())) {
                 $url = "http://api.noelhh.com/sunat/ruc/".$t->RUC;

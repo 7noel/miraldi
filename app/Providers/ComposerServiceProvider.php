@@ -52,6 +52,7 @@ class ComposerServiceProvider extends ServiceProvider
             'fields' => $this->prefix . '.' . $this->controller. '.partials.fields',
             'edit' => $this->prefix . '.' . $this->controller. '.edit',
             'delete' => $this->prefix . '.' . $this->controller. '.delete',
+            'filter' => $this->prefix . '.' . $this->controller. '.partials.filter',
         ];
     }
 
@@ -64,6 +65,7 @@ class ComposerServiceProvider extends ServiceProvider
             'edit' => $this->controller. '.edit',
             'update' => $this->controller. '.update',
             'delete' => $this->controller. '.destroy',
+            'filter' => $this->controller. '.filter',
         ];
     }
 

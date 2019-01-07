@@ -23,6 +23,7 @@ class CompaniesController extends Controller {
 		$this->ubigeoRepo = $ubigeoRepo;
 		$this->idTypeRepo = $idTypeRepo;
 		$this->sunatRepo = $sunatRepo;
+
 	}
 
 	public function index()
@@ -62,7 +63,7 @@ class CompaniesController extends Controller {
 		if (isset($data['last_page']) && $data['last_page'] != '') {
 			return \Redirect::to($data['last_page']);
 		}
-		return \Redirect::route('companies.index');
+		return \Redirect::route($this->getType().'.index');
 	}
 
 	public function show($id)
@@ -86,18 +87,26 @@ class CompaniesController extends Controller {
 	public function update($id, FormCompanyRequest $request)
 	{
 		$data = \Request::all();
+		if ($this->getType() == 'clients') {
+			$data['is_client'] == 1;
+		} elseif ($this->getType() == 'providers') {
+			$data['is_provider'] == 1;
+		} elseif ($this->getType() == 'shippers') {
+			$data['is_shipper'] == 1;
+		}
+		
 		$this->repo->save($data, $id);
 		if (isset($data['last_page']) && $data['last_page'] != '') {
 			return \Redirect::to($data['last_page']);
 		}
-		return \Redirect::route('companies.index');
+		return \Redirect::route($this->getType().'.index');
 	}
 
 	public function destroy($id)
 	{
 		$model = $this->repo->destroy($id);
 		if (\Request::ajax()) {	return $model; }
-		return redirect()->route('companies.index');
+		return redirect()->route($this->getType().'.index');
 	}
 	public function ajaxAutocomplete()
 	{
@@ -114,5 +123,9 @@ class CompaniesController extends Controller {
 			];
 		}
 		return \Response::json($result);
+	}
+	public function getType()
+	{
+		return explode('.', \Request::route()->getName())[0];
 	}
 }

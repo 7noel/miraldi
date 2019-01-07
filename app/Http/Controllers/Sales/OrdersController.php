@@ -28,21 +28,25 @@ class OrdersController extends Controller {
 	}
 	public function filter()
 	{
-		$models = [];
-		$filter = (object) [];
-		$status = ['' => 'Seleccionar'] + config('options.order_status');
-		$sellers = $this->employeeRepo->getListSellers();
-		$my_companies = $this->companyRepo->getListMyCompany();
-		$payment_conditions = $this->paymentConditionRepo->getList();
-		// $filter = \Request::all();
-		$filter = (object) \Request::all();
-		if((array) $filter) {
-			$models = $this->repo->filter($filter);
+		if (explode('.', \Request::route()->getName())[0] == 'quotes') {
+			$order_type = 1;
 		} else {
+			$order_type = 2;
+		}
+		
+		$filter = (object) \Request::all();
+		if( !((array) $filter) ) {
+			$filter->sn = '';
+			$filter->seller_id = '';
+			$filter->status = '';
 			$filter->f1 = date('Y-m-d');
 			$filter->f2 = date('Y-m-d');
 		}
-		return view('sales.orders.filter',compact('models', 'filter', 'status', 'sellers', 'my_companies', 'payment_conditions'));
+		$models = $this->repo->filter($filter, $order_type);
+
+		$sellers = $this->employeeRepo->getListSellers();
+		$payment_conditions = $this->paymentConditionRepo->getList();
+		return view('partials.filter',compact('models', 'filter', 'sellers'));
 	}
 	public function index()
 	{
@@ -63,7 +67,7 @@ class OrdersController extends Controller {
 	{
 		$model = $this->repo->save(\Request::all());
 		//$this->sendAlert($model);
-		return \Redirect::route('orders.index');
+		return \Redirect::route(explode('.', \Request::route()->getName())[0].'.filter');
 	}
 
 	public function show($id)
@@ -85,14 +89,14 @@ class OrdersController extends Controller {
 	public function update($id)
 	{
 		$this->repo->save(\Request::all(), $id);
-		return \Redirect::route('orders.index');
+		return \Redirect::route(explode('.', \Request::route()->getName())[0].'.index');
 	}
 
 	public function destroy($id)
 	{
 		$model = $this->repo->destroy($id);
 		if (\Request::ajax()) {	return $model; }
-		return redirect()->route('orders.index');
+		return redirect()->route(explode('.', \Request::route()->getName())[0].'.filter');
 	}
 
 	/**

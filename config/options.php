@@ -1,5 +1,22 @@
 <?php 
 return array(
+	'last_number' => [
+		'1' => [// importaciones
+			'1' => 0, //quote
+			'2' => 0, //order
+			'3' => 0, //letter
+		],
+		'2' => [// herramax
+			'1' => 0, //quote
+			'2' => 0, //order
+			'3' => 0, //letter
+		],
+		'3' => [// miraldi
+			'1' => 0, //quote
+			'2' => 0, //order
+			'3' => 0, //letter
+		],
+	],
 	'product_status' => [
 		''=>'Status',
 		'1'=>'Activo',
@@ -19,7 +36,20 @@ return array(
 		'0' => 'Salida',
 	],
 	'purchase_status' => [],
-	'order_status' => ['REGISTRADO', 'VERIFICADO', 'APROBADO', 'FACTURADO', 'ENVIADO', 'CANCELADO'],
+	'quote_status' => [
+		'0' => 'REGISTRADO',
+		'1' => 'PROCESADO',
+		'6' => 'ANULADO',
+	],
+	'order_status' => [
+		'REGISTRADO',
+		'VERIFICADO',
+		'APROBADO',
+		'FACTURADO',
+		'ENVIADO',
+		'CANCELADO',
+		'ANULADO',
+	],
 	'tax' => [
 		'igv' => 18
 	],
@@ -276,6 +306,12 @@ return array(
 		],
 	// ],
 	// 'logistics' => [
+		'providers' => [
+			'index'  => ['panel'=>'Proveedores', 'create'=>'Crear Proveedor'],
+			'create' => ['panel'=>'Nueva Proveedor', 'create'=>'Crear Proveedor'],
+			'show'   => ['panel'=>'Vizualizando Proveedor:'],
+			'edit'   => ['panel'=>'Editar Proveedor: ', 'update'=>'Actualizar Proveedor', 'delete'=>'Eliminar Proveedor']
+		],
 		'brands' => [
 			'index'  => ['panel'=>'Marcas', 'create'=>'Crear Marca'],
 			'create' => ['panel'=>'Nueva Marca', 'create'=>'Crear Marca'],
@@ -290,6 +326,18 @@ return array(
 		],
 	// ],
 	// 'sales' => [
+		'shippers' => [
+			'index'  => ['panel'=>'Transportistas', 'create'=>'Crear Transportista'],
+			'create' => ['panel'=>'Nueva Transportista', 'create'=>'Crear Transportista'],
+			'show'   => ['panel'=>'Vizualizando Transportista:'],
+			'edit'   => ['panel'=>'Editar Transportista: ', 'update'=>'Actualizar Transportista', 'delete'=>'Eliminar Transportista']
+		],
+		'clients' => [
+			'index'  => ['panel'=>'Clientes', 'create'=>'Crear Cliente'],
+			'create' => ['panel'=>'Nueva Cliente', 'create'=>'Crear Cliente'],
+			'show'   => ['panel'=>'Vizualizando Cliente:'],
+			'edit'   => ['panel'=>'Editar Cliente: ', 'update'=>'Actualizar Cliente', 'delete'=>'Eliminar Cliente']
+		],
 		'quotes' => [
 			'index'  => ['panel'=>'Cotizaciones', 'create'=>'Crear Cotización'],
 			'create' => ['panel'=>'Nuevo Cotización', 'create'=>'Crear Cotización'],

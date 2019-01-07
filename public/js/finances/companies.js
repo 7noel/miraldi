@@ -35,6 +35,9 @@ $(document).ready(function(){
 		}
 	});
 
+	$('#btnAddBranch').click(function(e){
+		addRowBranch();
+	});
 });
 
 function getDataPadron (ruc) {
@@ -49,4 +52,47 @@ function getDataPadron (ruc) {
 			$('#lstDistrito').val(data.ubigeo.id);
 		}
 	});
+}
+
+function addRowBranch() {
+	var items = $('#items').val();
+	if (items>0) {
+		if ($("input[name='branchs["+(items-1)+"][name]']").val() == "") {
+			console.log('en el segundo if');
+			$("input[name='branchs["+(items-1)+"][name]']").focus();
+		} else if ($("input[name='branchs["+(items-1)+"][address]']").val() == "") {
+			$("input[name='branchs["+(items-1)+"][address]']").focus();
+		} else if ($("input[name='branchs["+(items-1)+"][ubigeo_id]']").val() == "") {
+			$("input[name='branchs["+(items-1)+"][ubigeo]']").focus();
+		} else{
+			renderTemplateRowProduct();
+		}
+	} else{
+		renderTemplateRowProduct();
+	}
+}
+
+function renderTemplateRowProduct () {
+	var clone = activateTemplate("#template-row-item");
+	var items = $('#items').val();
+	clone.querySelector("[data-branchId]").setAttribute("name", "branchs[" + items + "][branch_id]");
+	clone.querySelector("[data-ubigeoId]").setAttribute("name", "branchs[" + items + "][ubigeo_id]");
+	clone.querySelector("[data-name]").setAttribute("name", "branchs[" + items + "][name]");
+	clone.querySelector("[data-address]").setAttribute("name", "branchs[" + items + "][address]");
+	clone.querySelector("[data-ubigeo]").setAttribute("name", "branchs[" + items + "][ubigeo]");
+	clone.querySelector("[data-mobile]").setAttribute("name", "branchs[" + items + "][mobile]");
+	clone.querySelector("[data-contact]").setAttribute("name", "branchs[" + items + "][contact]");
+	clone.querySelector("[data-isdeleted]").setAttribute("name", "branchs[" + items + "][is_deleted]");
+	//if (items>0) {$("input[name='branchs["+(items-1)+"][txtProduct]']").attr('disabled', true);};
+	
+	items = parseInt(items) + 1;
+	$('#items').val(items);
+	$("#tableItems").append(clone);
+
+	$("input[name='branchs["+(items-1)+"][name]']").focus();
+}
+
+function activateTemplate (id) {
+	var t = document.querySelector(id);
+	return document.importNode(t.content, true);
 }

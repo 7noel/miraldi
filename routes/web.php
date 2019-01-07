@@ -70,6 +70,9 @@ Route::group(['prefix'=>'admin', 'middleware'=>['auth', 'permissions'], 'namespa
 Route::group(['prefix'=>'finances', 'middleware'=>['auth', 'permissions'], 'namespace'=>'Finances'], function(){
 	Route::resource('exchanges','ExchangesController');
 	Route::resource('companies','CompaniesController');
+	Route::resource('clients','CompaniesController');
+	Route::resource('shippers','CompaniesController');
+	Route::resource('providers','CompaniesController');
 	Route::resource('payment_conditions','PaymentConditionsController');
 
 	Route::get('issuance_vouchers/by_order/{order_id}', ['as' => 'issuance_vouchers.by_order', 'uses' => 'ProofsController@byOrder']);
@@ -117,6 +120,8 @@ Route::group(['prefix'=>'humanresources', 'middleware'=>['auth', 'permissions'],
 });
 
 Route::group(['prefix'=>'sales', 'middleware'=>['auth', 'permissions'], 'namespace'=>'Sales'], function(){
+	Route::get('quotes/filter', ['as' => 'quotes.filter2','uses' => 'OrdersController@filter']);
+	Route::post('quotes/filter', ['as' => 'quotes.filter','uses' => 'OrdersController@filter']);
 	Route::get('orders/filter', ['as' => 'orders.filter2','uses' => 'OrdersController@filter']);
 	Route::post('orders/filter', ['as' => 'orders.filter','uses' => 'OrdersController@filter']);
 	Route::resource('quotes','OrdersController');

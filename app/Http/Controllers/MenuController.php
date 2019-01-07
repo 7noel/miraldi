@@ -91,12 +91,15 @@ class MenuController extends Controller
                 ['name' => 'Medios de Pago', 'route' => 'payment_conditions.index' ],
             ],
             'Ventas'=>[
-                ['name' => 'Cotizaciones', 'route' => 'quotes.index' ],
-                ['name' => 'Pedidos', 'route' => 'orders.index' ],
+                ['name' => 'Cotizaciones', 'route' => 'quotes.filter2' ],
+                ['name' => 'Pedidos', 'route' => 'orders.filter2' ],
                 ['name' => 'Facturación', 'route' => 'issuance_vouchers.index' ],
+                ['name' => 'Clientes', 'route' => 'clients.index' ],
+                ['name' => 'Transportistas', 'route' => 'shippers.index' ],
             ],
             'Logística'=>[
                 // ['name' => 'Ordenes de Compra', 'url' => '#' ],
+                ['name' => 'Proveedores', 'route' => 'providers.index' ],
                 ['name' => 'Compras', 'route' => 'reception_vouchers.index' ],
             ],
         ];

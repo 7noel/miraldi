@@ -21,7 +21,9 @@ class FormCompanyRequest extends Request {
 	 */
 	public function rules()
 	{
-		$data=Request::route()->parameters();
+		$data = Request::route()->parameters();
+		// dd(reset($data));
+		// dd($data);
 		$type = \Request::only('id_type_id')['id_type_id'];
 		switch ($type) {
 			case '1':
@@ -37,7 +39,7 @@ class FormCompanyRequest extends Request {
 		}
 		return [
 			'id_type_id'=>'required|numeric',
-			'doc' => $rules.'required|unique:companies,doc'.((empty($data)) ? ',NULL' : ','.$data['company']).',id,id_type_id,' . $type,
+			'doc' => $rules.'required|unique:companies,doc'.((empty($data)) ? ',NULL' : ','.reset($data)).',id,id_type_id,' . $type,
 			'company_name'=>'required_if:id_type_id,1,6',
 			'name'=>'required_if:id_type_id,2,3,4',
 			'paternal_surname'=>'required_if:id_type_id,2,3,4',

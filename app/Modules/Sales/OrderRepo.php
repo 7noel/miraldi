@@ -30,11 +30,27 @@ class OrderRepo extends BaseRepo{
 		}
 		return $model;
 	}
+
+	public function getNextNumber($order_type, $my_company = 1)
+	{
+		$last = Order::where('my_company', $my_company)->where('order_type', $order_type)->orderBy('sn', 'desc')->first();
+		if ($last) {
+			return $last->sn + 1;
+		} else {
+			return config("options.last_number.$my_company.$order_type") + 1;
+		}
+	}
+
 	public function prepareData($data)
 	{
 		if ($data['my_company'] == '') {
 			$data['my_company'] = session('my_company')->id;
 		}
+
+		if (($data['order_type'] == 1 or $data['order_type'] == 2) and $data['sn'] == '') {
+			$data['sn'] = $this->getNextNumber($data['order_type'], $data['my_company']);
+		}
+
 		$data['document_type_id'] = 6;
 		$data['mov'] = 0;
 		$data['type_op'] = '01'; //2135
@@ -139,20 +155,18 @@ class OrderRepo extends BaseRepo{
 		return $data;
 	}
 
-	public function filter($filter)
+	public function filter($filter, $order_type)
 	{
-		$q = Order::where('created_at', '>=', $filter->f1)->where('created_at', '<=', $filter->f2);
-		if ($filter->id > 0) {
-			return Order::where('id', $filter->id)->get();
+		$q = Order::where('my_company', session('my_company')->id)->where('order_type', $order_type);
+		if ($filter->sn > 0) {
+			return Order::where('sn', $filter->sn)->get();
 		} else {
+			$q->where('created_at', '>=', $filter->f1)->where('created_at', '<=', $filter->f2.' 24:00:00');
 			if($filter->seller_id > 0) {
 				$q->where('seller_id', $filter->seller_id);
 			}
 			if($filter->status > 0) {
 				$q->where('status', $filter->status);
-			}
-			if($filter->my_company > 0) {
-				$q->where('my_company', $filter->my_company);
 			}
 			return $q->get();
 		}
