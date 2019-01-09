@@ -18,8 +18,8 @@
 							<div class="col-sm-2">
 							{!! Form::select('status', ['' => 'Seleccionar'] + config('options.order_status'), null, ['class'=>'form-control', 'id'=>'status']); !!}
 							</div>
-							{!! Form::label('id','Numero', ['class'=>'col-sm-1 control-label']) !!}
+							{!! Form::label('sn','Numero', ['class'=>'col-sm-1 control-label']) !!}
 							<div class="col-sm-2">
-							{!! Form::text('id', null, ['class'=>'form-control', 'id'=>'id']); !!}
+							{!! Form::text('sn', null, ['class'=>'form-control', 'id'=>'sn']); !!}
 							</div>
 						</div>

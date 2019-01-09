@@ -1,7 +1,7 @@
 					{!! Form::hidden('order_type', 2) !!}
 					{!! Form::hidden('my_company', session('my_company')->id) !!}
 					<div class="form-group form-group-sm">
-						{!! Form::label('sn','Pedido Nº', ['class'=>'col-sm-2 control-label']) !!}
+						{!! Form::label('sn','Cotización Nº', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-2">
 						{!! Form::text('sn', null, ['class'=>'form-control text-center', 'readonly']) !!}
 						</div>

@@ -4,7 +4,7 @@
 <div class="container">
 
 	<div class="row">
-		<div class="col-md-10 col-md-offset-1">
+		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading panel-heading-custom">CONSULTAR {{ strtoupper(config($labels['index'] .'.panel')) }}</div>
 					<div class="panel-body">

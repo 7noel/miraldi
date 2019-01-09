@@ -1,4 +1,7 @@
 $(document).ready(function () {
+	$("form").submit(function(e){
+		this.querySelector("[type='submit']").setAttribute("disabled", "disabled");
+	})
 	$(document).on("click", '.dropdown-submenu a.test', function(e){
 		$(this).parent().parent().find('.ul-submenu').not($(this).next('ul')).hide()
 		$(this).next('ul').toggle();
@@ -26,9 +29,6 @@ $(document).ready(function () {
 		$('#lstProvincia').removeAttr( "required" );
 		$('#lstDistrito').removeAttr( "required" );
 	}
-	$(document).bind('keydown', 'ctrl+l', function(){
-		//alert("Has pulsado ctrl+l");
-	});
 	// $(document).on('click', '.btn-delete-item', function (e) {
 	// 	e.preventDefault()
 	// 	if ($(this).parent().find('.isdeleted').is(':checked')	) {

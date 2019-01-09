@@ -2,6 +2,12 @@ var descuento1 = 0;
 var descuento2 = 0;
 var addAccessory = false;
 $(document).ready(function(){
+	$(document).keydown(function(e) {
+		tecla=(document.all) ? e.keyCode : e.which; 
+		if (tecla==65 && e.altKey){
+			addRowProduct();
+		}
+	})
 	if ($('#company_doc').val() == 1) {
 		if ($('#document_type_id').val() == '' || $('#document_type_id').val() == 2) {
 			$('#document_type_id').val(1)

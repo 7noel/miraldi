@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-10 col-md-offset-1">
+        <div class="col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading">Bienvenido</div>
 
@@ -20,7 +20,7 @@
                             </a>
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                            <a href="{{ route('orders.index') }}" class="thumbnail">COTIZACIONES
+                            <a href="{{ route('orders.filter') }}" class="thumbnail">PEDIDOS
                                 <img src="/img/pedido2.png" alt="...">
                             </a>
                         </div>
