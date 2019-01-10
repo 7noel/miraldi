@@ -16,12 +16,12 @@
                         </div>
                         <div class="col-xs-6 col-sm-3">
                             <a href="{{ route('products.index') }}" class="thumbnail">PRODUCTOS
-                                <img src="/img/medical-devices.jpg" alt="...">
+                                <img src="/img/productos.gif" alt="...">
                             </a>
                         </div>
                         <div class="col-xs-6 col-sm-3">
                             <a href="{{ route('orders.filter') }}" class="thumbnail">PEDIDOS
-                                <img src="/img/pedido2.png" alt="...">
+                                <img src="/img/pedido.png" alt="...">
                             </a>
                         </div>
                         <div class="col-xs-6 col-sm-3">
