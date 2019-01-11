@@ -47,12 +47,21 @@ $(document).ready(function () {
 			return;
 		}
 	});
-	$('.uppercase').change(function(){
+	$(document).on('change', '.uppercase', function (e) {
 		var cadena=$(this).val();
 		cadena = cadena.replace("  "," ");
 		cadena = cadena.toUpperCase();
 		$(this).val(cadena);
-	});
+	})
+	
+	// $('.uppercase').change(function(){
+	// 	var cadena=$(this).val();
+	// 	cadena = cadena.replace("  "," ");
+	// 	cadena = cadena.toUpperCase();
+	// 	$(this).val(cadena);
+	// });
+ 
+
 	//carga departamentos
 	$('#lstCountry').change(function(){
 		var country = $('#lstCountry').val();
@@ -95,9 +104,18 @@ $(document).ready(function () {
 			$('#company_id').val(cod);
 		}
 	});
+
+	$('#txtUbigeo').autocomplete({
+		source: "api/ubigeos/autocompleteAjax",
+		minLength: 2,
+		select: function(event, ui){
+			var cod=ui.item.id;
+			$('#ubigeo_id').val(cod);
+		}
+	});
 	$('#txtuser').autocomplete({
 		source: "/guard/users/autocomplete",
-		minLength: 1,
+		minLength: 2,
 		select: function(event, ui){
 			var cod=ui.item.id;
 			$('#user_id').val(cod);

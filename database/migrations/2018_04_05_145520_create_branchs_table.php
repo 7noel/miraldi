@@ -12,7 +12,7 @@ class CreateBranchsTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('branchs', function(Blueprint $table)
+		Schema::create('branches', function(Blueprint $table)
 		{
 			$table->increments('id');
 			$table->integer('company_id')->unsigned();

@@ -13,11 +13,11 @@ class Branch extends Model implements Auditable {
 
 	public function company()
 	{
-		return $this->belongsTo('App\Modules\Finances\Company','id','company_id');
+		return $this->belongsTo('App\Modules\Finances\Company');
 	}
 	public function ubigeo()
 	{
-		return $this->belongsTo('App\Modules\Base\Ubigeo','id','ubigeo_id');
+		return $this->belongsTo('App\Modules\Base\Ubigeo');
 	}
 	public function country()
 	{

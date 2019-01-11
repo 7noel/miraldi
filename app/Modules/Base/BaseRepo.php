@@ -201,6 +201,13 @@ abstract class BaseRepo{
 		}
 		return $data;
 	}
+
+	/**
+	 * Graba varios hijos
+	 * @param  array $items Contiene los items
+	 * @param  array $k     contiene 2 elemento el primero con clave key y el segundo con value que pertenecen al padre
+	 * @return true        [description]
+	 */
 	public function saveMany($items, $k)
 	{
 		foreach ($items as $key => $data) {
@@ -220,5 +227,6 @@ abstract class BaseRepo{
 				}
 			}
 		}
+		return true;
 	}
 }

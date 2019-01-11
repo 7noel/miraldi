@@ -38,6 +38,24 @@ $(document).ready(function(){
 	$('#btnAddBranch').click(function(e){
 		addRowBranch();
 	});
+
+	$(document).on('focus','.txtUbigeo', function (e) {
+		//console.log($(this));
+		$var = {}
+		$var.this = this;
+		if ( !$($var.this).data("autocomplete") ) {
+			e.preventDefault();
+			$($var.this).autocomplete({
+				source: "/api/ubigeos/autocompleteAjax",
+				minLength: 2,
+				select: function(event, ui){
+					var cod=ui.item.id;
+					$($var.this).parent().parent().find('.ubigeoId').val(cod);
+				}
+			});
+		}
+	});
+
 });
 
 function getDataPadron (ruc) {
@@ -57,13 +75,13 @@ function getDataPadron (ruc) {
 function addRowBranch() {
 	var items = $('#items').val();
 	if (items>0) {
-		if ($("input[name='branchs["+(items-1)+"][name]']").val() == "") {
+		if ($("input[name='branches["+(items-1)+"][name]']").val() == "") {
 			console.log('en el segundo if');
-			$("input[name='branchs["+(items-1)+"][name]']").focus();
-		} else if ($("input[name='branchs["+(items-1)+"][address]']").val() == "") {
-			$("input[name='branchs["+(items-1)+"][address]']").focus();
-		} else if ($("input[name='branchs["+(items-1)+"][ubigeo_id]']").val() == "") {
-			$("input[name='branchs["+(items-1)+"][ubigeo]']").focus();
+			$("input[name='branches["+(items-1)+"][name]']").focus();
+		} else if ($("input[name='branches["+(items-1)+"][address]']").val() == "") {
+			$("input[name='branches["+(items-1)+"][address]']").focus();
+		} else if ($("input[name='branches["+(items-1)+"][ubigeo_id]']").val() == "") {
+			$("input[name='branches["+(items-1)+"][ubigeo]']").focus();
 		} else{
 			renderTemplateRowProduct();
 		}
@@ -75,21 +93,21 @@ function addRowBranch() {
 function renderTemplateRowProduct () {
 	var clone = activateTemplate("#template-row-item");
 	var items = $('#items').val();
-	clone.querySelector("[data-branchId]").setAttribute("name", "branchs[" + items + "][branch_id]");
-	clone.querySelector("[data-ubigeoId]").setAttribute("name", "branchs[" + items + "][ubigeo_id]");
-	clone.querySelector("[data-name]").setAttribute("name", "branchs[" + items + "][name]");
-	clone.querySelector("[data-address]").setAttribute("name", "branchs[" + items + "][address]");
-	clone.querySelector("[data-ubigeo]").setAttribute("name", "branchs[" + items + "][ubigeo]");
-	clone.querySelector("[data-mobile]").setAttribute("name", "branchs[" + items + "][mobile]");
-	clone.querySelector("[data-contact]").setAttribute("name", "branchs[" + items + "][contact]");
-	clone.querySelector("[data-isdeleted]").setAttribute("name", "branchs[" + items + "][is_deleted]");
-	//if (items>0) {$("input[name='branchs["+(items-1)+"][txtProduct]']").attr('disabled', true);};
+	clone.querySelector("[data-branchId]").setAttribute("name", "branches[" + items + "][branch_id]");
+	clone.querySelector("[data-ubigeoId]").setAttribute("name", "branches[" + items + "][ubigeo_id]");
+	clone.querySelector("[data-name]").setAttribute("name", "branches[" + items + "][name]");
+	clone.querySelector("[data-address]").setAttribute("name", "branches[" + items + "][address]");
+	clone.querySelector("[data-ubigeo]").setAttribute("name", "branches[" + items + "][ubigeo]");
+	clone.querySelector("[data-mobile]").setAttribute("name", "branches[" + items + "][mobile]");
+	clone.querySelector("[data-contact]").setAttribute("name", "branches[" + items + "][contact]");
+	clone.querySelector("[data-isdeleted]").setAttribute("name", "branches[" + items + "][is_deleted]");
+	//if (items>0) {$("input[name='branches["+(items-1)+"][txtProduct]']").attr('disabled', true);};
 	
 	items = parseInt(items) + 1;
 	$('#items').val(items);
 	$("#tableItems").append(clone);
 
-	$("input[name='branchs["+(items-1)+"][name]']").focus();
+	$("input[name='branches["+(items-1)+"][name]']").focus();
 }
 
 function activateTemplate (id) {

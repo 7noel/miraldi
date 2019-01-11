@@ -35,6 +35,7 @@ Route::group(['middleware' => ['web']], function() {
 Route::get('/home', 'HomeController@index');
 
 Route::group(['middleware'=>['auth']], function(){
+	Route::get('api/ubigeos/autocompleteAjax', ['as' => 'ubigeosAutocomplete', 'uses' => 'Admin\UbigeosController@autocompleteAjax']);
 	//Obtener provincas y distritos x ajax
 	Route::get('listarProvincias/{departamento}', ['as' => 'ajaxprovincias', 'uses' => 'Admin\UbigeosController@ajaxProvincias']);
 	Route::get('listarDistritos/{departamento}/{provincia}', ['as' => 'ajaxdistritos','uses' => 'Admin\UbigeosController@ajaxDistritos']);

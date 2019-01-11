@@ -24,7 +24,7 @@ class CreateCompaniesTable extends Migration {
 			$table->string('doc');
 			$table->string('address');
 			$table->integer('ubigeo_id')->unsigned();
-			$table->integer('country_id')->unsigned()->default(1461);
+			$table->integer('country_id')->unsigned()->default(1465);
 			$table->string('phone');
 			$table->string('mobile');
 			$table->string('email');

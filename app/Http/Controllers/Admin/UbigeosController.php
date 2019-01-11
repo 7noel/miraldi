@@ -31,4 +31,18 @@ class UbigeosController extends Controller{
 	{
 		return response()->json($this->ubigeoRepo->findByCode($code));
 	}
+	public function autocompleteAjax($value='')
+	{
+		$term = \Input::get('term');
+		$models = $this->ubigeoRepo->autocomplete($term);
+		$result = [];
+		foreach ($models as $model) {
+			$result[]=[
+				'value' => $model->departamento.'-'.$model->provincia.'-'.$model->distrito,
+				'id' => $model->id,
+				'label' => $model->departamento.'-'.$model->provincia.'-'.$model->distrito,
+			];
+		}
+		return \Response::json($result);
+	}
 }

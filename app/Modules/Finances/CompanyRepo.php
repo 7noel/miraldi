@@ -4,6 +4,7 @@ namespace App\Modules\Finances;
 
 use App\Modules\Base\BaseRepo;
 use App\Modules\Finances\Company;
+use App\Modules\Finances\BranchRepo;
 
 class CompanyRepo extends BaseRepo{
 
@@ -32,6 +33,9 @@ class CompanyRepo extends BaseRepo{
 		if($data['id_type_id'] != 1 and $data['id_type_id'] != 6){
 			$data['company_name'] = $data['paternal_surname'].' '.$data['maternal_surname'].' '.$data['name'];
 		}
+		if ( $this->getType() ) {
+			$data[$this->getType()] = 1;
+		}
 		// if(!isset($data['is_my_company'])){
 		// 	$data['is_my_company'] = false;
 		// }
@@ -40,6 +44,20 @@ class CompanyRepo extends BaseRepo{
 		}
 		return $data;
 	}
+
+	public function save($data, $id=0)
+	{
+		$data = $this->prepareData($data);
+		$model = parent::save($data, $id);
+
+		if (isset($data['branches'])) {
+			$branchRepo= new BranchRepo;
+			$branchRepo->saveMany($data['branches'], ['key'=>'company_id', 'value'=>$model->id]);
+		}
+
+		return $model;
+	}
+
 	public function getListMyCompany()
 	{
 		return [""=>"Seleccionar"] + Company::where('is_my_company','1')->pluck('company_name', 'id')->toArray();
@@ -51,8 +69,12 @@ class CompanyRepo extends BaseRepo{
 	public function getType()
 	{
 		$a = explode('.', \Request::route()->getName())[0];
-		$array = array('clients' => 'is_client', 'providers' => 'is_provider', 'shippers' => 'is_shipper');
-		return $array[$a];
+		$array = array('clients' => 'is_client', 'providers' => 'is_provider', 'shippers' => 'is_shipper', 'companies' => 'is_my_company');
+		if (isset($array[$a])) {
+			return $array[$a];
+		} else {
+			return false;
+		}
 	}
 
 	

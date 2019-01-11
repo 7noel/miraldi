@@ -88,11 +88,11 @@ class CompaniesController extends Controller {
 	{
 		$data = \Request::all();
 		if ($this->getType() == 'clients') {
-			$data['is_client'] == 1;
+			$data['is_client'] = 1;
 		} elseif ($this->getType() == 'providers') {
-			$data['is_provider'] == 1;
+			$data['is_provider'] = 1;
 		} elseif ($this->getType() == 'shippers') {
-			$data['is_shipper'] == 1;
+			$data['is_shipper'] = 1;
 		}
 		
 		$this->repo->save($data, $id);

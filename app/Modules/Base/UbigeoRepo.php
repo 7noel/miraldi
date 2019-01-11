@@ -93,4 +93,8 @@ class UbigeoRepo extends BaseRepo{
 	{
 		return Ubigeo::where('code', $code)->first();
 	}
+	public function autocomplete($term)
+	{
+		return Ubigeo::where('departamento','like',"%$term%")->orWhere('provincia','like',"%$term%")->orWhere('distrito','like',"%$term%")->get();
+	}
 }

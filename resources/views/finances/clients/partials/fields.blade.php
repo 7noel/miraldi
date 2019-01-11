@@ -97,20 +97,20 @@
 								</tr>
 							</thead>
 							<tbody id="tableItems">
-							@if(isset($model->branchs))
-							@foreach($model->branchs as $branch)
+							@if(isset($model->branches))
+							@foreach($model->branches as $branch)
 								<tr data-id="{{ $branch->id }}">
-									{!! Form::hidden("branchs[$i][id]", $branch->id, ['class'=>'branchId','data-branchId'=>'']) !!}
-									{!! Form::hidden("branchs[$i][ubigeo_id]", $branch->ubigeo_id, ['class'=>'ubigeoId','data-ubigeoId'=>'']) !!}
-									<td><span class='form-control input-sm intern_code text-right' data-labelid>{{ $branch->product->intern_code }}</span></td>
-									<td>{!! Form::text("branchs[$i][txtProduct]", $branch->product->name, ['class'=>'form-control input-sm txtProduct', 'data-product'=>'', 'required'=>'required', 'disabled']); !!}</td>
-									<td>{!! Form::text("branchs[$i][quantity]", $branch->quantity, ['class'=>'form-control input-sm txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
-									<td class="withTax">{!! Form::text("branchs[$i][price]", $branch->price, ['class'=>'form-control input-sm txtPrecio text-right', 'data-precio'=>'']) !!}</td>
-									<td class="withoutTax">{!! Form::text("branchs[$i][value]", $branch->value, ['class'=>'form-control input-sm txtValue text-right', 'data-value'=>'']) !!}</td>
-									<td>{!! Form::text("branchs[$i][d1]", $branch->d1, ['class'=>'form-control input-sm txtDscto text-right', 'data-dscto'=>'']) !!}</td>
+									{!! Form::hidden("branches[$i][id]", $branch->id, ['class'=>'branchId','data-branchId'=>'']) !!}
+									{!! Form::hidden("branches[$i][ubigeo_id]", $branch->ubigeo_id, ['class'=>'ubigeoId','data-ubigeoId'=>'']) !!}
+
+<td>{!! Form::text("branches[$i][name]", null, ['class'=>'form-control input-sm txtName uppercase', 'data-name'=>'', 'required'=>'required']) !!}</td>
+<td>{!! Form::text("branches[$i][address]", null, ['class'=>'form-control input-sm txtAddress uppercase', 'data-address'=>'']) !!}</td>
+<td>{!! Form::text("branches[$i][ubigeo]", $branch->ubigeo->departamento.'-'.$branch->ubigeo->provincia.'-'.$branch->ubigeo->distrito, ['class'=>'form-control input-sm txtUbigeo', 'data-ubigeo'=>'']) !!}</td>
+<td>{!! Form::text("branches[$i][mobile]", null, ['class'=>'form-control input-sm txtMobile', 'data-mobile'=>'']) !!}</td>
+<td>{!! Form::text("branches[$i][contact]", null, ['class'=>'form-control input-sm txtContact uppercase', 'data-contact'=>'']) !!}</td>
 									<td class="text-center form-inline">
 										<a href="#" class="btn btn-danger btn-xs btn-delete-item" title="Eliminar">{!! config('options.icons.remove') !!}</a>
-										<input type="checkbox" name="branchs[{{$i}}][is_deleted]" data-isdeleted class="isdeleted hidden">
+										<input type="checkbox" name="branches[{{$i}}][is_deleted]" data-isdeleted class="isdeleted hidden">
 									</td>
 								</tr>
 								@php $i++; @endphp
@@ -123,11 +123,11 @@
 							<tr>
 								{!! Form::hidden('data1', null, ['class'=>'branchId','data-branchId'=>'']) !!}
 								{!! Form::hidden('data2', null, ['class'=>'ubigeoId','data-ubigeoId'=>'']) !!}
-								<td>{!! Form::text('data3', null, ['class'=>'form-control input-sm txtName', 'data-name'=>'', 'required'=>'required']) !!}</td>
-								<td>{!! Form::text('data4', null, ['class'=>'form-control input-sm txtAddress', 'data-address'=>'']) !!}</td>
+								<td>{!! Form::text('data3', null, ['class'=>'form-control input-sm txtName uppercase', 'data-name'=>'', 'required'=>'required']) !!}</td>
+								<td>{!! Form::text('data4', null, ['class'=>'form-control input-sm txtAddress uppercase', 'data-address'=>'']) !!}</td>
 								<td>{!! Form::text('data5', null, ['class'=>'form-control input-sm txtUbigeo', 'data-ubigeo'=>'']) !!}</td>
 								<td>{!! Form::text('data7', null, ['class'=>'form-control input-sm txtMobile', 'data-mobile'=>'']) !!}</td>
-								<td>{!! Form::text('data6', null, ['class'=>'form-control input-sm txtContact', 'data-contact'=>'']) !!}</td>
+								<td>{!! Form::text('data6', null, ['class'=>'form-control input-sm txtContact uppercase', 'data-contact'=>'']) !!}</td>
 								<td class="text-center form-inline">
 									<a href="#" class="btn btn-danger btn-xs btn-delete-item" title="Eliminar">{!! config('options.icons.remove') !!}</a>
 									<input type="checkbox" name="data8" data-isdeleted class="isdeleted hidden">
