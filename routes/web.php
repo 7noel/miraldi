@@ -47,7 +47,7 @@ Route::group(['middleware'=>['auth']], function(){
 	Route::get('storage/products/autocomplete/{warehouse_id}', ['as' => 'productsAutocomplete','uses' => 'Storage\ProductsController@ajaxAutocomplete']);
 	Route::get('storage/products/ajaxGetData/{warehouse_id}/{product_id}', ['as' => 'ajaxGetData','uses' => 'Storage\ProductsController@ajaxGetData']);
 	Route::get('guard/users/autocomplete', ['as' => 'usersAutocomplete','uses' => 'Security\UsersController@ajaxAutocomplete']);
-	Route::get('api/companies/autocompleteAjax', ['as' => 'companiesAutocomplete','uses' => 'Finances\CompaniesController@ajaxAutocomplete']);
+	Route::get('api/companies/autocompleteAjax/{type}', ['as' => 'companiesAutocomplete','uses' => 'Finances\CompaniesController@ajaxAutocomplete']);
 	Route::get('api/sellers/autocompleteAjax', ['as' => 'sellersAutocomplete','uses' => 'HumanResources\EmployeesController@ajaxAutocompleteSellers']);
 	Route::get('api/products/autocompleteAjax', ['as' => 'productsAutocomplete','uses' => 'Storage\ProductsController@ajaxAutocomplete']);
 	Route::get('api/stocks/autocompleteAjax/{stock_id}', ['as' => 'stocksAutocomplete','uses' => 'Storage\ProductsController@ajaxAutocomplete2']);
@@ -121,6 +121,7 @@ Route::group(['prefix'=>'humanresources', 'middleware'=>['auth', 'permissions'],
 });
 
 Route::group(['prefix'=>'sales', 'middleware'=>['auth', 'permissions'], 'namespace'=>'Sales'], function(){
+	Route::get('order/by_quote/{order_id}', ['as' => 'orders.by_quote', 'uses' => 'OrdersController@byQuote']);
 	Route::get('quotes/filter', ['as' => 'quotes.filter2','uses' => 'OrdersController@filter']);
 	Route::post('quotes/filter', ['as' => 'quotes.filter','uses' => 'OrdersController@filter']);
 	Route::get('orders/filter', ['as' => 'orders.filter2','uses' => 'OrdersController@filter']);

@@ -32,7 +32,7 @@ $(document).ready(function(){
 	})
 
 	$('#txtCompany').autocomplete({
-		source: "/api/companies/autocompleteAjax/",
+		source: "/api/companies/autocompleteAjax/is_client",
 		minLength: 4,
 		select: function(event, ui){
 			$('#company_id').val(ui.item.id);
@@ -49,6 +49,17 @@ $(document).ready(function(){
 			}
 		}
 	});
+
+	$('#txtShipper').autocomplete({
+		source: "/api/companies/autocompleteAjax/is_shipper",
+		minLength: 4,
+		select: function(event, ui){
+			$('#shipper_id').val(ui.item.id);
+			$('#lstSeller').focus();
+		}
+	});
+
+
 	$(document).on('click', '.btn-delete-item', function (e) {
 		e.preventDefault()
 		if ($(this).parent().find('.isdeleted').is(':checked')	) {

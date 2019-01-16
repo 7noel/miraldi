@@ -20,9 +20,16 @@ class CompanyRepo extends BaseRepo{
 			return Company::where($this->getType(), 1)->orderBy('id', 'DESC')->paginate();
 		}
 	}
-	public function autocomplete($term)
+	public function autocomplete($term, $type)
 	{
-		return Company::where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%")->with('id_type')->get();
+		return Company::where($type, 1)
+			->where(function ($query) {
+				$query->where('company_name', 'like', "%$term%")
+          		->orWhere('doc','like',"%$term%");
+			})
+			->with('id_type')->get();
+
+		//where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%")->with('id_type')->get();
 	}
 	public function prepareData($data)
 	{

@@ -299,6 +299,7 @@ class AdminTableSeeder extends Seeder {
 
         PaymentCondition::create(['name' => 'CONTADO', 'to_sales' => '1', 'to_purchases' => '1']);
         PaymentCondition::create(['name' => 'CRÉDITO', 'to_sales' => '1', 'to_purchases' => '1']);
+        PaymentCondition::create(['name' => 'LETRAS', 'to_sales' => '1', 'to_purchases' => '1']);
         
         UnitType::create(['name' => 'UNIDAD']);
         UnitType::create(['name' => 'LONGITUD']);
@@ -361,16 +362,16 @@ class AdminTableSeeder extends Seeder {
         SubCategory::create(['name' => 'SEGURIDAD INDUSTRIAL Y PROTECCION PERSONAL', 'category_id' => 1]);
 
 
-        Brand::create(['name' => 'ADVANCED', 'is_car' => '0']);
-        Brand::create(['name' => 'EUROCOLUMBUS', 'is_car' => '0']);
-        Brand::create(['name' => 'FAMED LODZ', 'is_car' => '0']);
-        Brand::create(['name' => 'FAMED ZYWIEC', 'is_car' => '0']);
-        Brand::create(['name' => 'GMM', 'is_car' => '0']);
-        Brand::create(['name' => 'HERSILL', 'is_car' => '0']);
-        Brand::create(['name' => 'NEUMOVENT', 'is_car' => '0']);
-        Brand::create(['name' => 'PROHS', 'is_car' => '0']);
-        Brand::create(['name' => 'TSE', 'is_car' => '0']);
-        Brand::create(['name' => 'ZOLL', 'is_car' => '0']);
+        // Brand::create(['name' => 'ADVANCED', 'is_car' => '0']);
+        // Brand::create(['name' => 'EUROCOLUMBUS', 'is_car' => '0']);
+        // Brand::create(['name' => 'FAMED LODZ', 'is_car' => '0']);
+        // Brand::create(['name' => 'FAMED ZYWIEC', 'is_car' => '0']);
+        // Brand::create(['name' => 'GMM', 'is_car' => '0']);
+        // Brand::create(['name' => 'HERSILL', 'is_car' => '0']);
+        // Brand::create(['name' => 'NEUMOVENT', 'is_car' => '0']);
+        // Brand::create(['name' => 'PROHS', 'is_car' => '0']);
+        // Brand::create(['name' => 'TSE', 'is_car' => '0']);
+        // Brand::create(['name' => 'ZOLL', 'is_car' => '0']);
 
         Warehouse::create(['name' => 'ALMACEN IMPORTACIONES', 'ubigeo_id' => 1309, 'address' => 'DIRECCION']);
         Warehouse::create(['name' => 'ALMACEN HERRAMAX', 'ubigeo_id' => 1309, 'address' => 'DIRECCION']);
@@ -378,11 +379,11 @@ class AdminTableSeeder extends Seeder {
 
 
         Bank::create(['label' => 'HERRAMAX BCP SOLES', 'number' => '194-2438503-0-42', 'CCI' => '', 'company_id' => 2, 'currency_id' => 1, 'value' => 0]);
-        Bank::create(['label' => 'IMPORTACIONES BCP SOLES', 'number' => '194-2386744-0-23', 'CCI' => '', 'company_id' => 2, 'currency_id' => 1, 'value' => 0]);
-        Bank::create(['label' => 'IMPORTACIONES BCP DOLARES', 'number' => '194-2394196-1-06', 'CCI' => '', 'company_id' => 2, 'currency_id' => 2, 'value' => 0]);
-        Bank::create(['label' => 'MIRALDI BCP SOLES', 'number' => '194-2447511-0-32', 'CCI' => '', 'company_id' => 2, 'currency_id' => 1, 'value' => 0]);
-        Bank::create(['label' => 'MIRALDI BCP DOLARES', 'number' => '194-2441216-1-56', 'CCI' => '', 'company_id' => 2, 'currency_id' => 2, 'value' => 0]);
-        Bank::create(['label' => 'MIRALDI BCP SOLES AHORROS', 'number' => '194-38124038-0-28', 'CCI' => '', 'company_id' => 2, 'currency_id' => 1, 'value' => 0]);
+        Bank::create(['label' => 'IMPORTACIONES BCP SOLES', 'number' => '194-2386744-0-23', 'CCI' => '', 'company_id' => 1, 'currency_id' => 1, 'value' => 0]);
+        Bank::create(['label' => 'IMPORTACIONES BCP DOLARES', 'number' => '194-2394196-1-06', 'CCI' => '', 'company_id' => 1, 'currency_id' => 2, 'value' => 0]);
+        Bank::create(['label' => 'MIRALDI BCP SOLES', 'number' => '194-2447511-0-32', 'CCI' => '', 'company_id' => 3, 'currency_id' => 1, 'value' => 0]);
+        Bank::create(['label' => 'MIRALDI BCP DOLARES', 'number' => '194-2441216-1-56', 'CCI' => '', 'company_id' => 3, 'currency_id' => 2, 'value' => 0]);
+        Bank::create(['label' => 'MIRALDI BCP SOLES AHORROS', 'number' => '194-38124038-0-28', 'CCI' => '', 'company_id' => 3, 'currency_id' => 1, 'value' => 0]);
 
     }
 }
