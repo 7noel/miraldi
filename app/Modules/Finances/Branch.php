@@ -1,4 +1,5 @@
-<?php namespace App\Modules\Finances;
+<?php
+namespace App\Modules\Finances;
 
 use OwenIt\Auditing\Contracts\Auditable;
 use Illuminate\Database\Eloquent\Model;

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBranchsTable extends Migration {
+class CreateBranchesTable extends Migration {
 
 	/**
 	 * Run the migrations.
@@ -40,7 +40,7 @@ class CreateBranchsTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::dropIfExists('branchs');
+		Schema::dropIfExists('branches');
 	}
 
 }
