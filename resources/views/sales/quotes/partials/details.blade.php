@@ -26,8 +26,8 @@
 									<td><span class='form-control input-sm intern_code text-right' data-labelid>{{ $detail->product->intern_code }}</span></td>
 									<td>{!! Form::text("details[$i][txtProduct]", $detail->product->name, ['class'=>'form-control input-sm txtProduct', 'data-product'=>'', 'required'=>'required', 'disabled']); !!}</td>
 									<td>{!! Form::text("details[$i][quantity]", $detail->quantity, ['class'=>'form-control input-sm txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
-									<td class="withTax">{!! Form::text("details[$i][price]", $detail->price, ['class'=>'form-control input-sm txtPrecio text-right', 'data-precio'=>'']) !!}</td>
-									<td class="withoutTax">{!! Form::text("details[$i][value]", $detail->value, ['class'=>'form-control input-sm txtValue text-right', 'data-value'=>'']) !!}</td>
+									<td class="withTax">{!! Form::text("details[$i][price]", $detail->price, ['class'=>'form-control input-sm txtPrecio text-right', 'data-precio'=>'', 'readonly'=>'readonly']) !!}</td>
+									<td class="withoutTax">{!! Form::text("details[$i][value]", $detail->value, ['class'=>'form-control input-sm txtValue text-right', 'data-value'=>'', 'readonly'=>'readonly']) !!}</td>
 									<td>{!! Form::text("details[$i][d1]", $detail->d1, ['class'=>'form-control input-sm txtDscto text-right', 'data-dscto'=>'']) !!}</td>
 									<td>{!! Form::text("details[$i][d2]", $detail->d2, ['class'=>'form-control input-sm txtDscto2 text-right', 'data-dscto'=>'']) !!}</td>
 									<!-- <td> <span class='form-control input-sm txtTotal text-right' data-total>{{ $detail->total }}</span> </td> -->
@@ -49,8 +49,8 @@
 								<td><span class='form-control input-sm intern_code text-right' data-labelid></span></td>
 								<td>{!! Form::text('data3', null, ['class'=>'col-sm-4 form-control input-sm txtProduct', 'data-product'=>'', 'required'=>'required']); !!}</td>
 								<td>{!! Form::text('data4', null, ['class'=>'form-control input-sm txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
-								<td class="withTax">{!! Form::text('data5', null, ['class'=>'form-control input-sm txtPrecio text-right', 'data-precio'=>'']) !!}</td>
-								<td class="withoutTax">{!! Form::text('data7', null, ['class'=>'form-control input-sm txtValue text-right', 'data-value'=>'']) !!}</td>
+								<td class="withTax">{!! Form::text('data5', null, ['class'=>'form-control input-sm txtPrecio text-right', 'data-precio'=>'', 'readonly'=>'readonly']) !!}</td>
+								<td class="withoutTax">{!! Form::text('data7', null, ['class'=>'form-control input-sm txtValue text-right', 'data-value'=>'', 'readonly'=>'readonly']) !!}</td>
 								<td>{!! Form::text('data6', null, ['class'=>'form-control input-sm txtDscto text-right', 'data-dscto'=>'']) !!}</td>
 								<td>{!! Form::text('data8', null, ['class'=>'form-control input-sm txtDscto2 text-right', 'data-dscto2'=>'']) !!}</td>
 								<!-- <td> <span class='form-control input-sm txtTotal text-right' data-total></span> </td> -->

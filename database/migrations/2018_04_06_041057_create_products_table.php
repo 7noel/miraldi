@@ -21,18 +21,17 @@ class CreateProductsTable extends Migration {
 			$table->string('name');
 			$table->text('description');
 			$table->integer('country_id')->unsigned();
-			$table->integer('brand_id')->unsigned();
-			$table->string('model');
+			$table->string('brand');
 			$table->integer('sub_category_id')->unsigned();
 			$table->integer('unit_id')->unsigned();
-			$table->integer('currency_id')->unsigned();
+			$table->integer('currency_id')->unsigned()->default(1);
 
 			$table->decimal('last_purchase', 15, 2);
 			$table->decimal('profit_margin', 10, 2);
 			$table->decimal('admin_expense', 10, 2);
 			$table->decimal('value', 15, 2);
 			$table->boolean('use_set_value');
-			$table->boolean('is_downloadable');
+			$table->boolean('is_downloadable')->default(true);
 			$table->integer('status')->unsigned()->default(1);
 
 			$table->foreign('currency_id')->references('id')->on('currencies');

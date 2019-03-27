@@ -39,8 +39,8 @@ class OrdersController extends Controller {
 			$filter->sn = '';
 			$filter->seller_id = '';
 			$filter->status = '';
-			$filter->f1 = date('Y-m-d');
-			$filter->f2 = date('Y-m-d');
+			$filter->f1 = date('Y-m-d', strtotime('first day of this month'));
+			$filter->f2 = date('Y-m-d', strtotime('last day of this month'));
 		}
 		$models = $this->repo->filter($filter, $order_type);
 

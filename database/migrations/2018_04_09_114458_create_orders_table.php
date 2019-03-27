@@ -24,6 +24,7 @@ class CreateOrdersTable extends Migration
             $table->integer('company_id')->unsigned();
             $table->integer('branch_id')->unsigned();
             $table->integer('shipper_id')->unsigned();
+            $table->integer('shipper_branch_id')->unsigned();
             $table->integer('payment_condition_id')->unsigned();
             $table->integer('currency_id')->unsigned();
             $table->string('attention');

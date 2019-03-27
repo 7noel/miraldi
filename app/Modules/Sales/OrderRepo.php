@@ -34,7 +34,7 @@ class OrderRepo extends BaseRepo{
 	public function getNextNumber($order_type, $my_company = 1)
 	{
 		$last = Order::where('my_company', $my_company)->where('order_type', $order_type)->orderBy('sn', 'desc')->first();
-		if ($last) {
+		if ($last->sn > 0) {
 			return $last->sn + 1;
 		} else {
 			return config("options.last_number.$my_company.$order_type") + 1;
@@ -161,7 +161,7 @@ class OrderRepo extends BaseRepo{
 		if ($filter->sn > 0) {
 			return Order::where('sn', $filter->sn)->get();
 		} else {
-			$q->where('created_at', '>=', $filter->f1)->where('created_at', '<=', $filter->f2.' 24:00:00');
+			$q->where('created_at', '>=', $filter->f1)->where('created_at', '<=', $filter->f2.' 23:59:59');
 			if($filter->seller_id > 0) {
 				$q->where('seller_id', $filter->seller_id);
 			}

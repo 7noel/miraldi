@@ -19,13 +19,13 @@
 						</div>
 					</div>
 					<div class="form-group form-group-sm">
-						{!! Form::label('model','Modelo', ['class'=>'col-sm-2 control-label']) !!}
+						{!! Form::label('brand_id','Descargable', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-2">
-							{!! Form::text('model', null, ['class'=>'form-control']) !!}
+							{!! Form::select('is_downloadable', ['1' => 'SI', '0' => 'NO'], null, ['class'=>'form-control']); !!}
 						</div>
-						{!! Form::label('brand_id','Marca', ['class'=>'col-sm-2 control-label']) !!}
+						{!! Form::label('brand','Marca', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-2">
-							{!! Form::select('brand_id', $brands, null, ['class'=>'form-control']); !!}
+							{!! Form::text('brand', null, ['class'=>'form-control uppercase']) !!}
 						</div>
 						{!! Form::label('country_id','País', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-2">
@@ -53,11 +53,15 @@
 						</div>
 						{!! Form::label('last_purchase','Costo', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-2">
-							{!! Form::text('last_purchase', 0.00, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
+							{!! Form::number('last_purchase', 0.00, ['class'=>'form-control']) !!}
 						</div>
-						{!! Form::label('profit_margin','Utilidad (%)', ['class'=>'col-sm-2 control-label']) !!}
-						<div class="col-sm-2">
-							{!! Form::text('profit_margin', 0.00, ['class'=>'form-control']) !!}
+						{!! Form::label('admin_expense','Gastos (%)', ['class'=>'col-sm-1 control-label']) !!}
+						<div class="col-sm-1">
+							{!! Form::number('admin_expense', 30.00, ['class'=>'form-control', 'min' => '30.00']) !!}
+						</div>
+						{!! Form::label('profit_margin','Utilid. (%)', ['class'=>'col-sm-1 control-label']) !!}
+						<div class="col-sm-1">
+							{!! Form::number('profit_margin', 18.00, ['class'=>'form-control', 'min' => '18.00']) !!}
 						</div>
 					</div>
 					<div class="form-group form-group-sm">

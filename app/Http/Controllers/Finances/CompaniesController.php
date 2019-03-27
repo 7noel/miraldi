@@ -108,10 +108,10 @@ class CompaniesController extends Controller {
 		if (\Request::ajax()) {	return $model; }
 		return redirect()->route($this->getType().'.index');
 	}
-	public function ajaxAutocomplete()
+	public function ajaxAutocomplete($type = '')
 	{
 		$term = \Input::get('term');
-		$models = $this->repo->autocomplete($term);
+		$models = $this->repo->autocomplete($type, $term);
 		$result = [];
 		foreach ($models as $model) {
 			$result[]=[

@@ -2,11 +2,20 @@
 
 @section('content')
 <div class="container">
+<?php 
+if (isset($model->sn) and is_numeric($model->sn)) {
+	$model->name = str_pad($model->sn, 6, "0", STR_PAD_LEFT);
+} elseif (isset($model->sn)) {
+	$model->name = $model->sn;
+} else {
+	# code...
+}
 
+ ?>
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default">
-				<div class="panel-heading panel-heading-custom">{{ config($labels['edit'] .'.panel') . $model->name }}</div>
+				<div class="panel-heading panel-heading-custom">{!! config($labels['edit'] .'.panel') . "<strong>" . $model->name . "</strong>" !!}</div>
 
 				<div class="panel-body">
 					@include('partials.messages')

@@ -32,12 +32,12 @@ $(document).ready(function(){
 	})
 
 	$('#txtCompany').autocomplete({
-		source: "/api/companies/autocompleteAjax/",
+		source: "/api/companies/autocompleteAjax/clients/",
 		minLength: 4,
 		select: function(event, ui){
 			$('#company_id').val(ui.item.id);
 			$('#company_doc').val(ui.item.id_type_id);
-			$('#lstSeller').focus();
+			$('#lstBranch').focus();
 			if (ui.item.id_type_id == 1) {
 				if ($('#document_type_id').val() == '' || $('#document_type_id').val() == 2) {
 					$('#document_type_id').val(1)
@@ -47,6 +47,15 @@ $(document).ready(function(){
 					$('#document_type_id').val(2)
 				}
 			}
+		}
+	});
+	$('#txtShipper').autocomplete({
+		source: "/api/companies/autocompleteAjax/shippers/",
+		minLength: 4,
+		select: function(event, ui){
+			$('#shipper_id').val(ui.item.id);
+			// $('#company_doc').val(ui.item.id_type_id);
+			$('#lstBranchShipper').focus();
 		}
 	});
 	$(document).on('click', '.btn-delete-item', function (e) {

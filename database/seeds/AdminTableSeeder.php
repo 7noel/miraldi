@@ -299,6 +299,7 @@ class AdminTableSeeder extends Seeder {
 
         PaymentCondition::create(['name' => 'CONTADO', 'to_sales' => '1', 'to_purchases' => '1']);
         PaymentCondition::create(['name' => 'CRÉDITO', 'to_sales' => '1', 'to_purchases' => '1']);
+        PaymentCondition::create(['name' => 'LETRA', 'to_sales' => '1', 'to_purchases' => '1']);
         
         UnitType::create(['name' => 'UNIDAD']);
         UnitType::create(['name' => 'LONGITUD']);
