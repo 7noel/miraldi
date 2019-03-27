@@ -20,22 +20,23 @@ class CompanyRepo extends BaseRepo{
 			return Company::where($this->getType(), 1)->orderBy('id', 'DESC')->paginate();
 		}
 	}
+	
 	public function autocomplete($type, $term)
 	{
-		dd(Company::where('is_shipper', 1)->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%")->with('id_type')->toSql());
-		if ($type == 'clients') {
-			return Company::where('is_client', 1)->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%")->with('id_type')->get();
-		} elseif ($type == 'shippers') {
-			return Company::where('is_shipper', 1)->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%")->with('id_type')->get();
-		} elseif ($type == 'providers') {
-			return Company::where('is_provider', 1)->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%")->with('id_type')->get();
-		} elseif ($type == 'my_company') {
-			return Company::where('is_my_company', 1)->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%")->with('id_type')->get();
+		$matriz = array('clients' => 'is_client', 'shippers' => 'is_shipper', 'providers' => 'is_provider', 'my_company' => 'is_my_company');
+		if (isset($matriz[$type])) {
+			return Company::where($matriz[$type], 1)->where(function ($query) use ($term) {$query->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%");})->with('id_type')->get();
 		} else {
 			return Company::where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%")->with('id_type')->get();
 		}
-		
 	}
+		// } elseif ($type == 'shippers') {
+		// 	return Company::where('is_shipper', '=', 1)->where(function ($query) use ($term) {$query->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%");})->with('id_type')->get();
+		// } elseif ($type == 'providers') {
+		// 	return Company::where('is_provider', '=', 1)->where(function ($query) use ($term) {$query->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%");})->with('id_type')->get();
+		// } elseif ($type == 'my_company') {
+		// 	return Company::where('is_my_company', '=', 1)->where(function ($query) use ($term) {$query->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%");})->with('id_type')->get();
+		
 	public function prepareData($data)
 	{
 		$data['company_name'] = trim($data['company_name']);

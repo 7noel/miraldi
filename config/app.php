@@ -189,6 +189,9 @@ return [
 
         //Cyber-duck
         Cyberduck\LaravelExcel\ExcelServiceProvider::class,
+
+        // Barra par debugear
+        Barryvdh\Debugbar\ServiceProvider::class,
     ],
 
     /*
@@ -244,6 +247,7 @@ return [
         //DomPDF
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Carbon' => Illuminate\Support\Carbon::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
 
     ],
 
