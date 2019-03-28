@@ -112,16 +112,18 @@ class CompaniesController extends Controller {
 	{
 		$term = \Input::get('term');
 		$models = $this->repo->autocomplete($type, $term);
-		$result = [];
-		foreach ($models as $model) {
-			$result[]=[
+		$result = $models->map(function ($model){
+			return [
 				'value' => $model->company_name,
 				'id' => $model->id,
 				'country_id' =>$model->country_id,
 				'id_type_id' =>$model->id_type_id,
-				'label' => $model->id_type->symbol.' '.$model->doc.' '.$model->company_name
+				'label' => $model->id_type->symbol.' '.$model->doc.' '.$model->company_name,
+				'branches' => $model->branches->map(function ($branch){
+					return ['id' => $branch->id, 'name' => $branch->name];
+				})
 			];
-		}
+		});
 		return \Response::json($result);
 	}
 	public function getType()

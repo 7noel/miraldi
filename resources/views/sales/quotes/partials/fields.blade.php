@@ -1,4 +1,5 @@
 					{!! Form::hidden('order_type', 2) !!}
+					{!! Form::hidden('sn', null) !!}
 					{!! Form::hidden('my_company', session('my_company')->id) !!}
 					<div class="form-group form-group-sm">
 						{!! Form::hidden('with_tax', 0, ['id'=>'with_tax']) !!}

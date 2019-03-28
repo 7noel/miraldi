@@ -25,9 +25,9 @@ class CompanyRepo extends BaseRepo{
 	{
 		$matriz = array('clients' => 'is_client', 'shippers' => 'is_shipper', 'providers' => 'is_provider', 'my_company' => 'is_my_company');
 		if (isset($matriz[$type])) {
-			return Company::where($matriz[$type], 1)->where(function ($query) use ($term) {$query->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%");})->with('id_type')->get();
+			return Company::where($matriz[$type], 1)->where(function ($query) use ($term) {$query->where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%");})->with('id_type', 'branches')->get();
 		} else {
-			return Company::where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%")->with('id_type')->get();
+			return Company::where('company_name','like',"%$term%")->orWhere('doc','like',"%$term%")->with('id_type', 'branches')->get();
 		}
 	}
 		// } elseif ($type == 'shippers') {
