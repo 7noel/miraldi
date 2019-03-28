@@ -4,6 +4,7 @@ namespace App\Modules\Security;
 
 use App\Modules\Base\BaseRepo;
 use App\Modules\Security\User;
+use App\Modules\Security\Permission;
 
 class UserRepo extends BaseRepo{
 
@@ -38,13 +39,16 @@ class UserRepo extends BaseRepo{
 	}
     public function allPermissions()
     {
-    	return \DB::table('permissions')
-    	->join('role_permissions', 'permissions.id', '=', 'role_permissions.permission_id')
-    	->join('user_roles', 'role_permissions.role_id', '=', 'user_roles.role_id')
-    	->where('user_roles.user_id',\Auth::user()->id)
-    	->select('permissions.action')
-    	->groupBy('permissions.action')
-    	->pluck('action');
+    	return Permission::whereHas('roles.users', function ($query) {
+		    $query->where('users.id', \Auth::user()->id);
+		})->groupBy('action')->get()->pluck('action');
+    	// return \DB::table('permissions')
+    	// ->join('role_permissions', 'permissions.id', '=', 'role_permissions.permission_id')
+    	// ->join('user_roles', 'role_permissions.role_id', '=', 'user_roles.role_id')
+    	// ->where('user_roles.user_id',\Auth::user()->id)
+    	// ->select('permissions.action')
+    	// ->groupBy('permissions.action')
+    	// ->pluck('action');
     }
     
 }

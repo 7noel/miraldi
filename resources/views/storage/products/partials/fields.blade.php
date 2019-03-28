@@ -49,7 +49,7 @@
 					<div class="form-group form-group-sm">
 						{!! Form::label('currency_id','Moneda', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-2">
-							{!! Form::select('currency_id', $currencies, null, ['class'=>'form-control', 'required'=>'required']); !!}
+							{!! Form::select('currency_id', $currencies, (isset($model) ? null : '1'), ['class'=>'form-control', 'required'=>'required']); !!}
 						</div>
 						{!! Form::label('last_purchase','Costo', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-2">
@@ -65,14 +65,18 @@
 						</div>
 					</div>
 					<div class="form-group form-group-sm">
-						{!! Form::label('value','Precio', ['class'=>'col-sm-2 control-label']) !!}
+						{!! Form::label('value','V. Venta', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-2">
 								<div class="input-group">
 									<span class="input-group-addon">
 										{!! Form::checkbox('use_set_value', '1', null, ['id'=>'useSetValue']) !!}
 									</span>
-									{!! Form::text('value', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
+									{!! Form::number('value', null, ['class'=>'form-control', 'readonly'=>'readonly']) !!}
 								</div>
+						</div>
+						{!! Form::label('price', 'Precio', ['class'=>'col-sm-2 control-label']) !!}
+						<div class="col-sm-2">
+							{!! Form::number('price', (isset($model) ? ($model->value * config('options.tax.igv')) : ''), ['class'=>'form-control', 'disabled']) !!}
 						</div>
 					</div>
 					<div class="form-group form-group-sm">

@@ -8,6 +8,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Modules\Security\Permission;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract, Auditable {
 
@@ -67,18 +68,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
 
-	public function action_allowed($action)
+	public function action_allowed($action, $user_id)
     {
-    	$result = \DB::table('permissions')
-    	->join('role_permissions', 'permissions.id', '=', 'role_permissions.permission_id')
-    	->join('user_roles', 'role_permissions.role_id', '=', 'user_roles.role_id')
-    	->where('user_roles.user_id',\Auth::user()->id)
-    	->where('permissions.action',$action)
-    	->first();
-    	if (is_null($result)) {
-    		return false;
-    	}
+		return Permission::where('action', $action)->whereHas('roles.users', function ($query) use ($user_id) {
+		    $query->where('users.id', $user_id);
+		})->get();
 
-    	return true;
     }
 }

@@ -10,7 +10,7 @@
 						</div>
 						{!! Form::label('branch_id','Sucursal', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-2">
-						{!! Form::select('branch_id', [''=>'Seleccionar'], ((isset($model->branch_id)) ? $model->branch_id : 1),['class'=>'form-control', 'id'=>'lstBranch']); !!}
+						{!! Form::select('branch_id', $bs, ((isset($model->branch_id)) ? $model->branch_id : 1),['class'=>'form-control', 'id'=>'lstBranch']); !!}
 						</div>
 						{!! Form::label('txtSeller','Vendedor', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-2">
@@ -33,7 +33,7 @@
 						</div>
 						{!! Form::label('branch_shipper_id','Agencia', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-2">
-						{!! Form::select('branch_shipper_id', [''=>'Seleccionar'], ((isset($model->branch_shipper_id)) ? $model->branch_shipper_id : 1),['class'=>'form-control', 'id'=>'lstBranchShipper']); !!}
+						{!! Form::select('branch_shipper_id', $bs_shipper, ((isset($model->branch_shipper_id)) ? $model->branch_shipper_id : 1),['class'=>'form-control', 'id'=>'lstBranchShipper']); !!}
 						</div>
 						{!! Form::label('payment_condition_id','Condición de Pago', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-2">

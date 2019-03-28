@@ -22,14 +22,21 @@ $(document).ready(function(){
 		};
 	});
 
-	$('#profit_margin').change(function (e) {
+	$('#profit_margin, #admin_expense, #last_purchase, #useSetValue, #value').change(function (e) {
 		if (!$('#useSetValue').is(':checked')) {
-			$('#value').val(parseFloat($('#last_purchase').val()) * (100 + parseFloat($('#profit_margin').val()))/100).toFixed(2);
+			$value = ( parseFloat($('#last_purchase').val()) * (100 + parseFloat($('#profit_margin').val())) * (100 + parseFloat($('#admin_expense').val())) ) / 10000
+			$('#value').val($value.toFixed(2));
+			$('#price').val((($value*118)/100).toFixed(2))
+			$('#value').attr( "readonly", "readonly" );
+		} else {
+			$value = parseFloat($('#value').val())
+			$('#price').val((($value*118)/100).toFixed(2))
+			$('#value').removeAttr("readonly")
+			$('#value').focus()
 		}
 	});
 
 	$(document).on('focus','.txtAccessory', function (e) {
-		//console.log($(this));
 		if ( !$(this).data("autocomplete") ) {
 			e.preventDefault();
 			$(this).autocomplete({
@@ -44,16 +51,6 @@ $(document).ready(function(){
 				}
 			});
 		}
-	});
-	$(document).on('change','#useSetValue', function (e) {
-		if ($('#useSetValue').is(':checked')) {
-			$('#value').removeAttr("readonly");
-			$('#value').focus();
-		} else {
-			$('#value').val(parseFloat($('#last_purchase').val()) * (100 + parseFloat($('#profit_margin').val()))/100).toFixed(2);
-			$('#value').attr( "readonly", "readonly" );
-		}
-
 	});
 
 });

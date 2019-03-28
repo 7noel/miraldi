@@ -47,6 +47,12 @@ $(document).ready(function(){
 					$('#document_type_id').val(2)
 				}
 			}
+			$('#lstBranch').empty();
+			$('#lstBranch').append(`<option value=''>Seleccionar</option>`);
+			ui.item.branches.forEach(function (b) {
+				$('#lstBranch').append(`<option value='${b.id}'>${b.name}</option>`);
+			})
+
 		}
 	});
 	$('#txtShipper').autocomplete({
@@ -55,6 +61,11 @@ $(document).ready(function(){
 		select: function(event, ui){
 			$('#shipper_id').val(ui.item.id);
 			// $('#company_doc').val(ui.item.id_type_id);
+			$('#lstBranchShipper').empty();
+			$('#lstBranchShipper').append(`<option value=''>Seleccionar</option>`);
+			ui.item.branches.forEach(function (b) {
+				$('#lstBranchShipper').append(`<option value='${b.id}'>${b.name}</option>`);
+			})
 			$('#lstBranchShipper').focus();
 		}
 	});

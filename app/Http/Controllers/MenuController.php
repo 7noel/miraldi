@@ -38,7 +38,7 @@ class MenuController extends Controller
             foreach ($module as $key => $link) {
                 if (!isset($link['route'])) {
                     unset($arrayLinks[$k][$key]);
-                } else if (!in_array($link['route'], $permissions)) {
+                } elseif (!$permissions->search($link['route'])) {
                     unset($arrayLinks[$k][$key]);
                 }
             }

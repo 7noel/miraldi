@@ -29,9 +29,9 @@ class OrdersController extends Controller {
 	public function filter()
 	{
 		if (explode('.', \Request::route()->getName())[0] == 'quotes') {
-			$order_type = 1;
-		} else {
 			$order_type = 2;
+		} else {
+			$order_type = 1;
 		}
 		
 		$filter = (object) \Request::all();
@@ -60,7 +60,9 @@ class OrdersController extends Controller {
 		$payment_conditions = $this->paymentConditionRepo->getList();
 		$currencies = $this->currencyRepo->getList('symbol');
 		$sellers = $this->employeeRepo->getListSellers();
-		return view('partials.create', compact('payment_conditions', 'currencies', 'sellers', 'my_companies'));
+		$bs = ['' => 'Seleccionar'];
+		$bs_shipper = ['' => 'Seleccionar'];
+		return view('partials.create', compact('payment_conditions', 'currencies', 'sellers', 'my_companies', 'bs', 'bs_shipper'));
 	}
 
 	public function store()
@@ -82,8 +84,9 @@ class OrdersController extends Controller {
 		$payment_conditions = $this->paymentConditionRepo->getList();
 		$currencies = $this->currencyRepo->getList('symbol');
 		$sellers = $this->employeeRepo->getListSellers();
-		$details = [];
-		return view('partials.edit', compact('model', 'payment_conditions', 'currencies', 'sellers', 'my_companies'));
+		$bs = $model->company->branches->pluck('name', 'id')->prepend('Seleccionar', '');
+		$bs_shipper = ($model->shipper_id > 0) ? $model->shipper->branches->pluck('name', 'id')->prepend('Seleccionar', '') : [''=>'Seleccionar'] ;
+		return view('partials.edit', compact('model', 'payment_conditions', 'currencies', 'sellers', 'my_companies', 'bs', 'bs_shipper'));
 	}
 
 	public function update($id)
