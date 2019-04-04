@@ -129,6 +129,10 @@ Route::group(['prefix'=>'sales', 'middleware'=>['auth', 'permissions'], 'namespa
 	Route::resource('orders','OrdersController');
 	Route::get('orders/print/{id}', ['as' => 'print_order','uses' => 'OrdersController@print']);
 	Route::get('orders/createByCompany/{company_id}', ['as' => 'create_order_by_company','uses' => 'OrdersController@createByCompany']);
+	
+	Route::get('purchase_orders/filter', ['as' => 'purchase_orders.filter2','uses' => 'OrdersController@filter']);
+	Route::post('purchase_orders/filter', ['as' => 'purchase_orders.filter','uses' => 'OrdersController@filter']);
+	Route::resource('purchase_orders','OrdersController');
 });
 
 Route::group(['prefix'=>'logistics', 'middleware'=>['auth', 'permissions'], 'namespace'=>'Logistics'], function(){

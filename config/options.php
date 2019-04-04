@@ -350,6 +350,13 @@ return array(
 			'show'   => ['panel'=>'Vizualizando Pedido:'],
 			'edit'   => ['panel'=>'Editar Pedido: ', 'update'=>'Actualizar Pedido', 'delete'=>'Eliminar Pedido']
 		],
+
+		'purchase_orders' => [
+			'index'  => ['panel'=>'Ordenes de Compra', 'create'=>'Crear Orden de Compra'],
+			'create' => ['panel'=>'Nuevo Orden de Compra', 'create'=>'Crear Orden de Compra'],
+			'show'   => ['panel'=>'Vizualizando Orden de Compra:'],
+			'edit'   => ['panel'=>'Editar Orden de Compra: ', 'update'=>'Actualizar Orden de Compra', 'delete'=>'Eliminar Orden de Compra']
+		],
 	// ],
 	// 'guard' => [
 		'users' => [

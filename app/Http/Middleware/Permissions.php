@@ -2,6 +2,7 @@
 
 use Closure;
 use App\Modules\Security\Permission;
+use App\Modules\Finances\Company;
 class Permissions {
 
 	/**
@@ -15,6 +16,7 @@ class Permissions {
 	{
 		$user = \Auth::user();
 		if ($user->is_superuser) {
+			$this->getMyCompany();
 			return $next($request);
 		} else {
 			$actPar = $request->route()->getAction();
@@ -26,6 +28,13 @@ class Permissions {
 			}
 			return view('errors.access_denied');
 		}
+	}
+
+	public function getMyCompany()
+	{
+        if (null == session('my_company')) {
+            session(['my_company' => Company::find(1)]);
+        }
 	}
 
 }

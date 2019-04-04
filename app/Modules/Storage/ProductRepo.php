@@ -28,7 +28,7 @@ class ProductRepo extends BaseRepo{
 	}
 	public function prepareData($data)
 	{
-		$data['price'] = $data['last_purchase'] * (100 + $data['profit_margin']) / 100;
+		$data['value'] = $data['last_purchase'] * (100 + $data['profit_margin']) * (100 + $data['admin_expense']) / 10000;
 		if (!isset($data['use_set_price'])) {
 			$data['use_set_price'] = false;
 		}

@@ -15,10 +15,10 @@ class MenuController extends Controller
 
     public function __construct(UserRepo $repo) {
         $this->repo = $repo;
-        if (null == session('my_company')) {
-            $c = new CompanyRepo;
-            session(['my_company' => $c->find(1)]);
-        }
+        // if (null == session1('my_company')) {
+        //     $c = new CompanyRepo;
+        //     session(['my_company' => $c->find(1)]);
+        // }
         //session(['my_company' => 1]);
         // $value = session('my_company');
     }
@@ -54,62 +54,55 @@ class MenuController extends Controller
     {
         $links = [
             'Seguridad'=>[
-                ['name' => 'Usuarios', 'route' => 'users.index' ],
-                ['name' => 'Roles', 'route' => 'roles.index', 'div' => '1' ],
-                ['name' => 'Grupos', 'route' => 'permission_groups.index' ],
-                ['name' => 'Permisos', 'route' => 'permissions.index' ],
+                ['name' => 'Usuarios', 'route' => 'users.index'],
+                ['name' => 'Roles', 'route' => 'roles.index', 'div' => '1'],
+                ['name' => 'Grupos', 'route' => 'permission_groups.index'],
+                ['name' => 'Permisos', 'route' => 'permissions.index'],
             ],
             'Almacén'=>[
-                ['name' => 'Tickets de Ingreso y Salida', 'route' => 'tickets.index' ],
-                // ['name' => 'Aprobar Notas de Pedido', 'url' => '#' ],
-                ['name' => 'Productos', 'route' => 'products.index' ],
-                ['name' => 'Almacenes', 'route' => 'warehouses.index' ],
-                ['name' => 'Marcas', 'route' => 'brands.index', 'div' => '1' ],
+                ['name' => 'Tickets de Ingreso y Salida', 'route' => 'tickets.index'],
+                // ['name' => 'Aprobar Notas de Pedido', 'url' => '#'],
+                ['name' => 'Productos', 'route' => 'products.index'],
+                ['name' => 'Almacenes', 'route' => 'warehouses.index'],
+                ['name' => 'Marcas', 'route' => 'brands.index', 'div' => '1'],
                 ['name' => 'Categorías', 'route' => 'categories.index'],
-                ['name' => 'Sub Categorías', 'route' => 'sub_categories.index' ],
-                ['name' => 'Tipos de Unidad', 'route' => 'unit_types.index' ],
-                ['name' => 'Unidades', 'route' => 'units.index' ],
+                ['name' => 'Sub Categorías', 'route' => 'sub_categories.index'],
+                ['name' => 'Tipos de Unidad', 'route' => 'unit_types.index'],
+                ['name' => 'Unidades', 'route' => 'units.index'],
             ],
             'Recursos Humanos'=>[
-                ['name' => 'Empleados', 'route' => 'employees.index' ],
-                ['name' => 'Cargos', 'route' => 'jobs.index' ],
-                // ['name' => 'Planilla', 'url' => '#' ],
-                ['name' => 'Documentos', 'route' => 'id_types.index' ],
+                ['name' => 'Empleados', 'route' => 'employees.index'],
+                ['name' => 'Cargos', 'route' => 'jobs.index'],
+                // ['name' => 'Planilla', 'url' => '#'],
+                ['name' => 'Documentos', 'route' => 'id_types.index'],
             ],
             'Finanzas'=>[
-                ['name' => 'Emite Letras', 'route' => 'issuance_letters.index' ],
-                ['name' => 'Recibe Letras', 'route' => 'reception_letters.index' ],
+                ['name' => 'Emite Letras', 'route' => 'issuance_letters.index'],
+                ['name' => 'Recibe Letras', 'route' => 'reception_letters.index'],
                 
-                ['name' => 'Empresas', 'route' => 'companies.index' ],
-                // ['name' => 'Cuentas por Cobrar', 'url' => '#' ],
-                // ['name' => 'Cuentas por Pagar', 'url' => '#' ],
-                ['name' => 'Monedas', 'route' => 'currencies.index', 'div' => '1' ],
-                ['name' => 'Tipo de Cambio', 'route' => 'exchanges.index' ],
-                ['name' => 'Documentos', 'route' => 'document_types.index' ],
-                ['name' => 'Control de Documentos', 'route' => 'document_controls.index' ],
-                ['name' => 'Condiciones de Pago', 'route' => 'payment_conditions.index' ],
-                ['name' => 'Medios de Pago', 'route' => 'payment_conditions.index' ],
+                ['name' => 'Empresas', 'route' => 'companies.index'],
+                // ['name' => 'Cuentas por Cobrar', 'url' => '#'],
+                // ['name' => 'Cuentas por Pagar', 'url' => '#'],
+                ['name' => 'Monedas', 'route' => 'currencies.index', 'div' => '1'],
+                ['name' => 'Tipo de Cambio', 'route' => 'exchanges.index'],
+                ['name' => 'Documentos', 'route' => 'document_types.index'],
+                ['name' => 'Control de Documentos', 'route' => 'document_controls.index'],
+                ['name' => 'Condiciones de Pago', 'route' => 'payment_conditions.index'],
+                ['name' => 'Medios de Pago', 'route' => 'payment_conditions.index'],
             ],
             'Ventas'=>[
-                ['name' => 'Cotizaciones', 'route' => 'quotes.filter2' ],
-                ['name' => 'Pedidos', 'route' => 'orders.filter2' ],
-                ['name' => 'Facturación', 'route' => 'issuance_vouchers.index' ],
-                ['name' => 'Clientes', 'route' => 'clients.index' ],
-                ['name' => 'Transportistas', 'route' => 'shippers.index' ],
+                ['name' => 'Cotizaciones', 'route' => 'quotes.filter2'],
+                ['name' => 'Pedidos', 'route' => 'orders.filter2'],
+                ['name' => 'Facturación', 'route' => 'issuance_vouchers.index'],
+                ['name' => 'Clientes', 'route' => 'clients.index'],
+                ['name' => 'Transportistas', 'route' => 'shippers.index'],
             ],
             'Logística'=>[
-                // ['name' => 'Ordenes de Compra', 'url' => '#' ],
-                ['name' => 'Proveedores', 'route' => 'providers.index' ],
-                ['name' => 'Compras', 'route' => 'reception_vouchers.index' ],
+                ['name' => 'Proveedores', 'route' => 'providers.index'],
+                ['name' => 'Ordenes de Compra', 'route' => 'purchase_orders.filter2', 'div' => '1'],
+                ['name' => 'Compras', 'route' => 'reception_vouchers.index'],
             ],
         ];
         return $links;
     }
-
-    public function companies()
-    {
-        $c = new CompanyRepo;
-        return $c->getOtherCompanies(1);
-    }
-
 }

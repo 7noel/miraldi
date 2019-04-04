@@ -53,15 +53,15 @@
 						</div>
 						{!! Form::label('last_purchase','Costo', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-2">
-							{!! Form::number('last_purchase', 0.00, ['class'=>'form-control']) !!}
+							{!! Form::number('last_purchase', null, ['class'=>'form-control']) !!}
 						</div>
 						{!! Form::label('admin_expense','Gastos (%)', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-1">
-							{!! Form::number('admin_expense', 30.00, ['class'=>'form-control', 'min' => '30.00']) !!}
+							{!! Form::number('admin_expense', (isset($model) ? null : 30.00), ['class'=>'form-control', 'min' => '30.00']) !!}
 						</div>
 						{!! Form::label('profit_margin','Utilid. (%)', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-1">
-							{!! Form::number('profit_margin', 18.00, ['class'=>'form-control', 'min' => '18.00']) !!}
+							{!! Form::number('profit_margin', (isset($model) ? null : 18.00), ['class'=>'form-control', 'min' => '18.00']) !!}
 						</div>
 					</div>
 					<div class="form-group form-group-sm">
@@ -76,7 +76,7 @@
 						</div>
 						{!! Form::label('price', 'Precio', ['class'=>'col-sm-2 control-label']) !!}
 						<div class="col-sm-2">
-							{!! Form::number('price', (isset($model) ? ($model->value * config('options.tax.igv')) : ''), ['class'=>'form-control', 'disabled']) !!}
+							{!! Form::number('price', (isset($model) ? round($model->value * (100+config('options.tax.igv'))/100, 2) : ''), ['class'=>'form-control', 'disabled']) !!}
 						</div>
 					</div>
 					<div class="form-group form-group-sm">

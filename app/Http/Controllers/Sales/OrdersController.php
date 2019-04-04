@@ -28,12 +28,13 @@ class OrdersController extends Controller {
 	}
 	public function filter()
 	{
-		if (explode('.', \Request::route()->getName())[0] == 'quotes') {
+		if (explode('.', \Request::route()->getName())[0] == 'purchase_orders') {
+			$order_type = 3;
+		} elseif (explode('.', \Request::route()->getName())[0] == 'quotes') {
 			$order_type = 2;
 		} else {
 			$order_type = 1;
 		}
-		
 		$filter = (object) \Request::all();
 		if( !((array) $filter) ) {
 			$filter->sn = '';
