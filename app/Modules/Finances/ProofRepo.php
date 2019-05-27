@@ -156,7 +156,8 @@ class ProofRepo extends BaseRepo{
 		}
 		$data['gross_value'] = $gross_value;
 		$data['discount_items'] = $d_items;
-		$data['subtotal'] = $gross_value + $expenseCif;
+		$data['subtotal'] = $gross_value + $expenseCif - $d_items;
+		// $data['subtotal'] = $gross_value + $expenseCif;
 		$data['total'] = $total;
 		$data['tax'] = $data['total'] - $data['subtotal'];
 		//cacular factor
@@ -351,10 +352,10 @@ class ProofRepo extends BaseRepo{
 	{
 		$data_json = json_encode($data);
 		// RUTA para enviar documentos
-		$ruta = "https://demo.nubefact.com/api/v1/03989d1a-6c8c-4b71-b1cd-7d37001deaa0";
+		$ruta = "https://api.nubefact.com/api/v1/8e91b7c2-437a-41b8-b8f3-3b17dceb7c7d";
 
 		//TOKEN para enviar documentos
-		$token = "d0a80b88cde446d092025465bdb4673e103a0d881ca6479ebbab10664dbc5677";
+		$token = "dce7ee606a1c4164ac289ff95405e27bbf5f60418957425c8ffe916e95aea464";
 
 		//Invocamos el servicio de NUBEFACT
 		$ch = curl_init();
