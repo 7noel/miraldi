@@ -6,7 +6,9 @@ $(document).ready(function(){
 	});
 
 	$('#btnAddPay').click(function(e){
-		addRowAmortization();
+		e.preventDefault()
+		addRowAmortization()
+		window.scroll(0, $(document).height())
 	});
 });
 
@@ -85,7 +87,8 @@ function renderTemplateRowProduct () {
 	items = parseInt(items) + 1;
 	$('#items').val(items);
 	$("#tableItems").append(clone);
-	$("input[name='payments["+(items-1)+"][bank_id]']").focus();
+	$("select[name='payments["+(items-1)+"][bank_id]']").focus()
+	// $('html, body').animate({scrollTop: $(document).height()}, 'slow');
 }
 
 

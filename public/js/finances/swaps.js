@@ -41,13 +41,14 @@ $(document).ready(function(){
 	});
 
 	$('#btnAddProof').click(function(e){
+		e.preventDefault()
 		addRowProof();
+		window.scroll(0, $(document).height())
 	});
 	$('#btnAddLetter').click(function(e){
+		e.preventDefault()
 		addRowLetter();
-	});
-	$('#btnAddLetters').click(function(e){
-		addRowLetters();
+		window.scroll(0, $(document).height())
 	});
 });
 
@@ -78,13 +79,13 @@ function addRowProof() {
 function addRowLetter() {
 	var items = $('#items_l').val();
 	if (items>0) {
-		if ($("input[name='proofs["+(items-1)+"][id]']").val() == "") {
-			$("input[name='proofs["+(items-1)+"][txtProof]']").focus()
+		if ($("input[name='letters["+(items-1)+"][id]']").val() == "") {
+			$("input[name='letters["+(items-1)+"][txtLetter]']").focus()
 		} else{
-			renderTemplateRowProof()
+			renderTemplateRowLetter()
 		}
 	} else{
-		renderTemplateRowProof()
+		renderTemplateRowLetter()
 	}
 }
 
@@ -195,6 +196,20 @@ function renderTemplateRowProof () {
 	$("#tableItems").append(clone);
 
 	$("input[name='proofs["+(items-1)+"][txtProof]']").focus();
+}
+function renderTemplateRowLetter() {
+	var clone = activateTemplate("#template-row-letter");
+	var items = $('#items_l').val();
+	clone.querySelector("[data-letterId]").setAttribute("name", "letters[" + items + "][id]");
+	clone.querySelector("[data-letter]").setAttribute("name", "letters[" + items + "][txtLetter]");
+	clone.querySelector("[data-isdeleted]").setAttribute("name", "letters[" + items + "][is_deleted]");
+	if (items>0) {$("input[name='letters["+(items-1)+"][txtProof]']").attr('disabled', true);};
+	
+	items = parseInt(items) + 1;
+	$('#items_l').val(items);
+	$("#tableLetters").append(clone);
+
+	$("input[name='letters["+(items-1)+"][txtLetter]']").focus();
 }
 function isProofEnabled (myElement, product_id) {
 	var b = true

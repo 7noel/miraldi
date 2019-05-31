@@ -82,7 +82,6 @@
 						</div>
 					</div>
 
-						<a href="#" id="btnAddBranch" class="btn btn-success btn-sm" title="Agregar Sucursal">{!! config('options.icons.add') !!} Agregar Sucursal</a>
 						@php $i=0; @endphp
 						<div class="table-responsive">
 						<table class="table table-condensed">
@@ -135,3 +134,4 @@
 							</tr>
 						</template>
 						{!! Form::hidden('items', $i, ['id'=>'items']) !!}
+						<a href="#" id="btnAddBranch" class="btn btn-success btn-sm" title="Agregar Sucursal">{!! config('options.icons.add') !!} Agregar Sucursal</a>

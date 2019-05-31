@@ -161,4 +161,4 @@
 					</div>
 					
 
-					@include('logistics.purchases.partials.details')
+					@include('finances.reception_vouchers.partials.details')

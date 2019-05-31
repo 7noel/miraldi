@@ -1,16 +1,3 @@
-						<div class="form-group form-group-sm">
-							<div class="col-sm-2">
-								<a href="#" id="btnAddProduct" class="btn btn-success btn-sm pull-left" title="Agregar Producto">{!! config('options.icons.add') !!} Agregar</a>
-							</div>
-							{!! Form::label('currency_cost','Costo expresado en:', ['class'=>'col-sm-2 col-sm-offset-2 control-label isImport']) !!}
-							<div class="col-sm-2">
-								{!! Form::select('currency_cost',$currencies , ((isset($model)) ? $model->currency_id : 2), ['class'=>'form-control input-sm isImport', 'id'=>'currency_cost']) !!}
-							</div>
-							{!! Form::label('factor','Factor', ['class'=>'col-sm-2 control-label isImport']) !!}
-							<div class="col-sm-2">
-								{!! Form::number('factor', null, ['class'=>'form-control input-sm isImport', 'id'=>'factor', 'readonly'=>'readonly']) !!}
-							</div>
-						</div>
 						@php $i=0; @endphp
 						<div class="table-responsive">
 						<table class="table table-condensed">
@@ -77,6 +64,19 @@
 							</tr>
 						</template>
 						{!! Form::hidden('items', $i, ['id'=>'items']) !!}
+						<div class="form-group form-group-sm">
+							<div class="col-sm-2">
+								<a href="#" id="btnAddProduct" class="btn btn-success btn-sm pull-left" title="Agregar Producto">{!! config('options.icons.add') !!} Agregar</a>
+							</div>
+							{!! Form::label('currency_cost','Costo expresado en:', ['class'=>'col-sm-2 col-sm-offset-2 control-label isImport']) !!}
+							<div class="col-sm-2">
+								{!! Form::select('currency_cost',$currencies , ((isset($model)) ? $model->currency_id : 2), ['class'=>'form-control input-sm isImport', 'id'=>'currency_cost']) !!}
+							</div>
+							{!! Form::label('factor','Factor', ['class'=>'col-sm-2 control-label isImport']) !!}
+							<div class="col-sm-2">
+								{!! Form::number('factor', null, ['class'=>'form-control input-sm isImport', 'id'=>'factor', 'readonly'=>'readonly']) !!}
+							</div>
+						</div>
 						<table class="table table-condensed table-responsive">
 							<thead>
 								<tr>

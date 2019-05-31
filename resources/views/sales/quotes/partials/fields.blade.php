@@ -77,4 +77,4 @@
 							@endif
 						</div>
 					</div>
-					@include('sales.orders.partials.details')
+					@include('sales.quotes.partials.details')

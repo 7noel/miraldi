@@ -25,7 +25,9 @@ $(document).ready(function(){
 	});
 
 	$('#btnAddProduct').click(function(e){
+		e.preventDefault()
 		addRowProduct();
+		window.scroll(0, $(document).height())
 	});
 });
 

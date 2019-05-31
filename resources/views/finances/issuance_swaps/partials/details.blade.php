@@ -1,11 +1,4 @@
-						<a href="#" id="btnAddProof" class="btn btn-success btn-sm" title="Agregar Producto">{!! config('options.icons.add') !!} Agregar Docs</a>
-						@if(isset($model))
-						<a href="#" id="btnAddLetter" class="btn btn-success btn-sm" title="Agregar Letra">{!! config('options.icons.add') !!} Agregar Letras</a>
-						@else
-						<a href="#" id="btnGenLetters" class="btn btn-default btn-sm" title="Generar Letras">{!! config('options.icons.add') !!} Generar Letras</a>
-						@endif
 						@php $i=0; @endphp
-						
 						<table class="table table-condensed">
 							<thead>
 								<tr>
@@ -50,6 +43,7 @@
 							</tbody>
 						</table>
 						{!! Form::hidden('items_d', $i, ['id'=>'items_d']) !!}
+						<a href="#" id="btnAddProof" class="btn btn-success btn-sm" title="Agregar Producto">{!! config('options.icons.add') !!} Agregar Docs</a>
 
 						<template id="template-row-proof">
 							<tr>
@@ -101,6 +95,9 @@
 							</tbody>
 						</table>
 						{!! Form::hidden('items_l', $i, ['id'=>'items_l']) !!}
+						<a href="#" id="btnAddLetter" class="btn btn-success btn-sm" title="Agregar Letra">{!! config('options.icons.add') !!} Agregar Letras</a>
+						@php $i=0; @endphp
+						
 
 						<template id="template-row-letter">
 							<tr>

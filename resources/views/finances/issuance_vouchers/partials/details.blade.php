@@ -1,4 +1,3 @@
-						<a href="#" id="btnAddProduct" class="btn btn-success btn-sm" title="Agregar Producto">{!! config('options.icons.add') !!} Agregar</a>
 						@php $i=0; @endphp
 						
 						<table class="table table-condensed">
@@ -60,6 +59,8 @@
 							</tr>
 						</template>
 						{!! Form::hidden('items', $i, ['id'=>'items']) !!}
+						<a href="#" id="btnAddProduct" class="btn btn-success btn-sm" title="Agregar Producto">{!! config('options.icons.add') !!} Agregar</a>
+
 						<table class="table table-condensed">
 							<thead>
 								<tr>
