@@ -35,21 +35,9 @@ return array(
 		'1' => 'Entrada',
 		'0' => 'Salida',
 	],
-	'purchase_status' => [],
-	'quote_status' => [
-		'0' => 'REGISTRADO',
-		'1' => 'PROCESADO',
-		'6' => 'ANULADO',
-	],
-	'order_status' => [
-		'REGISTRADO',
-		'VERIFICADO',
-		'APROBADO',
-		'FACTURADO',
-		'ENVIADO',
-		'CANCELADO',
-		'ANULADO',
-	],
+	'proof_status' => ['REGISTRADO', 'SUNAT', 'ANULADO', 'CANCELADO', 'CANJEADO'],
+	'quote_status' => ['REGISTRADO', 'PROCESADO', 'ANULADO'],
+	'order_status' => ['REGISTRADO', 'VERIFICADO', 'APROBADO', 'FACTURADO', 'ENVIADO', 'CANCELADO', 'ANULADO'],
 	'tax' => [
 		'igv' => 18
 	],

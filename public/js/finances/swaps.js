@@ -79,7 +79,7 @@ function addRowProof() {
 function addRowLetter() {
 	var items = $('#items_l').val();
 	if (items>0) {
-		if ($("input[name='letters["+(items-1)+"][id]']").val() == "") {
+		if ($("input[name='letters["+(items-1)+"][txtLetter]']").val() == "") {
 			$("input[name='letters["+(items-1)+"][txtLetter]']").focus()
 		} else{
 			renderTemplateRowLetter()

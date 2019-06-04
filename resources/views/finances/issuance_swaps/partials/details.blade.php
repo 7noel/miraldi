@@ -64,9 +64,9 @@
 						<table class="table table-condensed">
 							<thead>
 								<tr>
-									<th class="col-sm-4">NroLetra</th>
-									<th class="col-sm-2">Emisión</th>
-									<th class="col-sm-2">Vencimiento</th>
+									<th class="col-sm-7">NroLetra</th>
+									<th class="col-sm-1">Emisión</th>
+									<th class="col-sm-1">Vencimiento</th>
 									<th class="col-sm-1">Monto</th>
 									<th class="col-sm-1">Interéses</th>
 									<th class="col-sm-1">Acciones</th>
@@ -77,13 +77,11 @@
 							@foreach($model->letters as $letter)
 								<tr data-id="{{ $letter->id }}">
 									{!! Form::hidden("letters[$i][id]", $letter->id, ['class'=>'letterId','data-letterId'=>'']) !!}
-									{!! Form::hidden("letters[$i][product_id]", $letter->product_id, ['class'=>'productId','data-productid'=>'']) !!}
-									{!! Form::hidden("letters[$i][unit_id]", $letter->unit_id, ['class'=>'unitId','data-unitid'=>'']) !!}
-									<td><span class='form-control input-sm intern_code text-right' data-labelid>{{ $letter->product->intern_code }}</span></td>
-									<td>{!! Form::text("letters[$i][txtProduct]", $letter->product->name, ['class'=>'form-control input-sm txtProduct', 'data-product'=>'', 'required'=>'required', 'disabled']); !!}</td>
-									<td>{!! Form::text("letters[$i][quantity]", $letter->quantity, ['class'=>'form-control input-sm txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
-									<td class="withTax">{!! Form::text("letters[$i][price]", $letter->price, ['class'=>'form-control input-sm txtPrecio text-right', 'data-precio'=>'']) !!}</td>
-									<td class="withoutTax">{!! Form::text("letters[$i][value]", $letter->value, ['class'=>'form-control input-sm txtValue text-right', 'data-value'=>'']) !!}</td>
+									<td>{!! Form::text("letters[$i][txtLetter]", $letter->sn, ['class'=>'form-control input-sm txtLetter', 'data-sn'=>'', 'required'=>'required', 'disabled']); !!}</td>
+									<td>{!! Form::date("letters[$i][issued_at]", $letter->issued_at, ['class'=>'form-control input-sm issued_at text-right', 'data-issued_at'=>'']) !!}</td>
+									<td>{!! Form::date("letters[$i][expired_at]", $letter->expired_at, ['class'=>'form-control input-sm expired_at text-right', 'data-expired_at'=>'']) !!}</td>
+									<td>{!! Form::number("letters[$i][subtotal]", $letter->subtotal, ['class'=>'form-control input-sm subtotal text-right', 'data-subtotal'=>'']) !!}</td>
+									<td>{!! Form::number("letters[$i][interest]", $letter->interest, ['class'=>'form-control input-sm interest text-right', 'data-interest'=>'']) !!}</td>
 									<td class="text-center form-inline">
 										<a href="#" class="btn btn-danger btn-xs btn-delete-item" title="Eliminar">{!! config('options.icons.remove') !!}</a>
 										<input type="checkbox" name="letters[{{$i}}][is_deleted]" data-isdeleted class="isdeleted hidden">
@@ -97,17 +95,15 @@
 						{!! Form::hidden('items_l', $i, ['id'=>'items_l']) !!}
 						<a href="#" id="btnAddLetter" class="btn btn-success btn-sm" title="Agregar Letra">{!! config('options.icons.add') !!} Agregar Letras</a>
 						@php $i=0; @endphp
-						
 
 						<template id="template-row-letter">
 							<tr>
 								{!! Form::hidden('data1', null, ['class'=>'letterId','data-letterId'=>'']) !!}
-								<td>{!! Form::text('data3', null, ['class'=>'form-control input-sm txtSn', 'data-sn'=>'', 'required']); !!}</td>
-								<td>{!! Form::date('data4', null, ['class'=>'form-control input-sm txtEmision text-right', 'data-emision'=>'', 'required']) !!}</td>
-								<td>{!! Form::date('data5', null, ['class'=>'form-control input-sm txtExpired text-right', 'data-expired'=>'', 'required']) !!}</td>
-								<td>{!! Form::number('data6', null, ['class'=>'form-control input-sm txtTotal text-right', 'data-total'=>'', 'required']) !!}</td>
-								<td>{!! Form::number('data7', null, ['class'=>'form-control input-sm txt text-right', 'data-interest'=>'']) !!}</td>
-								<td>{!! Form::text('data8', null, ['class'=>'form-control input-sm txtDscto2 text-right', 'data-dscto2'=>'']) !!}</td>
+								<td>{!! Form::text('data3', null, ['class'=>'form-control input-sm txtLetter', 'data-letter'=>'', 'required']); !!}</td>
+								<td>{!! Form::date('data4', date('Y-m-d'), ['class'=>'form-control input-sm issued_at text-right', 'data-issued_at'=>'', 'required']) !!}</td>
+								<td>{!! Form::date('data5', date('Y-m-d'), ['class'=>'form-control input-sm expired_at text-right', 'data-expired_at'=>'', 'required']) !!}</td>
+								<td>{!! Form::number('data6', 0, ['class'=>'form-control input-sm subtotal text-right', 'data-subtotal'=>'', 'required']) !!}</td>
+								<td>{!! Form::number('data7', 0, ['class'=>'form-control input-sm interest text-right', 'data-interest'=>'']) !!}</td>
 								<td class="text-center form-inline">
 									<a href="#" class="btn btn-danger btn-xs btn-delete-item" title="Eliminar">{!! config('options.icons.remove') !!}</a>
 									<input type="checkbox" name="data8" data-isdeleted class="isdeleted hidden">
