@@ -229,4 +229,35 @@ abstract class BaseRepo{
 		}
 		return true;
 	}
+	public function saveMany2($items, $k)
+	{
+		$toSave = [];
+		$toDelete = [];
+		foreach ($items as $key => $data) {
+			if (isset($data['is_deleted'])) {
+				if (isset($data['id']) and $data['id']>0) {
+					# Array con ids a eliminar
+					$toDelete[] = $data['id'];
+				}
+			} else {
+				# Array con data para Agregar
+				$toSave[] = $data;
+			}
+		}
+		# Elimina registros
+		if (isset($toDelete)) {
+			$this->model->whereIn('id', $toDelete)->delete();
+		}
+		# Guardar registros
+		foreach ($toSave as $key => $data) {
+			$data[$k['key']] = $k['value'];
+			if (isset($data['id'])) {
+				$model = $this->model->updateOrCreate(['id' => $data['id']], $data);
+			} else {
+				$this->model->create($data);
+			}
+		}
+
+		return true;
+	}
 }

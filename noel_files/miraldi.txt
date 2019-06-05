@@ -1,0 +1,48 @@
+
+
+
+
+MIRALDI / importaciones / herramax
+
+ALMACEN ()
+	- ingreso (facturas, guias, devolucion cliente)
+	- salida (-guia devolucion-, guias, cp)
+	- kardex valorizado
+	- devoluciones
+	- para transferir hacer venta por ser empresas diferentes (no es urgente)
+	- despacho o envio
+
+VENTAS
+	- facturacion (electronica), guias remision (con otra empresa).
+	- cotizaciones, pedidos.
+
+Logistica
+	- ordenes de compra (por desarrollar)
+	- compras, importaciones
+
+PAGOS (tesoreria)
+	- Pago a: proveedores, bancos, empleados, gastos
+	- Medios de pago: efectivo, cheque, transferencias
+	- Se pagan: facturas, boletas de venta, boleta de pago, notas de debito, letras, caja chica (sin comprobante de pago), recibo por honorarioa, fraccionamientos (sunat), afp, essalud, onp.
+	- cuentas: bancos (soles, dolares, ahorros, etc), caja chica.
+
+COBROS
+	- Cobro a: clientes.
+	- Medios de cobro: efectivo, cheque, transferencias.
+	- Documentos que cobro: facturas, boletas, notas de credito, letras.
+	- cuentas: bancos (soles, dolares, ahorros, etc), caja chica.
+
+== usuarios ==
+
+roles del sistema
+	- vendedores
+	- administrador
+	- almacenero (jefe de almacen)
+	- repartidor (chofer)
+	- contabilidad
+	- asistente contable
+	- logistica
+	- asistente logistica
+	- recursos humanos
+	- jefe de ventas
+	- sistemas

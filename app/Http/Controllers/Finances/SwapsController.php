@@ -29,13 +29,15 @@ class SwapsController extends Controller {
 
 	public function create()
 	{
-		return view('partials.create');
+		$currencies = $this->currencyRepo->getList('symbol');
+		return view('partials.create', compact('currencies'));
 	}
 
 	public function store()
 	{
+		//return back();
 		$this->repo->save(\Request::all());
-		return \Redirect::route('swaps.index');
+		return \Redirect::route('finances.swaps.index');
 	}
 
 	public function show($id)
@@ -45,14 +47,16 @@ class SwapsController extends Controller {
 
 	public function edit($id)
 	{
+		$currencies = $this->currencyRepo->getList('symbol');
 		$model = $this->repo->findOrFail($id);
-		return view('partials.edit', compact('model'));
+		$company = $model->company;
+		return view('partials.edit', compact('model', 'currencies', 'company'));
 	}
 
 	public function update($id)
 	{
 		$this->repo->save(\Request::all(), $id);
-		return \Redirect::route('swaps.index');
+		return \Redirect::route('finances.swaps.index');
 	}
 
 	public function byProof($proof_id)
@@ -62,16 +66,15 @@ class SwapsController extends Controller {
 
 			return $this->edit($proof->swap_id);
 		}
-		$my_companies = $this->companyRepo->getListMyCompany();
 		$currencies = $this->currencyRepo->getList('symbol');
 		$company = $proof->company;
-		return view('partials.create', compact('proof', 'company', 'my_companies', 'currencies'));
+		return view('partials.create', compact('proof', 'company', 'currencies'));
 	}
 
 	public function destroy($id)
 	{
 		$model = $this->repo->destroy($id);
 		if (\Request::ajax()) {	return $model; }
-		return redirect()->route('swaps.index');
+		return redirect()->route('finances.swaps.index');
 	}
 }

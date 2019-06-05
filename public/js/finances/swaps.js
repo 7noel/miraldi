@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
 	$('#txtCompany').autocomplete({
-		source: "/api/companies/autocompleteAjax/",
+		source: "/api/companies/autocompleteAjax/clients/",
 		minLength: 4,
 		select: function(event, ui){
 			$('#company_id').val(ui.item.id);
@@ -53,7 +53,6 @@ $(document).ready(function(){
 });
 
 function setRowProof($this, $p) {
-	console.log($p)
 	if(isProofEnabled($this, $p.id)){
 		$($this).parent().parent().find('.proofId').val($p.id);
 		// $($this).parent().parent().find('.txtProof').val($p.name);
@@ -200,8 +199,12 @@ function renderTemplateRowProof () {
 function renderTemplateRowLetter() {
 	var clone = activateTemplate("#template-row-letter");
 	var items = $('#items_l').val();
-	clone.querySelector("[data-letterId]").setAttribute("name", "letters[" + items + "][id]");
+	clone.querySelector("[data-proof_type]").setAttribute("name", "letters[" + items + "][proof_type]");
 	clone.querySelector("[data-letter]").setAttribute("name", "letters[" + items + "][txtLetter]");
+	clone.querySelector("[data-issued_at]").setAttribute("name", "letters[" + items + "][issued_at]");
+	clone.querySelector("[data-expired_at]").setAttribute("name", "letters[" + items + "][expired_at]");
+	clone.querySelector("[data-subtotal]").setAttribute("name", "letters[" + items + "][subtotal]");
+	clone.querySelector("[data-interest]").setAttribute("name", "letters[" + items + "][interest]");
 	clone.querySelector("[data-isdeleted]").setAttribute("name", "letters[" + items + "][is_deleted]");
 	if (items>0) {$("input[name='letters["+(items-1)+"][txtProof]']").attr('disabled', true);};
 	

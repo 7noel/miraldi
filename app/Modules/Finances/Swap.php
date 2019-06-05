@@ -23,6 +23,10 @@ class Swap extends Model implements Auditable {
 	{
 		return $this->hasMany('App\Modules\Finances\Proof');
 	}
+	public function letters()
+	{
+		return $this->hasMany('App\Modules\Finances\Proof', 'swap_letter_id');
+	}
 	public function mycompany()
 	{
 		return $this->hasOne('App\Modules\Finances\Company','id','my_company');
@@ -30,6 +34,10 @@ class Swap extends Model implements Auditable {
 	public function company()
 	{
 		return $this->hasOne('App\Modules\Finances\Company','id','company_id');
+	}
+	public function currency()
+	{
+		return $this->hasOne('App\Modules\Base\Currency','id','currency_id');
 	}
 
 }

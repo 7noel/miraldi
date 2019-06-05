@@ -18,7 +18,7 @@ class CreateProofsTable extends Migration
             $table->increments('id');
             $table->date('issued_at'); // fecha de emision
             $table->boolean('is_import'); // true si es una importacion
-            $table->integer('proof_type')->unsigned(); // typo de documento
+            $table->integer('proof_type')->unsigned(); // typo de documento 1=emite comprobante, 2=recibe comprobante, 3=emiteletra, 4=recibe letra
             $table->boolean('mov'); // 1 ingresa mercaderia, 0 sale mercaderia
             $table->string('type_op'); // segun ello afecta el valor promedio
             $table->integer('company_id')->unsigned();
@@ -54,11 +54,13 @@ class CreateProofsTable extends Migration
             $table->decimal('discount_items',15,2);
             $table->decimal('subtotal',14,2);
             $table->decimal('tax',14,2);
+            $table->decimal('interest',14,2);
             $table->decimal('total',14,2);
             $table->decimal('factor',10,4); // para exportaciones
             $table->decimal('amortization', 12, 2);
             $table->integer('seller_id')->unsigned(); // id del vendedor
             $table->integer('swap_id')->unsigned(); // id del canje para las letras
+            $table->integer('swap_letter_id')->unsigned(); // id del canje para las letras
             $table->integer('reference_id')->unsigned(); // referencia id de guia (para FA y BO), de FA BO (para las NC y ND)
             $table->integer('status_id')->unsigned();
             $table->integer('status_sunat')->unsigned();

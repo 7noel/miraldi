@@ -77,7 +77,7 @@ class MenuController extends Controller
                 ['name' => 'Documentos', 'route' => 'id_types.index'],
             ],
             'Finanzas'=>[
-                ['name' => 'Emite Letras', 'route' => 'issuance_letters.index'],
+                ['name' => 'Emite Canje de Letras', 'route' => 'issuance_swaps.index'],
                 ['name' => 'Recibe Letras', 'route' => 'reception_letters.index'],
                 
                 ['name' => 'Empresas', 'route' => 'companies.index'],

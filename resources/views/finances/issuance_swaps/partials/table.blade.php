@@ -3,7 +3,7 @@
 								<tr>
 									<th>#</th>
 									<th>Fecha</th>
-									<th>Documento</th>
+									<th>RUC/DNI</th>
 									<th>Empresa</th>
 									<th>Total</th>
 									<th>Acciones</th>
@@ -13,10 +13,10 @@
 								@foreach($models as $model)
 								<tr data-id="{{ $model->id }}">
 									<td>{{ $model->id }}</td>
-									<td>{{ \Carbon::createFromFormat('Y-m-d', $model->issued_at)->formatLocalized('%d/%m/%Y') }} </td>
-									<td>{{ $model->document_type->name." ".$model->sn }} </td>
+									<td>{{ $model->created_at->formatLocalized('%d/%m/%Y') }} </td>
+									<td>{{ $model->company->doc }} </td>
 									<td>{{ $model->company->company_name }} </td>
-									<td>{{ $model->currency->symbol." ".$model->total}} </td>
+									<td>{{ $model->currency->symbol." ".$model->amount_letters}} </td>
 									<td>
 										@if($model->payment_condition_id == 3)
 										<a href="{{ route( 'issuance_swaps.byProof' , $model->id) }}" class="btn btn-default btn-xs" title="Letras">{!! config('options.icons.invoice') !!}</a>

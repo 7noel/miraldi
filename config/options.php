@@ -38,9 +38,7 @@ return array(
 	'proof_status' => ['REGISTRADO', 'SUNAT', 'ANULADO', 'CANCELADO', 'CANJEADO'],
 	'quote_status' => ['REGISTRADO', 'PROCESADO', 'ANULADO'],
 	'order_status' => ['REGISTRADO', 'VERIFICADO', 'APROBADO', 'FACTURADO', 'ENVIADO', 'CANCELADO', 'ANULADO'],
-	'tax' => [
-		'igv' => 18
-	],
+	'tax' => ['igv' => 18],
 	'table_sunat' => [
 		'tipo_comprobante' => [
 			'' => 'Seleccionar',

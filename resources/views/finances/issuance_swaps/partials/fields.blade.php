@@ -1,14 +1,14 @@
 					{!! Form::hidden('is_output', 1, ['id'=>'proof_type']) !!}
+					@if(isset($model))
+						{!! Form::hidden('my_company', $model->my_company, ['id'=>'my_company']) !!}
+					@elseif(isset($proof))
+						{!! Form::hidden('my_company', $proof->my_company, ['id'=>'my_company']) !!}
+					@else
+						{!! Form::hidden('my_company', session('my_company')->id, ['id'=>'my_company']) !!}
+					@endif
+
 
 					<div class="form-group form-group-sm">
-						<div class="col-sm-2">
-							{!! Form::label('my_company','Mi Empresa:', ['class'=>'control-label']) !!}
-							@if(!isset($proof))
-							{!! Form::select('my_company', $my_companies, $proof->my_company, ['class'=>'form-control']) !!}
-							@else
-							{!! Form::select('my_company', $my_companies, (isset($model->my_company) ? $model->my_company : session('my_company')->id), ['class'=>'form-control']) !!}
-							@endif
-						</div>
 						<div class="col-sm-4">
 							{!! Form::label('txtcompany','Compañía:', ['class'=>'control-label']) !!}
 							@if(isset($company))

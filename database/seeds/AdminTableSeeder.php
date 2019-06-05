@@ -275,6 +275,7 @@ class AdminTableSeeder extends Seeder {
         DocumentType::create(['name' => 'INVOICE', 'code' => '91', 'to_purchases' => '1']);
         DocumentType::create(['name' => 'OT', 'code' => '00']);
         DocumentType::create(['name' => 'TK', 'code' => '00']);
+        DocumentType::create(['name' => 'LETRA', 'code' => '00']);
 
         DocumentControl::create(['document_type_id' => 1, 'company_id' => 1, 'series'=>'F001', 'number'=>0]);
         DocumentControl::create(['document_type_id' => 2, 'company_id' => 1, 'series'=>'B001', 'number'=>0]);
