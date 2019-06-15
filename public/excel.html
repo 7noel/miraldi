@@ -11,6 +11,29 @@
 	
 <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
 <script>
+/* external references:
+ - https://rawgit.com/SheetJS/js-xlsx/master/dist/xlsx.full.min.js
+*/
+/* original data */
+var data = [
+    {"name":"John", "city": "Seattle"},
+    {"name":"Mike", "city": "Los Angeles"},
+    {"name":"Zach", "city": "New York"}
+];
+
+/* this line is only needed if you are not adding a script tag reference */
+if(typeof XLSX == 'undefined') XLSX = require('xlsx');
+
+/* make the worksheet */
+var ws = XLSX.utils.json_to_sheet(data);
+
+/* add to workbook */
+var wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, ws, "People");
+
+/* generate an XLSX file */
+XLSX.writeFile(wb, "sheetjs.xlsx");
+
 
 function renderTable($j) {
 	document.getElementById('table').innerHTML = ''
@@ -36,7 +59,6 @@ function renderTable($j) {
 	document.getElementById('table').innerHTML = ths + trs
 }
 
-
 function handleFile(e) {
   var files = e.target.files, f = files[0];
   var reader = new FileReader();
@@ -55,6 +77,7 @@ function handleFile(e) {
 }
 input_dom_element = document.getElementById("input")
 input_dom_element.addEventListener('change', handleFile, false);
+
 </script>
 </body>
 </html>
