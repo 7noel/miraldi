@@ -5,6 +5,7 @@
 									<th>Fecha</th>
 									<th>Documento</th>
 									<th>Empresa</th>
+									<th>Status</th>
 									<th>Total</th>
 									<th>Acciones</th>
 								</tr>
@@ -16,7 +17,8 @@
 									<td>{{ \Carbon::createFromFormat('Y-m-d', $model->issued_at)->formatLocalized('%d/%m/%Y') }} </td>
 									<td>{{ $model->document_type->name." ".$model->sn }} </td>
 									<td>{{ $model->company->company_name }} </td>
-									<td>{{ $model->currency->symbol." ".$model->total}} </td>
+									<td>{{ config("options.proof_status.$model->status_id") }} </td>
+									<td>{{ $model->currency->symbol." ".$model->total }} </td>
 									<td>
 										@if($model->payment_condition_id == 3)
 										<a href="{{ route( 'issuance_swaps.byProof' , $model->id) }}" class="btn btn-default btn-xs" title="Letras">{!! config('options.icons.invoice') !!}</a>

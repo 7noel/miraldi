@@ -91,8 +91,8 @@ class MenuController extends Controller
                 ['name' => 'Medios de Pago', 'route' => 'payment_conditions.index'],
             ],
             'Ventas'=>[
-                ['name' => 'Cotizaciones', 'route' => 'quotes.filter2'],
-                ['name' => 'Pedidos', 'route' => 'orders.filter2'],
+                ['name' => 'Cotizaciones', 'route' => 'quotes.filter'],
+                ['name' => 'Pedidos', 'route' => 'orders.filter'],
                 ['name' => 'Facturación', 'route' => 'issuance_vouchers.index'],
                 ['name' => 'Clientes', 'route' => 'clients.index'],
                 ['name' => 'Transportistas', 'route' => 'shippers.index'],

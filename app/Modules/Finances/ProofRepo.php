@@ -33,7 +33,7 @@ class ProofRepo extends BaseRepo{
 		$data = $this->prepareData($data);
 		$model = parent::save($data, $id);
 		if (isset($data['order_id'])) {
-			$ot = Order::where('id', $data['order_id'])->update(['proof_id' => $model->id]);
+			$ot = Order::where('id', $data['order_id'])->update(['proof_id' => $model->id, 'invoiced_at' => date('Y-m-d H:i:s'), 'status' => config('options.order_status.3')]);
 		}
 		if (isset($data['control_id'])) {
 			DocumentControlRepo::nextNumber($data['control_id']);

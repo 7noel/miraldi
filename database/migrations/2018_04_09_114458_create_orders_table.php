@@ -39,7 +39,7 @@ class CreateOrdersTable extends Migration
             $table->dateTime('invoiced_at')->nullable();
             $table->dateTime('sent_at')->nullable();
             $table->dateTime('canceled_at')->nullable();
-            $table->string('status', 20);
+            $table->integer('status_id')->unsigned();
             $table->boolean('with_tax');
             $table->decimal('gross_value', 12,2);
             $table->decimal('discount', 12,2);
@@ -50,7 +50,8 @@ class CreateOrdersTable extends Migration
             $table->decimal('amortization', 12,2);
             $table->decimal('exchange', 12,2);
             $table->decimal('exchange_sunat', 12,2);
-            $table->integer('proof_id')->unsigned();
+            $table->integer('order_id')->unsigned(); // id del pedido relacionado (solo para cotizacion)
+            $table->integer('proof_id')->unsigned(); // id del comprobante (solo para pedido)
             $table->integer('user_id')->unsigned();
             $table->text('comment');
 

@@ -57,11 +57,11 @@
 						{!! Form::label('status','Status:', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-7 status-checked">
 							@if(1==1)
+							@endif
+							@if(1==0)
 							<label class="checkbox-inline" title="Verificado por Administración">
 								{!! Form::checkbox('checked_at', (isset($model)) ? $model->checked_at : "on") !!} Verificado
 							</label>
-							@endif
-							@if(1==0)
 							<label class="checkbox-inline" title="Aprobado por el Cliente">
 								{!! Form::checkbox('approved_at', (isset($model)) ? $model->approved_at : "on") !!} Aprobado
 							</label>

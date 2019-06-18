@@ -12,7 +12,7 @@
 					@include('partials.messages')
 					{!! Form::model($model, ['route' => str_replace('show', 'index', Request::route()->getAction()['as']), 'class'=>'form-horizontal']) !!}
 					
-					@include( str_replace('show', 'partials.fields', Request::route()->getAction()['as']) )
+					@include( $views['fields'] )
 					<div class="form-group">
 						<div class="col-sm-offset-2 col-sm-10">
 							<a href="{{ URL::previous() }}" class="btn btn-primary">Regresar</a>

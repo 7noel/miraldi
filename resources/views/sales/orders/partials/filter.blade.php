@@ -14,9 +14,9 @@
 							<div class="col-sm-2">
 							{!! Form::select('seller_id', $sellers, null, ['class'=>'form-control', 'id'=>'seller_id']); !!}
 							</div>
-							{!! Form::label('status','Status', ['class'=>'col-sm-1 control-label']) !!}
+							{!! Form::label('status_id','Status', ['class'=>'col-sm-1 control-label']) !!}
 							<div class="col-sm-2">
-							{!! Form::select('status', ['' => 'Seleccionar'] + config('options.order_status'), null, ['class'=>'form-control', 'id'=>'status']); !!}
+							{!! Form::select('status_id', ['' => 'Seleccionar'] + config('options.order_status'), null, ['class'=>'form-control', 'id'=>'status_id']); !!}
 							</div>
 							{!! Form::label('sn','Numero', ['class'=>'col-sm-1 control-label']) !!}
 							<div class="col-sm-2">

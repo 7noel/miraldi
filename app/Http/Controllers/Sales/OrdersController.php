@@ -28,6 +28,7 @@ class OrdersController extends Controller {
 	}
 	public function filter()
 	{
+		//dd(\Request::all());
 		if (explode('.', \Request::route()->getName())[0] == 'purchase_orders') {
 			$order_type = 3;
 		} elseif (explode('.', \Request::route()->getName())[0] == 'quotes') {
@@ -49,6 +50,18 @@ class OrdersController extends Controller {
 		$payment_conditions = $this->paymentConditionRepo->getList();
 		return view('partials.filter',compact('models', 'filter', 'sellers'));
 	}
+	public function byQuote($quote_id)
+	{
+		$model = $this->repo->findOrFail($quote_id);
+		$my_companies = $this->companyRepo->getListMyCompany();
+		$payment_conditions = $this->paymentConditionRepo->getList();
+		$currencies = $this->currencyRepo->getList('symbol');
+		$sellers = $this->employeeRepo->getListSellers();
+		$bs = $model->company->branches->pluck('name', 'id')->prepend('Seleccionar', '');
+		$bs_shipper = ($model->shipper_id > 0) ? $model->shipper->branches->pluck('name', 'id')->prepend('Seleccionar', '') : [''=>'Seleccionar'];
+		return view('partials.create', compact('model', 'payment_conditions', 'currencies', 'sellers', 'my_companies', 'bs', 'bs_shipper', 'quote_id'));
+	}
+
 	public function index()
 	{
 		$models = $this->repo->index('name', \Request::get('name'));
@@ -75,7 +88,14 @@ class OrdersController extends Controller {
 
 	public function show($id)
 	{
-		//
+		$model = $this->repo->findOrFail($id);
+		$my_companies = $this->companyRepo->getListMyCompany();
+		$payment_conditions = $this->paymentConditionRepo->getList();
+		$currencies = $this->currencyRepo->getList('symbol');
+		$sellers = $this->employeeRepo->getListSellers();
+		$bs = $model->company->branches->pluck('name', 'id')->prepend('Seleccionar', '');
+		$bs_shipper = ($model->shipper_id > 0) ? $model->shipper->branches->pluck('name', 'id')->prepend('Seleccionar', '') : [''=>'Seleccionar'] ;
+		return view('partials.show', compact('model', 'payment_conditions', 'currencies', 'sellers', 'my_companies', 'bs', 'bs_shipper'));
 	}
 
 	public function edit($id)

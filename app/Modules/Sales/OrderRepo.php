@@ -28,13 +28,16 @@ class OrderRepo extends BaseRepo{
 				$mov->saveAll($model, 0);
 			}
 		}
+		if (isset($data['quote_id'])) {
+			Order::where('id', $data['quote_id'])->update(['order_id' => $model->id, 'approved_at' => date('Y-m-d H:i:s'), 'status_id' => 1]);
+		}
 		return $model;
 	}
 
 	public function getNextNumber($order_type, $my_company = 1)
 	{
 		$last = Order::where('my_company', $my_company)->where('order_type', $order_type)->orderBy('sn', 'desc')->first();
-		if ($last->sn > 0) {
+		if (isset($last) && $last->sn > 0) {
 			return $last->sn + 1;
 		} else {
 			return config("options.last_number.$my_company.$order_type") + 1;
@@ -116,7 +119,8 @@ class OrderRepo extends BaseRepo{
 			if ($data['checked_at'] == "on") {
 				$data['checked_at'] = date('Y-m-d H:i:s');
 			}
-			$data['status'] = config('options.order_status.1');
+			$data['status_id'] = '1';
+			// $data['status'] = config('options.order_status.1');
 		} else {
 			$data['checked_at'] = null;
 		}
@@ -124,7 +128,8 @@ class OrderRepo extends BaseRepo{
 			if ($data['approved_at'] == "on") {
 				$data['approved_at'] = date('Y-m-d H:i:s');
 			}
-			$data['status'] = config('options.order_status.2');
+			$data['status_id'] = '2';
+			// $data['status'] = config('options.order_status.2');
 		} else {
 			$data['approved_at'] = null;
 		}
@@ -132,7 +137,8 @@ class OrderRepo extends BaseRepo{
 			if ($data['invoiced_at'] == "on") {
 				$data['invoiced_at'] = date('Y-m-d H:i:s');
 			}
-			$data['status'] = config('options.order_status.3');
+			$data['status_id'] = '3';
+			// $data['status'] = config('options.order_status.3');
 		} else {
 			$data['invoiced_at'] = null;
 		}
@@ -140,7 +146,8 @@ class OrderRepo extends BaseRepo{
 			if ($data['sent_at'] == "on") {
 				$data['sent_at'] = date('Y-m-d H:i:s');
 			}
-			$data['status'] = config('options.order_status.4');
+			$data['status_id'] = '4';
+			// $data['status'] = config('options.order_status.4');
 		} else {
 			$data['sent_at'] = null;
 		}
@@ -148,7 +155,8 @@ class OrderRepo extends BaseRepo{
 			if ($data['canceled_at'] == "on") {
 				$data['canceled_at'] = date('Y-m-d H:i:s');
 			}
-			$data['status'] = config('options.order_status.5');
+			$data['status_id'] = '5';
+			// $data['status'] = config('options.order_status.5');
 		} else {
 			$data['canceled_at'] = null;
 		}
@@ -162,11 +170,11 @@ class OrderRepo extends BaseRepo{
 			return Order::where('sn', $filter->sn)->get();
 		} else {
 			$q->where('created_at', '>=', $filter->f1)->where('created_at', '<=', $filter->f2.' 23:59:59');
-			if($filter->seller_id > 0) {
+			if(isset($filter->seller_id) && $filter->seller_id != '') {
 				$q->where('seller_id', $filter->seller_id);
 			}
-			if($filter->status > 0) {
-				$q->where('status', $filter->status);
+			if(isset($filter->status_id) && $filter->status_id != '') {
+				$q->where('status_id', $filter->status_id);
 			}
 			return $q->get();
 		}

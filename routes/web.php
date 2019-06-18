@@ -121,10 +121,11 @@ Route::group(['prefix'=>'humanresources', 'middleware'=>['auth', 'permissions'],
 });
 
 Route::group(['prefix'=>'sales', 'middleware'=>['auth', 'permissions'], 'namespace'=>'Sales'], function(){
-	Route::get('quotes/filter', ['as' => 'quotes.filter2','uses' => 'OrdersController@filter']);
-	Route::post('quotes/filter', ['as' => 'quotes.filter','uses' => 'OrdersController@filter']);
-	Route::get('orders/filter', ['as' => 'orders.filter2','uses' => 'OrdersController@filter']);
-	Route::post('orders/filter', ['as' => 'orders.filter','uses' => 'OrdersController@filter']);
+	Route::get('orders/by_quote/{order_id}', ['as' => 'orders.by_quote', 'uses' => 'OrdersController@byQuote']);
+	Route::get('quotes/filter', ['as' => 'quotes.filter','uses' => 'OrdersController@filter']);
+	// Route::post('quotes/filter', ['as' => 'quotes.filter','uses' => 'OrdersController@filter']);
+	Route::get('orders/filter', ['as' => 'orders.filter','uses' => 'OrdersController@filter']);
+	// Route::post('orders/filter', ['as' => 'orders.filter','uses' => 'OrdersController@filter']);
 	Route::resource('quotes','OrdersController');
 	Route::resource('orders','OrdersController');
 	Route::get('orders/print/{id}', ['as' => 'print_order','uses' => 'OrdersController@print']);

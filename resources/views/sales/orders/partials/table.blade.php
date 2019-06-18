@@ -12,11 +12,13 @@
 							<td>{{ $model->id }}</td>
 							<td>{{ $model->created_at->formatLocalized('%d/%m/%Y') }}</td>
 							<td>{{ $model->company->company_name }} </td>
-							<td>{{ $model->status }}</td>
+							<td>{{ config("options.order_status.$model->status_id") }}</td>
 							<td>{{ $model->currency->symbol." ".$model->total}} </td>
 							<td>
 								@if($model->proof_id == 0)
 								<a href="{{ route('issuance_vouchers.by_order', $model->id) }}" target="_blank" class="btn btn-default btn-xs" title="Generar Comnprobante">{!! config('options.icons.invoice') !!}</a>
+								@else
+								<a href="{{ route('issuance_vouchers.show', $model->proof_id) }}" class="btn btn-default btn-xs" title="Ver Comprobante">{!! config('options.icons.invoice') !!}</a>
 								@endif
 								@if($model->checked_at)
 								<a href="{{ route( 'print_order' , $model->id ) }}" target="_blank" class="btn btn-success btn-xs" title="Imprimir">{!! config('options.icons.printer') !!} </a>

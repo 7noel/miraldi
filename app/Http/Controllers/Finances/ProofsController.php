@@ -92,8 +92,16 @@ class ProofsController extends Controller {
 	public function show($id)
 	{
 		$model = $this->repo->findOrFail($id);
-		$p='p';
-		dd(json_decode($model->response_sunat));
+		$my_companies = $this->companyRepo->getListMyCompany();
+
+		$sunat_transaction = $model->sunat_transaction;
+		$igv_code = $model->igv_code;
+		$proof_type = $this->proof_type;
+		$document_types = $this->documentTypeRepo->getList2();
+		$currencies = $this->currencyRepo->getList('symbol');
+		$payment_conditions = $this->paymentConditionRepo->getList();
+		$sellers = $this->employeeRepo->getListSellers();
+		return view('partials.show', compact('model','document_types', 'currencies', 'payment_conditions', 'sellers', 'warehouses','items', 'proof_type', 'my_companies', 'sunat_transaction', 'igv_code'));
 	}
 
 	public function edit($id)

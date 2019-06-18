@@ -1,11 +1,14 @@
 					{!! Form::hidden('order_type', 1) !!}
+					@if(isset($quote_id))
+						{!! Form::hidden('quote_id', $quote_id) !!}
+					@endif
 					{!! Form::hidden('sn', null) !!}
 					{!! Form::hidden('my_company', session('my_company')->id) !!}
 					<div class="form-group form-group-sm">
 						{!! Form::hidden('with_tax', 0, ['id'=>'with_tax']) !!}
 						{!! Form::label('txtCompany','Cliente:', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-3">
-							{!! Form::hidden('company_id', null, ['id'=>'company_id']) !!}
+							{!! Form::hidden('company_id', ((isset($model)) ? $model->company_id : null), ['id'=>'company_id']) !!}
 							{!! Form::text('txtCompany', ((isset($model->company_id)) ? $model->company->company_name : null), ['class'=>'form-control', 'id'=>'txtCompany', 'required']) !!}
 						</div>
 						{!! Form::label('branch_id','Sucursal', ['class'=>'col-sm-1 control-label']) !!}
@@ -28,7 +31,7 @@
 					<div class="form-group form-group-sm">
 						{!! Form::label('txtShipper','Transportista:', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-3">
-							{!! Form::hidden('shipper_id', null, ['id'=>'shipper_id']) !!}
+							{!! Form::hidden('shipper_id', ((isset($model)) ? $model->shipper_id : null), ['id'=>'shipper_id']) !!}
 							{!! Form::text('txtShipper', ((isset($model->shipper_id) and $model->shipper_id > 0) ? $model->shipper->company_name : null), ['class'=>'form-control', 'id'=>'txtShipper', 'required']) !!}
 						</div>
 						{!! Form::label('branch_shipper_id','Agencia', ['class'=>'col-sm-1 control-label']) !!}
@@ -40,17 +43,17 @@
 						{!! Form::select('payment_condition_id', $payment_conditions, ((isset($model->payment_condition_id)) ? $model->payment_condition_id : 1),['class'=>'form-control', 'id'=>'lstPaymentCondition']); !!}
 						</div>
 						<div class="col-sm-2">
-						{!! Form::text('condition', null, ['class'=>'form-control', 'id'=>'condition']); !!}
+						{!! Form::text('condition', ((isset($model)) ? $model->condition : null), ['class'=>'form-control', 'id'=>'condition']); !!}
 						</div>
 					</div>
 					<div class="form-group form-group-sm">
 						{!! Form::label('attention','Atención', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-3">
-						{!! Form::text('attention', null, ['class'=>'form-control']) !!}
+						{!! Form::text('attention', ((isset($model)) ? $model->attention : null), ['class'=>'form-control']) !!}
 						</div>
 						{!! Form::label('comment','Comentarios', ['class'=>'col-sm-1 control-label']) !!}
 						<div class="col-sm-7">
-						{!! Form::text('comment', null, ['class'=>'form-control uppercase']) !!}
+						{!! Form::text('comment', ((isset($model)) ? $model->comment : null), ['class'=>'form-control uppercase']) !!}
 						</div>
 					</div>
 					<div class="form-group form-group-sm">

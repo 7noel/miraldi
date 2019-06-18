@@ -36,7 +36,7 @@ return array(
 		'0' => 'Salida',
 	],
 	'proof_status' => ['REGISTRADO', 'SUNAT', 'ANULADO', 'CANCELADO', 'CANJEADO'],
-	'quote_status' => ['REGISTRADO', 'PROCESADO', 'ANULADO'],
+	'quote_status' => ['REGISTRADO', 'PROCESADO', '6'=>'ANULADO'],
 	'order_status' => ['REGISTRADO', 'VERIFICADO', 'APROBADO', 'FACTURADO', 'ENVIADO', 'CANCELADO', 'ANULADO'],
 	'tax' => ['igv' => 18],
 	'table_sunat' => [
