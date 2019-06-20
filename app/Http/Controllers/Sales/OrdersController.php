@@ -26,7 +26,7 @@ class OrdersController extends Controller {
 		$this->employeeRepo = $employeeRepo;
 		$this->companyRepo = $companyRepo;
 	}
-	public function filter()
+	public function index()
 	{
 		//dd(\Request::all());
 		if (explode('.', \Request::route()->getName())[0] == 'purchase_orders') {
@@ -62,7 +62,7 @@ class OrdersController extends Controller {
 		return view('partials.create', compact('model', 'payment_conditions', 'currencies', 'sellers', 'my_companies', 'bs', 'bs_shipper', 'quote_id'));
 	}
 
-	public function index()
+	public function index2()
 	{
 		$models = $this->repo->index('name', \Request::get('name'));
 		return view('partials.index',compact('models'));
@@ -83,7 +83,7 @@ class OrdersController extends Controller {
 	{
 		$model = $this->repo->save(\Request::all());
 		//$this->sendAlert($model);
-		return \Redirect::route(explode('.', \Request::route()->getName())[0].'.filter');
+		return \Redirect::route(explode('.', \Request::route()->getName())[0].'.index');
 	}
 
 	public function show($id)
@@ -120,7 +120,7 @@ class OrdersController extends Controller {
 	{
 		$model = $this->repo->destroy($id);
 		if (\Request::ajax()) {	return $model; }
-		return redirect()->route(explode('.', \Request::route()->getName())[0].'.filter');
+		return redirect()->route(explode('.', \Request::route()->getName())[0].'.index');
 	}
 
 	/**

@@ -40,6 +40,33 @@ class ProofsController extends Controller {
 		$this->getType();
 	}
 
+	public function index()
+	{
+		//dd(\Request::all());
+		if (explode('.', \Request::route()->getName())[0] == 'reception_letters') {
+			$proof_type = 4;
+		} elseif (explode('.', \Request::route()->getName())[0] == 'issuance_letters') {
+			$proof_type = 3;
+		} elseif (explode('.', \Request::route()->getName())[0] == 'reception_vouchers') {
+			$proof_type = 2;
+		} else {
+			$proof_type = 1;
+		}
+		$filter = (object) \Request::all();
+		if( !((array) $filter) ) {
+			$filter->sn = '';
+			$filter->seller_id = '';
+			$filter->status_id = '';
+			$filter->f1 = date('Y-m-d', strtotime('first day of this month'));
+			$filter->f2 = date('Y-m-d', strtotime('last day of this month'));
+		}
+		$models = $this->repo->filter($filter, $proof_type);
+
+		$sellers = $this->employeeRepo->getListSellers();
+		$payment_conditions = $this->paymentConditionRepo->getList();
+		return view('partials.filter',compact('models', 'filter', 'sellers'));
+	}
+
 	public function issuanceVouchers()
 	{
 		$models = $this->repo->issuanceVouchers('number', \Request::get('name'));
@@ -76,7 +103,7 @@ class ProofsController extends Controller {
 		return view('partials.create', compact('model', 'order_id', 'document_types', 'currencies', 'payment_conditions', 'sellers', 'warehouses','items', 'proof_type', 'my_companies', 'sunat_transaction', 'igv_code'));
 	}
 
-	public function index()
+	public function index2()
 	{
 		$models = $this->repo->index('sn', \Request::get('name'), $this->proof_type);
 		return view('partials.index',compact('models'));

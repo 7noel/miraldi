@@ -20,7 +20,7 @@
                             </a>
                         </div>
                         <div class="col-xs-6 col-sm-3">
-                            <a href="{{ route('orders.filter') }}" class="thumbnail">PEDIDOS
+                            <a href="{{ route('orders.index') }}" class="thumbnail">PEDIDOS
                                 <img src="/img/pedido.png" alt="...">
                             </a>
                         </div>

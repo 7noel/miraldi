@@ -15,6 +15,23 @@ class ProofRepo extends BaseRepo{
 		return new Proof;
 	}
 
+	public function filter($filter, $proof_type)
+	{
+		$q = Proof::where('my_company', session('my_company')->id)->where('proof_type', $proof_type);
+		if ($filter->sn > 0) {
+			return Proof::where('sn', $filter->sn)->get();
+		} else {
+			$q->where('created_at', '>=', $filter->f1)->where('created_at', '<=', $filter->f2.' 23:59:59');
+			if(isset($filter->seller_id) && $filter->seller_id != '') {
+				$q->where('seller_id', $filter->seller_id);
+			}
+			if(isset($filter->status_id) && $filter->status_id != '') {
+				$q->where('status_id', $filter->status_id);
+			}
+			return $q->get();
+		}
+	}
+
 	public function findWithAmortizations($id)
 	{
 		return Proof::where('id', $id)->with('amortizations.payment')->first();

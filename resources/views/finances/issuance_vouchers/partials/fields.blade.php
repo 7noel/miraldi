@@ -29,7 +29,7 @@
 						</div>
 						<div class="col-sm-2">
 							{!! Form::label('currency_id','Moneda', ['class'=>'control-label']) !!}
-							{!! Form::select('currency_id',$currencies , ((isset($model)) ? $model->currency_id : '2'), ['class'=>'form-control']) !!}
+							{!! Form::select('currency_id',$currencies , ((isset($model)) ? $model->currency_id : '1'), ['class'=>'form-control', (isset($model)) ? 'disabled' : '']) !!}
 						</div>
 						<div class="col-sm-2">
 							{!! Form::label('exchange','Cambio (US$)', ['class'=>'control-label']) !!}
@@ -39,7 +39,7 @@
 					<div class="form-group form-group-sm">
 						<div class="col-sm-2">
 							{!! Form::label('issued_at','Fecha', ['class'=>'control-label']) !!}
-							{!! Form::date('issued_at', ((isset($model->date)) ? $model->date->formatLocalized('%Y-%m-%d') : date('Y-m-d')), ['class'=>'form-control col-sm-2']) !!}
+							{!! Form::date('issued_at', ((isset($model)) ? $model->issued_at : date('Y-m-d')), ['class'=>'form-control col-sm-2']) !!}
 						</div>
 						<div class="col-sm-2">
 							{!! Form::label('document_type_id','Documento', ['class'=>'control-label']) !!}
@@ -58,14 +58,12 @@
 							{!! Form::label('note_type_id','Motivo de Nota', ['class'=>'control-label']) !!}
 							{!! Form::select('note_type_id', config('options.table_sunat.tipo_de_nota_de_credito') , ((isset($model->note_type_id)) ? $model->note_type_id : ''), ['class'=>'form-control']) !!}
 						</div>
-					</div>
-					<div class="form-group form-group-sm isImport">
-						{!! Form::label('dispatch_note_date','Fecha Guía', ['class'=>'col-sm-2 control-label']) !!}
-						<div class="col-sm-2">
+						<div class="col-sm-2 isImport">
+						{!! Form::label('dispatch_note_date','Fecha Guía', ['class'=>'control-label']) !!}
 							{!! Form::date('dispatch_note_date', null, ['class'=>'form-control col-sm-2']) !!}
 						</div>
-						{!! Form::label('dispatch_note_number','Numero Guía', ['class'=>'col-sm-2 control-label']) !!}
-						<div class="col-sm-2">
+						<div class="col-sm-2 isImport">
+						{!! Form::label('dispatch_note_number','Numero Guía', ['class'=>'control-label']) !!}
 							{!! Form::text('dispatch_note_number', null, ['class'=>'form-control uppercase', 'placeholder'=>'Número Guía']) !!}
 						</div>
 					</div>
