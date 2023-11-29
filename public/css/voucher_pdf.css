@@ -1,0 +1,98 @@
+/*@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Gluten:wght@100;200;300;400;500;600;700;800;900&display=swap');*/
+@page {  }
+body{
+	/*font-family: 'Montserrat', sans-serif;*/
+	font-family: 'Roboto', sans-serif;
+	/*font-family: 'Roboto', sans-serif;*/
+	font-size: 11px;
+	/*background: white;*/
+	/*border: solid 1px black;*/
+}
+.img{
+	max-width: 350px;
+	max-height: 90px;
+}
+.col_1{
+	width: 400px;
+	padding: 0;
+}
+.col_2{
+	font-size: 20px;
+	font-weight: bold;
+	width: 290px;
+	border: solid 1px black;
+}
+.datos_emisor{
+	font-size: 11px;
+}
+.company_name{
+	font-size: 15px;
+}
+.border{
+	border: solid 1px gray;
+}
+table{
+	border-collapse:collapse;
+}
+.data_doc{
+	margin-top: 10px;
+	padding: 10px 3px;
+}
+.center{
+	text-align: center;
+}
+.right{
+	text-align: right;
+}
+.left{
+	text-align: left;
+}
+.table-items thead{
+	background-color: #40b250;
+	border: solid 1px white;
+	color: white;
+	font-weight: bold;
+}
+.totales{
+	margin-top: 0px;
+	font-size: 11px;
+	font-weight: bold;
+	text-align: right;
+}
+.totales td{
+	margin: 0;
+	padding: 0;
+}
+.totales div{
+	border: solid 1px gray;
+	margin: 0;
+	padding: 5px 5px;
+}
+
+.table-items, .table-total{
+	width: 100%;
+	border-collapse:collapse;
+	border: none;
+}
+.table-items td{
+	padding: 2px 5px;
+}
+footer{
+	/*border: 1px solid red;*/
+	/*position: fixed;*/
+	/*bottom: 60px;*/
+	position: fixed;
+	bottom: 0cm;
+	left: 0cm;
+	right: 0cm;
+	height: 1.7cm;
+	/*background-color: #2a0927;*/
+	/*color: white;*/
+	/*text-align: center;*/
+	/*line-height: 35px;*/
+}
+.padding{
+	padding-left: 100px;
+}

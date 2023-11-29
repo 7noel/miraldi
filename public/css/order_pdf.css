@@ -1,0 +1,165 @@
+/*@import url('https://fonts.googleapis.com/css?family=Montserrat|Roboto');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');*/
+/*@import url('https://fonts.googleapis.com/css2?family=Gluten:wght@100;200;300;400;500;600;700;800;900&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&family=Roboto:wght@100&display=swap');
+@page { margin-top: 10px; }
+body{
+	padding-top: 0px;
+	border-top: -10px;
+	/*font-family: 'Montserrat', sans-serif;*/
+	font-family: 'Roboto Condensed', sans-serif;
+	/*font-family: 'Roboto', sans-serif;*/
+	font-size: 12px;
+	background: white;
+	/*border: solid 1px black;*/
+}
+.d-block{
+	display: inline-block;
+	vertical-align: top;
+	width: 49%;
+}
+.header{
+	font-family: 'Roboto', sans-serif;
+	/*margin-top: 20px;
+	margin-bottom: 20px;*/
+}
+.header .col_1{
+	font-size: 9px;
+}
+.header .col_2{
+	text-align: center;
+	font-size: 18px;
+	font-weight: bold;
+	padding: 15px 0;
+}
+
+.border{
+	border: solid 1px black;
+}
+.center{
+	text-align: center;
+}
+.right{
+	text-align: right;
+}
+.left{
+	text-align: left;
+}
+.table-items, .table-total{
+	width: 100%;
+	border-collapse:collapse;
+	border: none;
+}
+.table-total{
+	font-size: 15px;
+}
+.item-left{
+	float: left;
+}
+.label{
+	vertical-align: top;
+	display: inline-block;
+	width: 15%;
+	text-transform: uppercase;
+}
+.label_2{
+	vertical-align: top;
+	display: inline-block;
+	width: 20%;
+	text-transform: uppercase;
+}
+.data-header{
+	vertical-align: top;
+	display: inline-block;
+}
+.data-header-1{
+	vertical-align: top;
+	display: inline-block;
+	width: 45%;
+}
+.container-items{
+	/*border: 1px solid green;*/
+}
+footer{
+	/*border: 1px solid red;*/
+	/*position: fixed;*/
+	/*bottom: 60px;*/
+	position: fixed;
+	bottom: 0cm;
+	left: 0cm;
+	right: 0cm;
+	height: 2cm;
+	/*background-color: #2a0927;*/
+	/*color: white;*/
+	/*text-align: center;*/
+	/*line-height: 35px;*/
+}
+.padding{
+	padding-left: 100px;
+}
+.col-description-obs{
+	width: 173px;
+	font-style: italic;
+}
+.col-check{
+	width: 15px;
+	text-align: center;
+}
+.col-description{
+	width: 122px;
+}
+.table-inventory td, .otro{
+	line-height: 10px;
+}
+.columna-1{
+	display: inline-block;
+	width: 20%;
+	vertical-align: top;
+}
+.columna-2{
+	display: inline-block;
+	vertical-align: top;
+	width: 80%;
+}
+.col_inv{
+	width: 20%;
+	display: inline-block;
+	vertical-align: top;
+}
+.col_img{
+	display: inline-block;
+}
+.inventory-image{
+	width: 270px;
+	vertical-align: top;
+}
+.col_img{
+	vertical-align: top;
+}
+.solicitud{
+	height: 180px;
+}
+.firmas{
+	vertical-align: top;
+	border: solid 1px white;
+
+}
+.firmas div{
+	text-align: center;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 100px;
+	width: 20%;
+	border-top: 1px solid black;
+}
+.firma{
+	margin-right: 40px;
+}
+.uppercase{
+	text-transform: uppercase;
+}
+.combustible{
+	position: fixed;
+	top: 650px;
+	left: 250px;
+}

@@ -1,0 +1,1 @@
+Verificar la <a href="{{ route( 'orders.edit' , $model->id) }}">Cotización {{ $model->id }}-{{ $model->created_at->formatLocalized('%Y') }} </a>
