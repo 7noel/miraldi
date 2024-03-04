@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Company;
+use App\Shipper;
 use App\Ubigeo;
 
-class CompanyController extends Controller
+class ShipperController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,9 +17,9 @@ class CompanyController extends Controller
     {
         $search = request()->get('name');
         if ($search) {
-            $models = Company::name($search)->orderBy("DFECINS", 'ASC')->paginate();
+            $models = Shipper::name($search)->orderBy("TRAFECCRE", 'ASC')->paginate();
         } else {
-            $models = Company::orderBy('DFECINS', 'DESC')->paginate();
+            $models = Shipper::orderBy('TRAFECCRE', 'DESC')->paginate();
         }
 
         return view('partials.index',compact('models'));
@@ -47,12 +47,12 @@ class CompanyController extends Controller
         $data = request()->all();
         $data = $this->prepareData($data);
         //dd($data);
-        Company::updateOrCreate(['CCODCLI' => 0], $data);
+        Shipper::updateOrCreate(['TRACODIGO' => ''], $data);
 
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
         }
-        return redirect()->route('companies.index');
+        return redirect()->route('shippers.index');
     }
 
     /**
@@ -63,7 +63,7 @@ class CompanyController extends Controller
      */
     public function show($id)
     {
-        $model = Company::findOrFail($id);
+        $model = Shipper::findOrFail($id);
         $ubigeo = $this->listUbigeo($model->ubigeo_code);
         return view('partials.show', compact('model', 'ubigeo'));
     }
@@ -76,7 +76,7 @@ class CompanyController extends Controller
      */
     public function edit($id)
     {
-        $model = Company::findOrFail($id);
+        $model = Shipper::findOrFail($id);
         $ubigeo = $this->listUbigeo($model->UBIGEO);
         return view('partials.edit', compact('model', 'ubigeo'));
     }
@@ -91,13 +91,13 @@ class CompanyController extends Controller
     public function update(Request $request, $id)
     {
         $data = request()->all();
-        $data = $this->prepareData2($data);
+        $data = $this->prepareData($data);
         // dd($data);
-        Company::updateOrCreate(['CCODCLI' => $id], $data);
+        Shipper::updateOrCreate(['TRACODIGO' => $id], $data);
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
         }
-        return redirect()->route('companies.index');
+        return redirect()->route('shippers.index');
     }
 
     /**
@@ -110,21 +110,21 @@ class CompanyController extends Controller
     {
         $model = $this->repo->destroy($id);
         if (request()->ajax()) {    return $model; }
-        return redirect()->route('companies.index');
+        return redirect()->route('shippers.index');
     }
 
 
     public function ajaxAutocomplete()
     {
         $term = request()->get('term');
-        $models =  Company::where('CNOMCLI','like',"%$term%")->orWhere('CCODCLI','like',"%$term%")->get();
+        $models =  Shipper::where('TRANOMBRE','like',"%$term%")->orWhere('TRACODIGO','like',"%$term%")->get();
         // dd($models);
 
         $result = $models->map(function ($model){
             return [
                 'value' => $model->CNOMCLI,
                 'id' => $model,
-                'label' => config('options.client_doc.'.$model->CTIPO_DOCUMENTO).' '.$model->CCODCLI.' '.$model->CNOMCLI,
+                'label' => config('options.client_doc.'.$model->TRATIPO_DOCUMENTO).' '.$model->TRACODIGO.' '.$model->TRANOMBRE,
             ];
         });
         return response()->json($result);
@@ -168,37 +168,11 @@ class CompanyController extends Controller
 
     public function prepareData($data)
     {
-        if ($data['CTIPO_DOCUMENTO']=='6') {
-            $data['CNUMRUC']=$data['CCODCLI'];
-            $data['CDOCIDEN']='';
-        } else {
-            $data['CNUMRUC']='';
-            $data['CDOCIDEN']=$data['CCODCLI'];
-        }
-        $data['TCL_CODIGO']='1';
-        $data['CESTADO']='V';
-        $data['DFECINS']=date('Y-d-m H:i:s');
-        $data['DFECCRE']=date('Y-d-m H:i:s');
-        $data['CUSUARI'] = \Auth::user()->user_code;
-        $data['CVENDE'] = \Auth::user()->seller_code;
-        $data['MONCRE']='MN';
-        $data['DIRENT'] = $data['CDIRCLI'];
-        
-        return $data;
-    }
-    public function prepareData2($data)
-    {
-        if ($data['CTIPO_DOCUMENTO']=='6') {
-            $data['CNUMRUC']=$data['CCODCLI'];
-            $data['CDOCIDEN']='';
-        } else {
-            $data['CNUMRUC']='';
-            $data['CDOCIDEN']=$data['CCODCLI'];
-        }
-        $data['CUSUARI'] = \Auth::user()->user_code;
-        $data['CVENDE'] = \Auth::user()->seller_code;
-        $data['DFECMOD'] = date('Y-d-m H:i:s');
-        $data['DIRENT'] = $data['CDIRCLI'];
+        $data['TRANOMBRE'] = $data['TRARAZEMP'];
+        $data['TRARUCEMP'] = $data['TRACODIGO'];
+        $data['TRARUC'] = $data['TRACODIGO'];
+        $data['FLGTRANSPORTE_PUBLICO'] = '1';
+        $data['TRAFECCRE']=date('Y-d-m H:i:s');
         
         return $data;
     }

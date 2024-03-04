@@ -122,6 +122,16 @@ class ComposerServiceProvider extends ServiceProvider
                 'edit.update'=>'Actualizar Empresa',
                 'edit.delete'=>'Eliminar Empresa',
             ],
+            'shippers' => [
+                'index'=>'Transportistas',
+                'index.create'=>'Crear Transportista',
+                'create'=>'Registrar Transportista',
+                'create.create'=>'Registrar Transportista',
+                'show'=>'Vizualizando Transportista:',
+                'edit'=>'Editar Transportista: ',
+                'edit.update'=>'Actualizar Transportista',
+                'edit.delete'=>'Eliminar Transportista',
+            ],
             'output_quotes' => [
                 'index'=>'Cotizaciones',
                 'index.create'=>'Crear Cotización',

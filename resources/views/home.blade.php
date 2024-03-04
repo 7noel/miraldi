@@ -25,8 +25,8 @@
                 </div>
                 <div class="card">
                     <div class="card-body text-center">
-                        <a href="#" class="card-title text-dark">REPORTES
-                        <img src="/img/informe.png" class="card-img-top"></a>
+                        <a href="{{ route('products.search') }}" class="card-title text-dark">Buscador
+                        <img src="/img/barcode2.png" class="card-img-top"></a>
                     </div>
                 </div>
             </div>

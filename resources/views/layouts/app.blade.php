@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/jpeg" href="/img/favicon.png" />
+    <link rel="icon" type="image/jpeg" href="/img/icono_miraldi.gif" />
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -189,6 +189,11 @@ $(document).ready(function () {
     // if ($('#is_downloadable').length) {
     //     $('.is_downloadable').val($('#is_downloadable').val())
     // }
+    
+    $("#form-buscar-codigo").submit(function(e){
+        e.preventDefault()
+        get_product()
+    })
     $("#form-add-picking").submit(function(e){
         e.preventDefault()
         addPrPicking()
@@ -380,11 +385,11 @@ $(document).ready(function () {
         changeCountry()
     });
     //carga departamentos
-    $('#DEPARTAMENTO').change(function(){
+    $('#departamento').change(function(){
         cargaProvincias()
     });
     //carga provincias
-    $('#PROVINCIA').change(function(){
+    $('#provincia').change(function(){
         cargaDistritos()
     })
 
@@ -467,6 +472,51 @@ $(document).ready(function () {
         });
     })
 })
+
+function get_product() {
+    codigo = $("#codigo").val()
+    url = $('#form-buscar-codigo').attr('action').replace('ID', codigo)
+    
+    $.get(url, function(data){
+        console.log(data)
+        if (data.hasOwnProperty('ACODIGO') && data.ACODIGO != null) {
+            $("#codigo").val('')
+            $("#codigox").text(data.ACODIGO)
+            $("#cod_fab").text(data.ACODIGO2)
+            $("#name").text(data.ADESCRI)
+            if (data.family.hasOwnProperty('FAM_NOMBRE') && data.family.FAM_NOMBRE != null) {
+                $("#family").text(data.family.FAM_NOMBRE)
+            } else {
+                $("#family").text('')
+            }
+            if (data.stock.hasOwnProperty('STSKDIS') && data.stock.STSKDIS != null) {
+                $("#stock").text(`${(data.stock.STSKDIS*1).toFixed(2)} ${data.AUNIDAD}`)
+            } else {
+                $("#stock").text('')
+            }
+            if (data.price.hasOwnProperty('PRE_ACT') && data.price.PRE_ACT != null) {
+                $("#currency").text(data.price.MON_PRE)
+                $("#price").text(data.price.PRE_ACT*1)
+            } else {
+                $("#price").text('SIN PRECIO')
+            }
+            $("#locker").text(data.lockers.map(function(locker){return locker.TCASILLERO}).join(';'))
+            $('#product-details').removeClass('d-none')
+        } else {
+            $('#product-details').addClass('d-none')
+            $("#codigox").text('')
+            $("#cod_fab").text('')
+            $("#name").text('')
+            $("#family").text('')
+            $("#currency").text('')
+            $("#price").text('')
+            $("#stock").text('')
+            $("#locker").text('')
+            alert(`No se encontró el código ${codigo} en la base de datos`)
+            $("#codigo").val('')
+        }
+    })
+}
 
 function addPrPicking() {
     code = $("#codigo").val().trim()
@@ -782,6 +832,9 @@ function getDataPadron (doc, type) {
             console.log(data)
             if (type=='6') {
                 $('#company_name').val(data.razonSocial)
+                $('#paternal_surname').val('')
+                $('#maternal_surname').val('')
+                $('#name').val('')
                 if (data.hasOwnProperty('ubigeo') && data.ubigeo != null) {
                     //$('#address').val(data.direccion.replace(` ${data.departamento} ${data.provincia} ${data.distrito}`, ''))
                     $('#address').val(data.direccion.replace(` ${data.departamento} ${data.provincia} ${data.distrito}`, '') + ` ${data.distrito} ${data.provincia} ${data.departamento}`)
@@ -793,6 +846,7 @@ function getDataPadron (doc, type) {
                 $('#paternal_surname').val(data.apellidoPaterno)
                 $('#maternal_surname').val(data.apellidoMaterno)
                 $('#name').val(data.nombres)
+                $('#company_name').val(`${data.apellidoPaterno} ${data.apellidoMaterno} ${data.nombres}`)
             }
             //console.log(data)
         }
@@ -829,15 +883,16 @@ function changeIdType() {
 
 /*cargar provincias*/
 function cargaProvincias(){
-    var $dep = $('#DEPARTAMENTO')
-    var $pro = $('#PROVINCIA')
-    var $dis = $('#UBIGEO')
+    var $dep = $('#departamento')
+    var $pro = $('#provincia')
+    var $dis = $('#ubigeo_code')
     var page ="/listarProvincias/" + $dep.val()
     if ($dep.val()=="") {
         $pro.empty("")
         $dis.empty("")
     } else {
         $.get(page, function(data){
+            console.log(data)
             $pro.empty();
             $pro.append("<option value=''>Seleccionar</option>");
             $.each(data, function (index, ProvinciaObj) {
@@ -849,9 +904,9 @@ function cargaProvincias(){
 
 /*cargar distritos*/
 function cargaDistritos(){
-    var $dep = $('#DEPARTAMENTO')
-    var $pro=$('#PROVINCIA')
-    var $dis=$('#UBIGEO')
+    var $dep = $('#departamento')
+    var $pro=$('#provincia')
+    var $dis=$('#ubigeo_code')
     var page = "/listarDistritos/" + $dep.val() + "/" + $pro.val()
     if ($pro=='') {
         $dis.empty("")

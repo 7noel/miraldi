@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\pRODUCT;
+use App\Product;
 
 class ProductController extends Controller
 {
@@ -96,6 +96,17 @@ class ProductController extends Controller
                 'label' => $model->ACODIGO.'  '.$model->ADESCRI
             ];
         }
+        return response()->json($result);
+    }
+
+    public function search()
+    {
+        return view('products.search');
+    }
+
+    public function get_search($id)
+    {
+        $result = Product::with('stock','price','family','lockers')->where('ACODIGO', $id)->first();
         return response()->json($result);
     }
 }

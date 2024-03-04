@@ -49,12 +49,15 @@ class MenuController extends Controller
                 // ['name' => 'Grupos', 'route' => 'permission_groups.index'],
                 // ['name' => 'Permisos', 'route' => 'permissions.index'],
             ],
-            'Taller'=>[
-                // ['name' => 'Cotizaciones', 'route' => 'output_quotes.index'],
+            'Almacén'=>[
+                ['name' => 'Productos', 'route' => 'products.search'],
+                ['name' => 'Picking', 'route' => 'picking'],
+            ],
+            'Ventas'=>[
+                //['name' => 'Cotizaciones', 'route' => 'quotes.index'],
                 ['name' => 'Ordenes', 'route' => 'orders.index'],
                 ['name' => 'Clientes', 'route' => 'companies.index'],
-                ['name' => 'Picking', 'route' => 'picking'],
-                // ['name' => 'Transportistas', 'route' => 'shippers.index'],
+                ['name' => 'Transportistas', 'route' => 'shippers.index'],
             ],
         ];
         return $links;

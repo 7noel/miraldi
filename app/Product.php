@@ -23,4 +23,14 @@ class Product extends Model
     {
         return $this->hasOne(Price::class, 'COD_ARTI', 'ACODIGO');
     }
+
+    public function family()
+    {
+        return $this->hasOne(Family::class, 'FAM_CODIGO', 'AFAMILIA');
+    }
+
+    public function lockers()
+    {
+        return $this->hasMany(Locker::class, 'TCODART', 'ACODIGO');
+    }
 }
