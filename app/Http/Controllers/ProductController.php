@@ -108,5 +108,5 @@ class ProductController extends Controller
     {
         $result = Product::with('stock','price','family','lockers')->where('ACODIGO', $id)->first();
         return response()->json($result);
-    }
+    } 
 }
