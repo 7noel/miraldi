@@ -98,13 +98,13 @@ class ComposerServiceProvider extends ServiceProvider
             'save' => '<i class="far fa-save"></i>',
             'search' => '<i class="fas fa-search"></i>',
             'shipping' => '<i class="fas fa-shipping-fast"></i>',
-            'config' => '<i class="fas fa-cog"></i>',
             'history' => '<i class="fas fa-history"></i>',
             'check' => '<i class="fas fa-check"></i>',
             'external' => '<i class="fas fa-external-link-square-alt"></i>',
             'invoice' => '<i class="fas fa-file-invoice"></i>',
             'close' => '<i class="fas fa-times"></i>',
             'car' => '<i class="fas fa-car"></i>',
+            'refresh' => '<i class="fas fa-sync"></i>',
         ];
     }
 
@@ -145,12 +145,22 @@ class ComposerServiceProvider extends ServiceProvider
             'orders' => [
                 'index'=>'Pedidos',
                 'index.create'=>'Crear Pedido',
-                'create'=>'Nueva Pedido',
+                'create'=>'Nuevo Pedido',
                 'create.create'=>'Crear Pedido',
                 'show'=>'Vizualizando Pedido:',
                 'edit'=>'Editar Pedido: ',
                 'edit.update'=>'Actualizar Pedido',
                 'edit.delete'=>'Eliminar Pedido',
+            ],
+            'pickings' => [
+                'index'=>'Pickings',
+                'index.create'=>'Crear Picking',
+                'create'=>'Nuevo Picking',
+                'create.create'=>'Crear Picking',
+                'show'=>'Vizualizando Picking:',
+                'edit'=>'Editar Picking: ',
+                'edit.update'=>'Actualizar Picking',
+                'edit.delete'=>'Eliminar Picking',
             ],
             'users' => [
                 'index'=>'Usuarios',

@@ -40,13 +40,14 @@ Route::get('api/products/autocompleteAjax', ['as' => 'productsAutocomplete','use
 Route::get('get_picking/{qr}', ['as' => 'get_picking', 'uses' => 'OrderController@get_picking']);
 
 Route::group(['middleware'=>['auth']], function(){
+    Route::resource('pickings','PickingController');
     Route::resource('orders','OrderController');
     Route::resource('companies','CompanyController');
     Route::resource('shippers','ShipperController');
     Route::resource('users','UserController');
     Route::get('orders/print/{id}', ['as' => 'print_order', 'uses' => 'OrderController@print']);
     Route::get('orders/print_note/{id}', ['as' => 'print_note', 'uses' => 'OrderController@print_note']);
-    Route::get('picking', ['as' => 'picking', 'uses' => 'OrderController@picking']);
     Route::get('products_search', ['as' => 'products.search', 'uses' => 'ProductController@search']);
     Route::get('get_product/{id}', ['as' => 'products.get_product', 'uses' => 'ProductController@get_search']);
+    Route::get('picking/print/{id}', ['as' => 'picking.print', 'uses' => 'PickingController@print']);
 });

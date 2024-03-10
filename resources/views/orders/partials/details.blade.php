@@ -32,7 +32,7 @@
 				<td class="withTax">{!! Form::text("details[$i][DFPREC_ORI]", number_format($detail->DFPREC_ORI, 2, '.', ''), ['class'=>'form-control form-control-sm txtPrecio text-right', 'data-precio'=>'', 'readonly'=>'readonly']) !!}</td>
 				<td class="withoutTax">{!! Form::text("details[$i][value]", ($detail->DFPREC_ORI*1.18), ['class'=>'form-control form-control-sm txtValue text-right', 'data-value'=>'', 'readonly'=>'readonly']) !!}</td>
 			@endif
-			<td>{!! Form::text("details[$i][CFPORDESCL]", number_format($model->CFPORDESCL, 0, '.',''), ['class'=>'form-control form-control-sm txtDscto text-right', 'data-dscto'=>'']) !!}</td>
+			<td>{!! Form::text("details[$i][CFPORDESCL]", number_format($model->CFPORDESCL, 0, '.',''), ['class'=>'form-control-plaintext form-control-sm txtDscto text-right', 'data-dscto'=>'', 'readonly']) !!}</td>
 			<td>{!! Form::text("details[$i][DFPORDES]", number_format($detail->DFPORDES, 0, '.', ''), ['class'=>'form-control form-control-sm txtDscto2 text-right', 'data-dscto'=>'']) !!}</td>
 			<td class="withoutTax"> <span class='form-control form-control-sm txtTotal text-right' data-total>{{ number_format($detail->DFIMPMN/1.18, 4, '.', '') }}</span> </td>
 			<td class="withTax"> <span class='form-control form-control-sm txtPriceItem text-right' data-price_item>{{ number_format($detail->DFIMPMN, 4, '.', '') }}</span> </td>
@@ -60,7 +60,7 @@
 			<td width="100px" class="withTax">{!! Form::text('data5', null, ['class'=>'form-control form-control-sm txtPrecio text-right', 'data-precio'=>'', 'readonly'=>'readonly']) !!}</td>
 			<td width="100px" class="withoutTax">{!! Form::text('data7', null, ['class'=>'form-control form-control-sm txtValue text-right', 'data-value'=>'', 'readonly'=>'readonly']) !!}</td>
 		@endif
-		<td width="100px">{!! Form::text('data6', null, ['class'=>'form-control form-control-sm txtDscto text-right', 'data-dscto'=>'']) !!}</td>
+		<td width="100px">{!! Form::text('data6', null, ['class'=>'form-control-plaintext form-control-sm txtDscto text-right', 'data-dscto'=>'', 'readonly']) !!}</td>
 		<td width="100px">{!! Form::text('data8', null, ['class'=>'form-control form-control-sm txtDscto2 text-right', 'data-dscto2'=>'']) !!}</td>
 		<td width="100px" class="withoutTax"> <span class='form-control form-control-sm txtTotal text-right' data-total></span> </td>
 		<td width="100px" class="withTax"> <span class='form-control form-control-sm txtPriceItem text-right' data-price_item></span> </td>

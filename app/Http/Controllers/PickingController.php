@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Order;
-use App\Seller;
+use App\Picking;
 use App\Product;
-use App\Condition;
-use App\Company;
 
-class OrderController extends Controller
+class PickingController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,31 +15,14 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $filter = (object) request()->all();
-        if( !((array) $filter) ) {
-            $filter->sn = '';
-            $filter->seller_id = '';
-            $filter->company_id = '';
-            $filter->txtCompany = '';
-        }
-        if (isset($filter->txtCompany) && trim($filter->txtCompany) == '') {
-            $filter->company_id = '';
+        $search = request()->get('name');
+        if ($search) {
+            $models = Picking::name($search)->orderBy("id", 'DESC')->paginate();
+        } else {
+            $models = Picking::orderBy('id', 'DESC')->paginate();
         }
 
-        $q = Order::with('seller', 'company');
-        if ($filter->sn > 0) {
-            $models = $q->where('CFNUMPED', str_pad($filter->sn, 7, "0", STR_PAD_LEFT))->orderBy('CFNUMPED', 'desc')->paginate();
-        } else {
-            if(isset($filter->seller_id) && $filter->seller_id != '') {
-                $q->where('CFVENDE', $filter->seller_id);
-            }
-            if(isset($filter->company_id) && $filter->company_id != '') {
-                $q->where('CFCODCLI', $filter->company_id);
-            }
-            $models = $q->orderBy('CFNUMPED', 'desc')->paginate();
-        }
-        $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
-        return view('partials.filter',compact('models', 'filter', 'sellers'));
+        return view('partials.index',compact('models'));
     }
 
     /**
@@ -52,10 +32,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $cambio = \DB::connection('starsoft2')->table('TIPO_CAMBIO_SUNAT')->orderBy('FECHA', 'desc')->first();
-        $conditions = Condition::all()->pluck('DES_FP', 'COD_FP')->toArray();
-        $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
-        return view('partials.create', compact('conditions', 'sellers', 'cambio'));
+        return view('pickings.create');
     }
 
     /**
@@ -67,13 +44,12 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $data = request()->all();
-        $data = $this->prepareData($data);
-        dd($data);
-        Order::updateOrCreate(['CFNUMPED' => 0], $data);
-        if (isset($data['last_page']) && $data['last_page'] != '') {
-            return redirect()->to($data['last_page']);
-        }
-        return redirect()->route('orders.index');
+        $data['details'] = json_encode($data['details']);
+        $data['user_id'] = \Auth::user()->id;
+        // dd($data);
+        $model = Picking::create($data);
+        // dd($model);
+        return redirect()->route('pickings.show', $model->id);
     }
 
     /**
@@ -84,10 +60,8 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $model = Order::findOrFail($id);
-        $conditions = Condition::all()->pluck('DES_FP', 'COD_FP')->toArray();
-        $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
-        return view('partials.show', compact('model', 'conditions', 'sellers'));
+        $model = Picking::with('order', 'user')->where('id', $id)->first();
+        return view('partials.show', compact('model'));
     }
 
     /**
@@ -147,15 +121,20 @@ class OrderController extends Controller
      */
     public function print($id)
     {
-        $model = Order::findOrFail($id);
-        $pdf = \PDF::loadView('pdfs.orders', compact('model'));
+        $model = Picking::findOrFail($id);
+        $pdf = \PDF::loadView('pdfs.pickings', compact('model'))->setPaper([0,0,227,2000], 'portrait');
         return $pdf->stream();
     }
     public function print_note($id)
     {
         $model = Order::findOrFail($id);
-        $pdf = \PDF::loadView('pdfs.notes', compact('model'));
+        $pdf = \PDF::loadView('pdfs.notes', compact('model'))->setPaper([0,0,227,2000], 'portrait');
         return $pdf->stream();
+    }
+
+    public function picking()
+    {
+        return view('orders.picking');
     }
 
     public function get_picking($qr)

@@ -19,7 +19,7 @@
                 </div>
                 <div class="card">
                     <div class="card-body text-center">
-                        <a href="{{ route('picking') }}" class="card-title text-dark">PICKING
+                        <a href="{{ route('pickings.create') }}" class="card-title text-dark">PICKING
                         <img src="/img/picking.png" class="card-img-top"></a>
                     </div>
                 </div>

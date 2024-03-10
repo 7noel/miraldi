@@ -26,7 +26,12 @@
     <!-- Jquery ui js -->
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 
+    <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+
+    <!-- Print JS -->
+    <script src="https://printjs-4de6.kxcdn.com/print.min.js"></script>
+    <link rel="stylesheet" href="https://printjs-4de6.kxcdn.com/print.min.css">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -186,13 +191,34 @@
     </div>
     <script>
 $(document).ready(function () {
+
+    n = $('#tableItems tr:last').find('.txtDscto2').val()
+    n = Math.round(parseFloat(n)*1000000)/1000000
+    if (isNaN(n)) {n = 0}
+    window.descuento2 = n
+    //n = $(myElement).parent().parent().find(id).val()
+    n = $("#CFPORDESCL").val()
+    n = Math.round(parseFloat(n)*1000000)/1000000
+    if (isNaN(n)) {n = 0}
+    $("#CFPORDESCL").val(n)
+    window.descuento1 = n
     // if ($('#is_downloadable').length) {
     //     $('.is_downloadable').val($('#is_downloadable').val())
     // }
-    
+    $("#CFPORDESCL").change(function () {
+        n = $("#CFPORDESCL").val()
+        window.descuento1 = $("#CFPORDESCL").val()
+        $(".txtDscto").val(n)
+        calcTotal()
+    })
     $("#form-buscar-codigo").submit(function(e){
         e.preventDefault()
         get_product()
+    })
+
+    $("#form-picking-qr").submit(function(e){
+        e.preventDefault()
+        get_picking()
     })
     $("#form-add-picking").submit(function(e){
         e.preventDefault()
@@ -283,7 +309,7 @@ $(document).ready(function () {
     })
 
     $(document).on('change','.txtCantidad, .txtPrecio, .txtValue, .txtDscto, .txtDscto2', function (e) {
-        calcTotalItem(this)
+        //calcTotalItem(this)
         calcTotal()
     });
 
@@ -302,14 +328,14 @@ $(document).ready(function () {
                     if ($('#is_downloadable')) {
                         $($this).parent().parent().find('.is_downloadable').val($p.is_downloadable)
                     }
-                    $($this).parent().parent().find('.productId').val($p.id)
-                    $($this).parent().parent().find('.txtProduct').val($p.name)
-                    $($this).parent().parent().find('.unitId').val($p.unit_id)
-                    $($this).parent().parent().find('.txtValue').val($p.value)
-                    $($this).parent().parent().find('.txtPrecio').val($p.price)
+                    $($this).parent().parent().find('.productId').val($p.ACODIGO)
+                    $($this).parent().parent().find('.txtProduct').val($p.ADESCRI)
+                    $($this).parent().parent().find('.unitId').val($p.AUNIDAD)
+                    $($this).parent().parent().find('.txtValue').val((($p.price.PRE_ACT*100)/118).toFixed(6))
+                    $($this).parent().parent().find('.txtPrecio').val($p.price.PRE_ACT)
                     $($this).parent().parent().find('.txtDscto').val(window.descuento1)
                     $($this).parent().parent().find('.txtDscto2').val(window.descuento2)
-                    $($this).parent().parent().find('.intern_code').text($p.intern_code)
+                    $($this).parent().parent().find('.intern_code').text($p.ACODIGO)
                     $($this).parent().parent().find('.txtCantidad').focus()
                 }
             })
@@ -531,6 +557,7 @@ function addPrPicking() {
     // Recorre los tr
     $("#table-picking tr").each(function(){
         let codigo = $(this).children().eq(0)
+        es_total = parseInt($("#es").val())
         es = parseInt($(this).children().eq(3).text())
         pl = parseInt($(this).children().eq(2).text())
         // Cuando encuentra el código
@@ -538,6 +565,8 @@ function addPrPicking() {
             code_exist = true
             es = 1 + es
             $(this).children().eq(3).text(es)
+            $(this).find(".es").val(es)
+            es_total += 1
             if (pl == es) {
                 // Cuando se completa un item
                 $(this).addClass("table-success")
@@ -559,6 +588,8 @@ function addPrPicking() {
                 } else {
                     // Si se omite la lectura del scaner
                     $(this).children().eq(3).text(es - 1)
+                    $(this).find(".es").val(es - 1)
+                    es_total -= 1
                 }
             } else {
                 // Cuando aún no se completa el item
@@ -566,6 +597,7 @@ function addPrPicking() {
                 $(this).removeClass("table-danger")
                 $(this).addClass("table-warning")
             }
+            $("#es").val(es_total)
         }
         if (pl > es) { order_ready = false }
     })
@@ -587,6 +619,7 @@ function addPrPicking() {
         }
         audio.play()
     }
+    $("#codigo").val("")
     $("#codigo").focus()
 }
 
@@ -594,6 +627,9 @@ function get_picking() {
     qr = $("#picking_qr").val().trim()
     vals = qr.split('|')
     orden_id = vals.shift()
+    pl_total = 0
+    $("#CFNUMPED").val(orden_id)
+    $("#items").val(vals.length)
     var prs = {}
     $.each(vals, function (index, val) {
         arr = val.split(' ')
@@ -604,15 +640,23 @@ function get_picking() {
     $.get(`/get_picking/${qr}`, function(data){
         // console.log(data)
         $('#table-picking').empty()
+        i = 0
         $.each(data.products, function (index, pr) {
             tr=`<tr>
                     <td>${pr.ACODIGO}</td>
                     <td>${pr.ADESCRI}</td>
                     <td>${prs[pr.ACODIGO]}</td>
                     <td>0</td>
+                    <input type="hidden" class="codigo" name="details[${i}][codigo]" value="${pr.ACODIGO}">
+                    <input type="hidden" class="name" name="details[${i}][name]" value="${pr.ADESCRI}">
+                    <input type="hidden" class="pl" name="details[${i}][pl]" value="${prs[pr.ACODIGO]}">
+                    <input type="hidden" class="es" name="details[${i}][es]" value="0">
                 </tr>`
             $('#table-picking').append(tr)
+            i = i + 1
+            pl_total += prs[pr.ACODIGO]
         })
+        $("#pl").val(pl_total)
     })
     $('.qr').addClass('d-none')
     $('.picking').removeClass('d-none')
@@ -633,7 +677,9 @@ function calcTotal () {
     $('#tableItems tr').each(function (index, vtr) {
         if (!($(vtr).find('.isdeleted').is(':checked'))) {
             q = parseFloat($(vtr).find('.txtCantidad').val())
-            v = parseFloat($(vtr).find('.txtValue').val())
+            v = parseFloat((($(vtr).find('.txtPrecio').val()*100)/118).toFixed(6))
+            console.log(`Valor unitario ${v}`)
+            // v = parseFloat($(vtr).find('.txtValue').val())
             p = parseFloat($(vtr).find('.txtPrecio').val())
             // v = p * 100 / (100 + 18);
             // v = parseFloat($(vtr).find('.txtValue').val());
@@ -641,6 +687,8 @@ function calcTotal () {
             d2 = parseFloat($(vtr).find('.txtDscto2').val())
             vt = Math.round(q*v*(100-d1)*(100-d2)/100) / 100 // total por item
             t = Math.round(q*p*(100-d1)*(100-d2)/100) / 100
+            $(vtr).find('.txtTotal').text( vt.toFixed(2) )
+            $(vtr).find('.txtPriceItem').text( t.toFixed(2) )
             console.log(vt)
             console.log(t)
             discount = Math.round(100*q*v)/100 - vt
@@ -687,7 +735,7 @@ function validateItem (myElement, id, decimales=2) {
     n = Math.round(parseFloat(n)*1000000)/1000000
     if (isNaN(n)) {n=0.00}
     $(myElement).parent().parent().find(id).val(n.toFixed(decimales))
-    if (id=='.txtDscto') {window.descuento1 = n.toFixed(2)}
+    //if (id=='.txtDscto') {window.descuento1 = n.toFixed(2)}
     if (id=='.txtDscto2') {window.descuento2 = n.toFixed(2)}
     return n
 }
@@ -760,7 +808,9 @@ function renderTemplateRowProduct (data) {
     clone.querySelector("[data-precio]").setAttribute("name", "details[" + items + "][price]")
     clone.querySelector("[data-value]").setAttribute("name", "details[" + items + "][DFPREC_ORI]")
     clone.querySelector("[data-dscto]").setAttribute("name", "details[" + items + "][CFPORDESCL]")
+    clone.querySelector("[data-dscto]").setAttribute("value", window.descuento1)
     clone.querySelector("[data-dscto2]").setAttribute("name", "details[" + items + "][DFPORDES]")
+    clone.querySelector("[data-dscto2]").setAttribute("value", window.descuento2)
     // clone.querySelector("[data-isdeleted]").setAttribute("name", "details[" + items + "][is_deleted]")
     if (items>0) {$("input[name='details["+(items-1)+"][DFDESCRI]']").attr('disabled', true)}
     

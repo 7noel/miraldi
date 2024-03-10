@@ -34,10 +34,10 @@
 			<td class="text-center status"><span class="{{ $clase }}">{{ $model->CFCOTIZA }}</span></td>
 			<td style="white-space: nowrap;">
 				<a href="{{ route( 'print_note' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-info btn-sm" title="Imprimir Nota">{!! $icons['pdf'] !!}</a>
-				<a href="{{ route( 'print_order' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-success btn-sm" title="Imprimir Pedido">{!! $icons['printer'] !!}</a>
+				<button type="button" onclick="printJS('{{ route( 'print_order' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido">{!! $icons['printer'] !!}</button>
 				@if($model->CFCOTIZA=='EMITIDO')
 				<a href="{{ route( 'orders.edit' , $model) }}" class="btn btn-outline-primary btn-sm" title="Editar">{!! $icons['edit'] !!}</a>
-				<a href="#" class="btn-anular btn btn-outline-danger btn-sm" title="Eliminar">{!! $icons['remove'] !!}</a>
+				{{--<a href="#" class="btn-anular btn btn-outline-danger btn-sm" title="Eliminar">{!! $icons['remove'] !!}</a>--}}
 				@else
 				<a href="{{ route('orders.show', $model->CFNUMPED) }}" class="btn btn-outline-secondary btn-sm" title="Ver OT">{!! $icons['view'] !!}</a>
 				@endif
