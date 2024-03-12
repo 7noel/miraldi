@@ -16,8 +16,9 @@
 			<td>{{ $model->order->CFNOMBRE }}</td>
 			<td>{{ $model->created_at->format('d/m/Y') }}</td>
 			<td>
-				<a href="{{ route($routes['show'], $model) }}" class="btn btn-outline-secondary btn-sm" title="Ver">{!! $icons['view'] !!}</a>
-				<button type="button" onclick="printJS('{{ route( 'picking.print' , $model->id ) }}')" class="bt btn-sm btn-outline-success mb-3" title="Imprimir Picking">{!! $icons['printer'] !!}</button>
+				<button type="button" onclick="printJS('{{ route( 'picking.print' , $model->id ) }}')" class="btn btn-sm btn-outline-success" title="Imprimir Picking">{!! $icons['printer'] !!}</button>
+				<a href="{{ route( 'picking.print' , $model->id ) }}" target="_blank" class="btn btn-sm btn-outline-danger" title="PDF Picking">{!! $icons['pdf'] !!}</a>
+				<a href="{{ route($routes['show'], $model) }}" class="btn btn-outline-secondary btn-sm" title="Ver Picking">{!! $icons['view'] !!}</a>
 				{{-- <a href="#" class="btn-delete btn btn-outline-danger btn-sm" title="Eliminar">{!! $icons['remove'] !!}</a> --}}
 			</td>
 		</tr>

@@ -14,7 +14,7 @@
 							{{-- <textarea class="form-control" id="picking_qr" rows="3">0000005|50100010 2.000000|50100050 2.000000</textarea> --}}
 						</div>
 						<div class="form-group">
-							<button type="submit" id="btn-pk" class="btn btn-outline-info btn-sm" title="picking">Agregar Productos {!! $icons['add'] !!}</button>
+							<button type="submit" id="btn-pk" class="btn btn-outline-info btn-sm" title="picking">{!! $icons['add'] !!} Agregar Productos</button>
 						</div>
 					</form>
 					<div class="picking d-none">
@@ -23,8 +23,8 @@
 								<input class="form-control form-control-sm" type="text" placeholder="CODIGO" id="codigo">
 							</div>
 							<div class="form-group">
-								<button type="submit" class="btn btn-primary btn-sm" id="btn-add-pk">Agregar {!! $icons['add'] !!}</button>
-								<a href="" class="btn btn-sm btn-outline-danger">Refrescar {!! $icons['refresh'] !!}</a>
+								<button type="submit" class="btn btn-primary btn-sm" id="btn-add-pk">{!! $icons['add'] !!} Agregar</button>
+								<a href="" class="btn btn-sm btn-outline-danger">{!! $icons['refresh'] !!} Refrescar</a>
 							</div>
 						</form>
 
@@ -45,7 +45,7 @@
 								<tbody id="table-picking">
 								</tbody>
 							</table>
-							<button type="submit" class="bt btn-sm btn-outline-info">Guardar</button>
+							<button type="submit" class="btn btn-sm btn-outline-info">{!! $icons['save'] !!} Guardar</button>
 						{!! Form::close() !!}
 						
 					</div>

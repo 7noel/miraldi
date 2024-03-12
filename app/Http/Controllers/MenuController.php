@@ -50,7 +50,7 @@ class MenuController extends Controller
                 // ['name' => 'Permisos', 'route' => 'permissions.index'],
             ],
             'Almacén'=>[
-                ['name' => 'Picking', 'route' => 'pickings.create'],
+                ['name' => 'Picking', 'route' => 'pickings.index'],
                 ['name' => 'Productos', 'route' => 'products.search'],
             ],
             'Ventas'=>[
