@@ -23,7 +23,7 @@
 			{!! Form::hidden("details[$i][DFSECUEN]", $detail->DFSECUEN, ['class'=>'detailId','data-detailId'=>'']) !!}
 			{!! Form::hidden("details[$i][DFUNIDAD]", $detail->DFUNIDAD, ['class'=>'unitId','data-unitid'=>'']) !!}
 			<td><span class='form-control form-control-sm intern_code text-right' data-labelid>{{ $detail->DFCODIGO }}</span></td>
-			<td>{!! Form::text("details[$i][DFDESCRI]", $detail->DFDESCRI, ['class'=>'form-control form-control-sm txtProduct', 'data-product'=>'', 'required'=>'required', 'disabled']); !!}</td>
+			<td>{!! Form::text("details[$i][DFDESCRI]", $detail->DFDESCRI, ['class'=>'form-control-sm form-control-plaintext txtProduct', 'data-product'=>'', 'required'=>'required', 'readonly']); !!}</td>
 			<td>{!! Form::text("details[$i][DFCANTID]", number_format($detail->DFCANTID, 2, '.', ''), ['class'=>'form-control form-control-sm txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
 			@if(config('options.cambiar_precios'))
 				<td class="withTax">{!! Form::text("details[$i][DFPREC_ORI]", $detail->DFPREC_ORI*1.18, ['class'=>'form-control form-control-sm txtPrecio text-right', 'data-precio'=>'']) !!}</td>

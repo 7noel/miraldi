@@ -12,10 +12,10 @@
 						<div class="form-group row">
 							<label for="codigo" class="col-sm-1 col-form-label">Código</label>
 							<div class="col-sm-2">
-								<input type="text" class="form-control" id="codigo" value="" autofocus>
+								<input type="text" class="form-control form-control-sm" id="codigo" value="" autofocus>
 							</div>
 							<div class="col-sm-2">
-								<button type="submit" class="btn btn-outline-success" id="submit">{!! $icons['search'] !!} Buscar</button>
+								<button type="submit" class="btn btn-sm btn-outline-success" id="submit">{!! $icons['search'] !!} Buscar</button>
 							</div>
 						</div>
 

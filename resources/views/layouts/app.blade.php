@@ -331,8 +331,8 @@ $(document).ready(function () {
                     $($this).parent().parent().find('.productId').val($p.ACODIGO)
                     $($this).parent().parent().find('.txtProduct').val($p.ADESCRI)
                     $($this).parent().parent().find('.unitId').val($p.AUNIDAD)
-                    $($this).parent().parent().find('.txtValue').val((($p.price.PRE_ACT*100)/118).toFixed(6))
-                    $($this).parent().parent().find('.txtPrecio').val($p.price.PRE_ACT)
+                    $($this).parent().parent().find('.txtValue').val($p.price.PRE_ACT) // PRE_ACT es precio sin IGV
+                    $($this).parent().parent().find('.txtPrecio').val((($p.price.PRE_ACT*118)/100).toFixed(6))
                     $($this).parent().parent().find('.txtDscto').val(window.descuento1)
                     $($this).parent().parent().find('.txtDscto2').val(window.descuento2)
                     $($this).parent().parent().find('.intern_code').text($p.ACODIGO)
@@ -677,10 +677,11 @@ function calcTotal () {
     $('#tableItems tr').each(function (index, vtr) {
         if (!($(vtr).find('.isdeleted').is(':checked'))) {
             q = parseFloat($(vtr).find('.txtCantidad').val())
-            v = parseFloat((($(vtr).find('.txtPrecio').val()*100)/118).toFixed(6))
+            // v = parseFloat((($(vtr).find('.txtPrecio').val()*100)/118).toFixed(6))
+            p = parseFloat((($(vtr).find('.txtPrecio').val()*118)/100).toFixed(6))
+            // p = parseFloat($(vtr).find('.txtPrecio').val())
+            v = parseFloat($(vtr).find('.txtValue').val())
             console.log(`Valor unitario ${v}`)
-            // v = parseFloat($(vtr).find('.txtValue').val())
-            p = parseFloat($(vtr).find('.txtPrecio').val())
             // v = p * 100 / (100 + 18);
             // v = parseFloat($(vtr).find('.txtValue').val());
             d1 = parseFloat($(vtr).find('.txtDscto').val())
@@ -812,7 +813,7 @@ function renderTemplateRowProduct (data) {
     clone.querySelector("[data-dscto2]").setAttribute("name", "details[" + items + "][DFPORDES]")
     clone.querySelector("[data-dscto2]").setAttribute("value", window.descuento2)
     // clone.querySelector("[data-isdeleted]").setAttribute("name", "details[" + items + "][is_deleted]")
-    if (items>0) {$("input[name='details["+(items-1)+"][DFDESCRI]']").attr('disabled', true)}
+    if (items>0) {$("input[name='details["+(items-1)+"][DFDESCRI]']").addClass('form-control-plaintext text')}
     
     items = parseInt(items) + 1
     $('#items').val(items)

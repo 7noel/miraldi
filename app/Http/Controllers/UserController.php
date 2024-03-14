@@ -19,17 +19,19 @@ class UserController extends Controller
         return view('partials.index',compact('models'));
     }
 
-    public function create(Request $request)
+    public function create()
     {
-        $roles = \DB::table('roles')->all()->pluck('name', 'id')->toArray();
-        $users = \DB::conecction('starsoft2')->table('USUARIO_FAC')->where('CTEMPRESA','003')->pluck('CTUNOMUSU', 'CTUALIAS')->toArray();
+        // dd('en la funcion create');
+        $roles = \DB::table('roles')->get()->pluck('name', 'id')->toArray();
+        // dd($roles);
+        $users = \DB::connection('starsoft2')->table('USUARIO_FAC')->where('CTEMPRESA', env('ST1_PRE_DATABASE', 'forge'))->pluck('CTUNOMUSU', 'CTUALIAS')->toArray();
         return view('partials.create', compact('roles', 'users'));
     }
 
-    public function store()
+    public function store(Request $request)
     {
         $data = request()->all();
-        $data['seller_code'] = \DB::connection('starsoft2')->table('USUARIO_FAC')->where('CTEMPRESA','003')->where('CTUALIAS',$data['user_code'])->first()->CTUVEND;
+        $data['seller_code'] = \DB::connection('starsoft2')->table('USUARIO_FAC')->where('CTEMPRESA', env('ST1_PRE_DATABASE', 'forge'))->where('CTUALIAS',$data['user_code'])->first()->CTUVEND;
         User::updateOrCreate(['id' => 0], $data);
         return redirect()->route('users.index');
     }
@@ -43,14 +45,14 @@ class UserController extends Controller
     {
         $model = User::findOrFail($id);
         $roles = \DB::table('roles')->get()->pluck('name', 'id')->toArray();
-        $users = \DB::connection('starsoft2')->table('USUARIO_FAC')->where('CTEMPRESA','003')->pluck('CTUNOMUSU', 'CTUALIAS')->toArray();
+        $users = \DB::connection('starsoft2')->table('USUARIO_FAC')->where('CTEMPRESA', env('ST1_PRE_DATABASE', 'forge'))->pluck('CTUNOMUSU', 'CTUALIAS')->toArray();
         return view('partials.edit', compact('model', 'roles', 'users'));
     }
 
     public function update(Request $request, $id)
     {
         $data = request()->all();
-        $data['seller_code'] = \DB::connection('starsoft2')->table('USUARIO_FAC')->where('CTEMPRESA','003')->where('CTUALIAS',$data['user_code'])->first()->CTUVEND;
+        $data['seller_code'] = \DB::connection('starsoft2')->table('USUARIO_FAC')->where('CTEMPRESA', env('ST1_PRE_DATABASE', 'forge'))->where('CTUALIAS',$data['user_code'])->first()->CTUVEND;
         User::updateOrCreate(['id' => $id], $data);
         return \Redirect::route('users.index');
     }

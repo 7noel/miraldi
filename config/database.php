@@ -83,7 +83,7 @@ return [
             'url' => env('DATABASE_URL'),
             'host' => env('ST1_HOST', 'localhost'),
             'port' => env('ST1_PORT', '1433'),
-            'database' => env('ST1_DATABASE', 'forge'),
+            'database' => env('ST1_PRE_DATABASE', 'forge').env('ST1_DATABASE', 'forge'),
             'username' => env('ST1_USERNAME', 'forge'),
             'password' => env('ST1_PASSWORD', ''),
             'charset' => 'utf8',

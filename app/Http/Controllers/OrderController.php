@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Order;
+use App\OrderDetail;
 use App\Seller;
 use App\Product;
 use App\Condition;
@@ -67,9 +68,17 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $data = request()->all();
+        $last_ot = Order::orderBy('CFNUMPED', 'desc')->first();
+        $data['CFNUMPED'] = str_pad(($last_ot->CFNUMPED + 1), 7, "0", STR_PAD_LEFT);
+        $data['TIPO'] = 'PD';
+        $data['CFFECDOC'] = date('Y-d-m H:i:s');
+        $data['CFFECVEN'] = date('Y-d-m H:i:s');
         $data = $this->prepareData($data);
         dd($data);
-        Order::updateOrCreate(['CFNUMPED' => 0], $data);
+        Order::create($data);
+        foreach ($data['details'] as $key => $detail) {
+            OrderDetail::create($detail);
+        }
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
         }
@@ -114,7 +123,18 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $data = request()->all();
+        $data['CFNUMPED'] = $id;
+        $data = $this->prepareData($data);
+        dd($data);
         Order::updateOrCreate(['CFNUMPED' => $id], $data);
+        $old_ids = OrderDetail::where('DFNUMPED', $id)->pluck('DFNUMPED')->toArray();
+        $toDelete = array_diff($old_ids, $data['ids']);
+        if (isset($toDelete) and count($toDelete)>0) {
+            OrderDetail::whereIn('id', $toDelete)->delete();
+        }
+        foreach ($data['details'] as $key => $detail) {
+            OrderDetail::updateOrCreate(['DFNUMPED' => $id, 'DFCODIGO' => $detail['DFCODIGO']], $detail);
+        }
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
         }
@@ -172,17 +192,55 @@ class OrderController extends Controller
     }
     public function prepareData($data)
     {
-        $last_ot = Order::orderBy('CFNUMPED','desc')->first();
-        $data['CFNUMPED'] = str_pad((intval($last_ot->CFNUMPED) + 1), 7, "0", STR_PAD_LEFT);
+        // $last_ot = Order::orderBy('CFNUMPED','desc')->first();
+        // $data['CFNUMPED'] = str_pad((intval($last_ot->CFNUMPED) + 1), 7, "0", STR_PAD_LEFT);
+        $data['CFPORDESES'] = 0;
         $data['CFPUNVEN'] = '01';
         $data['CFESTADO'] = 'V';
         $data['CFCOTIZA'] = 'EMITIDO';
-        $data['TIPO'] = 'PD';
-        $data['CFFECDOC'] = date('Y-d-m H:i:s');
-        $data['CFFECVEN'] = date('Y-d-m H:i:s');
-        $data['CFCODMON'] = 'MN';
+        $data['ids'] = [];
+        // $data['CFCODMON'] = 'MN';
         $data['CFUSER'] = \Auth::user()->user_code;
+        if (isset($data['details'])) {
+            $data['CFIMPORTE'] = 0;
+            $data['CFDESVAL'] = 0;
+            $data['CFIGV'] = 0;
+            $item = 0;
+            foreach ($data['details'] as $key => $detail) {
+                $item += 1;
+                $data['details'][$key]['DFNUMPED'] = $data['CFNUMPED'];
+                $data['details'][$key]['DFSECUEN'] = str_pad((intval($item)), 3, "0", STR_PAD_LEFT);
+                // $data['details'][$key]['DFDESCRI'] = 
+                $data['details'][$key]['DFIGVPOR'] = 18;
+                // $igv_por = $data['details'][$key]['DFIGVPOR'];
+                $igv_dec = $data['details'][$key]['DFIGVPOR']/100;
+                $data['details'][$key]['DFALMA'] = '01';
+                $data['details'][$key]['DFSALDO'] = $detail['DFCANTID'];
 
+                $vventa = $detail['DFCANTID']*$detail['DFPREC_ORI']; // valor de item antes del descuento
+                $data['details'][$key]['DFDESCLI'] = $vventa*$data['CFPORDESCL']/100;
+                $vventa = round($vventa - $data['details'][$key]['DFDESCLI'], 6); // valor de item luego del descuento cliente
+                $data['details'][$key]['DFDESESP'] = $vventa*$data['CFPORDESES']/100;
+                $vventa = round($vventa - $data['details'][$key]['DFDESESP'], 6); // valor de item luego del descuento especial
+                $data['details'][$key]['DFDESCTO'] = $detail['DFPORDES']/100;
+                $vventa = round($vventa - $data['details'][$key]['DFDESCTO'], 6); // valor de item luego del descuento por item
+                $pitem = round((1+$igv_dec)*$vventa, 6);
+                $data['details'][$key]['DFPREC_VEN'] = $pitem/$detail['DFCANTID'];
+                $data['details'][$key]['DFIGV'] = $pitem - $vventa;
+                if ($data['CFCODMON']=='MN') {
+                    $data['details'][$key]['DFIMPUS'] = round($pitem/$data['CFTIPCAM'], 6);
+                    $data['details'][$key]['DFIMPMN'] = $pitem;
+                } else {
+                    $data['details'][$key]['DFIMPUS'] = $pitem;
+                    $data['details'][$key]['DFIMPMN'] = round($pitem*$data['CFTIPCAM'], 6);
+                }
+                $data['CFIMPORTE'] += $pitem;
+                $data['CFDESVAL'] += $data['details'][$key]['DFDESCLI'] + $data['details'][$key]['DFDESESP'] + $data['details'][$key]['DFDESCTO'];
+                $data['CFIGV'] += $data['details'][$key]['DFIGV'];
+
+                $data['ids'][] = $detail['DFCODIGO'];
+            }
+        }
         return $data;
     }
 }

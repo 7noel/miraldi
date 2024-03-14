@@ -12,6 +12,6 @@
 		{!! Field::select('role_id', $roles, ['empty'=>'Seleccionar', 'label'=>'Rol', 'class'=>'form-control-sm', 'required']) !!}
 	</div>
 	<div class="col-md-2 col-sm-4">
-		{!! Field::select('user_code', $users, ['empty'=>'Seleccionar', 'label'=>'Usuario', 'class'=>'form-control-sm', 'required']) !!}
+		{!! Field::select('user_code', $users, ['empty'=>'Seleccionar', 'label'=>'Usuario Starsoft', 'class'=>'form-control-sm', 'required']) !!}
 	</div>
 </div>

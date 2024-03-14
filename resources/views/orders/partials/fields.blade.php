@@ -1,4 +1,4 @@
-{!! Form::hidden('with_tax', 1, ['id'=>'with_tax']) !!}
+{!! Form::hidden('with_tax', 0, ['id'=>'with_tax']) !!}
 {!! Form::hidden('CFCODCLI', null, ['id'=>'company_id']) !!}
 {!! Form::hidden('CFRUC', null, ['id'=>'doc']) !!}
 {!! Form::hidden('CFDIRECC', null, ['id'=>'address']) !!}
