@@ -15,39 +15,27 @@ class Permissions {
 	 */
 	public function handle($request, Closure $next)
 	{
-		
-        // if (null == session('my_company')) {
-        //     $c = new CompanyRepo;
-        //     session(['my_company' => $c->find(1)]);
-        // }
-        $this->getMyCompany();
-        
-		if (\Auth::user()->is_superuser) {
+		$names = [
+			2 => ['orders', 'companies', 'shippers', 'orders.print', 'orders.print_note'], // permisos para vendedor
+			3 => ['pickings', 'products.search', 'products.get_product', 'pickings.print'], // permisos para almacen
+		];
+    
+		if (\Auth::user()->role_id == 1) { // si es rol administrador ingresa a la ruta
 			return $next($request);
 		} else {
-		$actPar = $request->route()->getAction();
-		$action = $actPar['as'];
-		if (substr($action, -6) == '.store') { $action = str_replace('.store',	'.create', $action); }
-		if (substr($action, -7) == '.update') { $action = str_replace('.update','.edit', $action); }
-		if (\Auth::user()->action_allowed($action)) {
-			return $next($request);
+			$actPar = $request->route()->getAction();
+			$action = $actPar['as']; // devuelve el nombre de la ruta
+			if (in_array($action, $names[\Auth::user()->role_id])) { // verifica si la ruta a ingresar está dentro de las rutas del rol del usuario
+				return $next($request);
+			} else {
+				$_action = explode('.', $action);
+				$model = array_shift($_action);
+				if (in_array($model, $names[\Auth::user()->role_id])) {
+					return $next($request);
+				}
+			}
+			return response(view('errors.access_denied'));
 		}
-		// $roles = \Auth::user()->roles()->get();
-		// foreach ($roles as $key => $role) {
-		// 	$permission = $role->permissions()->where('action', $action)->first();
-		// 	if(isset($permission)){
-		// 		return $next($request);
-		// 	}
-		// }
-		//return redirect()->to('home');
-		return response(view('errors.access_denied'));
-		}
-	}
-	public function getMyCompany()
-	{
-        if (null == session('my_company')) {
-            session(['my_company' => Company::find(1)]);
-        }
 	}
 
 }
