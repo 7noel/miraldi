@@ -136,16 +136,11 @@ class OrderController extends Controller
         }
         if (isset($data['details'])) {
             foreach ($data['details'] as $key => $detail) {
-                if ($key == 1) {
-                    // dd(['DFNUMPED' => $id, 'DFCODIGO' => $detail['DFCODIGO']]);
-                }
                 if (in_array($detail['DFCODIGO'], $old_ids)) {
                     OrderDetail::where('DFNUMPED', $id)->where('DFCODIGO', $detail['DFCODIGO'])->update($detail);
                 } else {
                     OrderDetail::create($detail);
                 }
-                
-                // OrderDetail::updateOrCreate(['DFNUMPED' => $id, 'DFCODIGO' => $detail['DFCODIGO']], $detail);
             }
         }
         if (isset($data['last_page']) && $data['last_page'] != '') {
@@ -240,7 +235,7 @@ class OrderController extends Controller
                 $vventa = round($vventa - $data['details'][$key]['DFDESCLI'], 6); // valor de item luego del descuento cliente
                 $data['details'][$key]['DFDESESP'] = $vventa*$data['CFPORDESES']/100;
                 $vventa = round($vventa - $data['details'][$key]['DFDESESP'], 6); // valor de item luego del descuento especial
-                $data['details'][$key]['DFDESCTO'] = $detail['DFPORDES']/100;
+                $data['details'][$key]['DFDESCTO'] = $vventa*$detail['DFPORDES']/100;
                 $vventa = round($vventa - $data['details'][$key]['DFDESCTO'], 6); // valor de item luego del descuento por item
                 $pitem = round((1+$igv_dec)*$vventa, 6);
                 $data['details'][$key]['DFPREC_VEN'] = $pitem/$detail['DFCANTID'];
