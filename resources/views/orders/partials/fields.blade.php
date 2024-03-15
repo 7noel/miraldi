@@ -4,6 +4,8 @@
 {!! Form::hidden('CFDIRECC', null, ['id'=>'address']) !!}
 @if(isset($cambio))
 	{!! Form::hidden('CFTIPCAM', $cambio->VENTA) !!}
+@else
+	{!! Form::hidden('CFTIPCAM', null) !!}
 @endif
 
 <div class="form-row">

@@ -29,8 +29,8 @@ Route::get('/', 'HomeController@index');
 // });
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
-// Auth::routes();
-Auth::routes(['verify' => true]);
+Auth::routes();
+// Auth::routes(['verify' => true]);
 
 
 Route::get('listarProvincias/{departamento}', ['as' => 'ajaxprovincias', 'uses' => 'UbigeoController@ajaxProvincias']);
@@ -39,8 +39,6 @@ Route::get('api/companiesAutocomplete/', ['as' => 'companiesAutocomplete', 'uses
 Route::get('api/products/autocompleteAjax', ['as' => 'productsAutocomplete','uses' => 'ProductController@ajaxAutocomplete']);
 Route::get('get_picking/{qr}', ['as' => 'get_picking', 'uses' => 'OrderController@get_picking']);
 
-Route::group(['middleware'=>['auth']], function(){
-});
 Route::group(['middleware'=>['auth', 'permissions']], function(){
     Route::resource('pickings','PickingController');
     Route::resource('orders','OrderController');

@@ -74,10 +74,12 @@ class OrderController extends Controller
         $data['CFFECDOC'] = date('Y-d-m H:i:s');
         $data['CFFECVEN'] = date('Y-d-m H:i:s');
         $data = $this->prepareData($data);
-        dd($data);
+        // dd($data);
         Order::create($data);
-        foreach ($data['details'] as $key => $detail) {
-            OrderDetail::create($detail);
+        if (isset($data['details'])) {
+            foreach ($data['details'] as $key => $detail) {
+                OrderDetail::create($detail);
+            }
         }
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
@@ -125,15 +127,26 @@ class OrderController extends Controller
         $data = request()->all();
         $data['CFNUMPED'] = $id;
         $data = $this->prepareData($data);
-        dd($data);
         Order::updateOrCreate(['CFNUMPED' => $id], $data);
-        $old_ids = OrderDetail::where('DFNUMPED', $id)->pluck('DFNUMPED')->toArray();
+        $old_ids = OrderDetail::where('DFNUMPED', $id)->pluck('DFCODIGO')->toArray();
         $toDelete = array_diff($old_ids, $data['ids']);
+        // dd($toDelete);
         if (isset($toDelete) and count($toDelete)>0) {
-            OrderDetail::whereIn('id', $toDelete)->delete();
+            OrderDetail::where('DFNUMPED', $id)->whereIn('DFCODIGO', $toDelete)->delete();
         }
-        foreach ($data['details'] as $key => $detail) {
-            OrderDetail::updateOrCreate(['DFNUMPED' => $id, 'DFCODIGO' => $detail['DFCODIGO']], $detail);
+        if (isset($data['details'])) {
+            foreach ($data['details'] as $key => $detail) {
+                if ($key == 1) {
+                    // dd(['DFNUMPED' => $id, 'DFCODIGO' => $detail['DFCODIGO']]);
+                }
+                if (in_array($detail['DFCODIGO'], $old_ids)) {
+                    OrderDetail::where('DFNUMPED', $id)->where('DFCODIGO', $detail['DFCODIGO'])->update($detail);
+                } else {
+                    OrderDetail::create($detail);
+                }
+                
+                // OrderDetail::updateOrCreate(['DFNUMPED' => $id, 'DFCODIGO' => $detail['DFCODIGO']], $detail);
+            }
         }
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
@@ -192,6 +205,7 @@ class OrderController extends Controller
     }
     public function prepareData($data)
     {
+        // dd($data);
         // $last_ot = Order::orderBy('CFNUMPED','desc')->first();
         // $data['CFNUMPED'] = str_pad((intval($last_ot->CFNUMPED) + 1), 7, "0", STR_PAD_LEFT);
         $data['CFPORDESES'] = 0;
@@ -201,17 +215,21 @@ class OrderController extends Controller
         $data['ids'] = [];
         // $data['CFCODMON'] = 'MN';
         $data['CFUSER'] = \Auth::user()->user_code;
+        $data['CFIMPORTE'] = 0;
+        $data['CFDESVAL'] = 0;
+        $data['CFIGV'] = 0;
+        $item = 0;
         if (isset($data['details'])) {
-            $data['CFIMPORTE'] = 0;
-            $data['CFDESVAL'] = 0;
-            $data['CFIGV'] = 0;
-            $item = 0;
             foreach ($data['details'] as $key => $detail) {
                 $item += 1;
+                unset($data['details'][$key]['value']);
+                unset($data['details'][$key]['price']);
+                unset($data['details'][$key]['CFPORDESCL']);
                 $data['details'][$key]['DFNUMPED'] = $data['CFNUMPED'];
                 $data['details'][$key]['DFSECUEN'] = str_pad((intval($item)), 3, "0", STR_PAD_LEFT);
                 // $data['details'][$key]['DFDESCRI'] = 
                 $data['details'][$key]['DFIGVPOR'] = 18;
+                $data['details'][$key]['DFARTIGV'] = 0;
                 // $igv_por = $data['details'][$key]['DFIGVPOR'];
                 $igv_dec = $data['details'][$key]['DFIGVPOR']/100;
                 $data['details'][$key]['DFALMA'] = '01';
@@ -241,6 +259,7 @@ class OrderController extends Controller
                 $data['ids'][] = $detail['DFCODIGO'];
             }
         }
+        // dd($data);
         return $data;
     }
 }

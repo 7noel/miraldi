@@ -14,7 +14,7 @@ class OrderDetail extends Model
     // protected $primaryKey = ['DFNUMPED', 'DFSECUEN'];
     protected $keyType = 'string';
     public $timestamps = false;
-    protected $fillable = ['DFNUMPED','DFSECUEN','DFCODIGO','DFDESCRI','DFCANTID','DFPREC_VEN','DFPREC_ORI','DFDESCTO','DFIGV','DFDESCLI','DFDESESP','DFIGVPOR','DFPORDES','DFIMPUS','DFIMPMN','DFALMA','DFCANREF','DFSALDO','DFUNIDAD'];
+    protected $fillable = ['DFNUMPED','DFSECUEN','DFCODIGO','DFDESCRI','DFCANTID','DFPREC_VEN','DFPREC_ORI','DFDESCTO','DFIGV','DFDESCLI','DFDESESP','DFIGVPOR','DFPORDES','DFIMPUS','DFIMPMN','DFALMA','DFCANREF','DFSALDO','DFUNIDAD', 'DFARTIGV'];
 
     public function order()
     {
