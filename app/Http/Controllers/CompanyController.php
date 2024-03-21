@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\FormCompanyRequest;
 use App\Company;
 use App\Ubigeo;
 
@@ -42,12 +43,12 @@ class CompanyController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FormCompanyRequest $request)
     {
         $data = request()->all();
         $data = $this->prepareData($data);
-        //dd($data);
-        Company::updateOrCreate(['CCODCLI' => 0], $data);
+        dd($data);
+        Company::create($data);
 
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
@@ -88,7 +89,7 @@ class CompanyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(FormCompanyRequest $request, $id)
     {
         $data = request()->all();
         $data = $this->prepareData2($data);

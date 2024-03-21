@@ -87,14 +87,16 @@ class ProductController extends Controller
     {
         
         $term = request()->get('term');
-        $models =  Product::with('stock','price')->where('ACODIGO','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->get();
+        $models =  Product::has('stock')->has('price')->with('stock', 'price')->where('ACODIGO','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->get();
         $result=[];
         foreach ($models as $model) {
-            $result[]=[
-                'value' => $model->ADESCRI,
-                'id' => $model,
-                'label' => $model->ACODIGO.'  '.$model->ADESCRI
-            ];
+            if ($model->stock->STSKDIS > 0) {
+                $result[]=[
+                    'value' => $model->ADESCRI,
+                    'id' => $model,
+                    'label' => $model->ACODIGO.'  '.$model->ADESCRI
+                ];
+            }
         }
         return response()->json($result);
     }
