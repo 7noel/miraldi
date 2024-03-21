@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\FormShipperRequest;
 use App\Shipper;
 use App\Ubigeo;
 
@@ -42,7 +43,7 @@ class ShipperController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(FormShipperRequest $request)
     {
         $data = request()->all();
         $data = $this->prepareData($data);
@@ -88,7 +89,7 @@ class ShipperController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(FormShipperRequest $request, $id)
     {
         $data = request()->all();
         $data = $this->prepareData($data);
