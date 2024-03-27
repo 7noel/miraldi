@@ -14,4 +14,9 @@ class Stock extends Model
     // protected $primaryKey = ['STALMA', 'STCODIGO'];
     protected $keyType = 'string';
     public $timestamps = false;
+    
+    public function price()
+    {
+        return $this->hasOne(Price::class, 'COD_ARTI', 'STCODIGO');
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Product;
+use App\Stock;
 
 class ProductController extends Controller
 {
@@ -87,10 +88,10 @@ class ProductController extends Controller
     {
         
         $term = request()->get('term');
-        $models =  Product::has('stock')->has('price')->with('stock', 'price')->where('ACODIGO','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->get();
+        $models =  Product::with('stock', 'price')->has('price')->has('stock')->where('ACODIGO','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->get();
         $result=[];
         foreach ($models as $model) {
-            if ($model->stock->STSKDIS > 0) {
+            if (!is_null($model->stock) and !is_null($model->price) and $model->stock->STSKDIS > 0) {
                 $result[]=[
                     'value' => $model->ADESCRI,
                     'id' => $model,

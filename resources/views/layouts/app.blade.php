@@ -108,6 +108,9 @@
             background-color: #17a2b8;
             color: white;
         }
+        ul.ui-autocomplete.ui-menu {
+          z-index: 1050;
+        }
     </style>
 </head>
 <body>
@@ -308,13 +311,23 @@ $(document).ready(function () {
         calcTotal()
     })
 
-    $(document).on('change','.txtCantidad, .txtPrecio, .txtValue, .txtDscto, .txtDscto2', function (e) {
-        //calcTotalItem(this)
-        calcTotal()
+    $(document).on('click', '.btn-edit-item', function (e) {
+        e.preventDefault()
+        window.el = $(this).parent().parent()
+        editModalProduct()
+        setTimeout(function() {
+            $('#txtCantidad').focus()
+            $('#txtCantidad').select()
+        }, 500)
+    })
+
+    $(document).on('change','#txtCantidad, #txtPrecio, #txtValue, #txtDscto2', function (e) {
+        calcTotalItem(this)
+        //calcTotal()
     });
 
     //autocomplete para elementos agregados por javascript
-    $(document).on('focus','.txtProduct', function (e) {
+    $(document).on('focus','x.txtProduct', function (e) {
         $this = this
         if ( !$($this).data("autocomplete") ) {
             e.preventDefault()
@@ -342,10 +355,45 @@ $(document).ready(function () {
         }
     })
 
-    $('#btnAddProduct').bind("click", function(e){
+    //Autocomplete de productos
+    $('#txtProducto').autocomplete({
+        source: "/api/products/autocompleteAjax",
+        minLength: 4,
+        select: function(event, ui){
+            $p = ui.item.id
+            if (existCodeInList($p.ACODIGO)) {
+                alert(`El código "${$p.ACODIGO}" ya fue registrado.`)
+                setTimeout(function() {
+                    clearModalProduct()
+                }, 100)
+            } else {
+                $('#txtCodigo').text($p.ACODIGO)
+                $('#txtProduct').val($p.ADESCRI)
+                $('#unitId').val($p.AUNIDAD)
+                $('#txtValue').val($p.price.PRE_ACT) // PRE_ACT es precio sin IGV
+                $('#txtPrecio').val((($p.price.PRE_ACT*118)/100).toFixed(6))
+                $('#txtDscto2').val(window.descuento2)
+                $('#txtCantidad').val(1)
+                $('#txtCantidad').focus()
+                $('#txtCantidad').select()
+                calcTotalItem()
+            }
+        }
+    })
+
+    $('#btnAddProduct').click(function(e){
         e.preventDefault()
-        addRowProduct()
-    });
+        delete window.el
+        clearModalProduct()
+        setTimeout(function() {
+            $('#txtProducto').focus()
+        }, 500)
+    })
+
+    $('#btn-add-product').click(function(e){
+        e.preventDefault()
+        addRowProduct2()
+    })
 
     my_company = $('#my_company').val()
     $('#txtCompany').autocomplete({
@@ -499,12 +547,129 @@ $(document).ready(function () {
     })
 })
 
+function existCodeInList(code) {
+    existe_codigo = false
+    $('#tableItems tr').each(function (index, vtr) {
+        codigo = $(vtr).find('.productId').val()
+        if (codigo == code) {
+            existe_codigo = true
+        }
+    })
+    return existe_codigo
+}
+
+function clearModalProduct() {
+    $('#txtProducto').addClass("form-control")
+    $('#txtProducto').removeClass("form-control-plaintext")
+    $('#txtProducto').attr('readonly', false)
+
+    $('#txtProducto').focus()
+    $('#txtProducto').val("")
+    $('#txtProduct').val("")
+    $('#txtCodigo').text("")
+    $('#unitId').val("")
+    $('#txtCantidad').val("0")
+    $('#txtValue').val("0")
+    $('#txtDscto2').val(window.descuento2)
+    $('#txtTotal').val("0.00")
+}
+
+function editModalProduct() {
+    $('#txtProducto').removeClass("form-control")
+    $('#txtProducto').addClass("form-control-plaintext")
+    $('#txtProducto').attr('readonly', true)
+
+    $('#txtProducto').val(window.el.find('.txtProduct').val())
+    $('#txtProduct').val(window.el.find('.txtProduct').val())
+    $('#txtCodigo').text(window.el.find('.productId').val())
+    $('#unitId').val(window.el.find('.unitId').val())
+    $('#txtCantidad').val(window.el.find('.txtCantidad').val())
+    $('#txtValue').val(window.el.find('.txtValue').val())
+    $('#txtDscto2').val(window.el.find('.txtDscto2').val())
+    $('#txtTotal').val(window.el.find('.txtTotal').text())
+    $('#exampleModalx').modal('show')
+}
+
+function addRowProduct2() {
+    //obteniendo los valores de los inputs
+    desc = $('#txtProducto').val()
+    codigo = $('#txtCodigo').text()
+    if (codigo == "") {
+        $('#txtProducto').val("")
+        $('#txtProduct').val("")
+        $('#txtProducto').focus()
+        return false;
+    }
+    u = $('#unitId').val()
+    q = $('#txtCantidad').val()
+    if (!isNaN(q) && q <= 0) {
+        $('#txtCantidad').val("")
+        $('#txtCantidad').focus()
+        return false;
+    }
+    v = $('#txtValue').val()
+    if (!isNaN(v) && v <= 0) {
+        $('#txtValue').val("")
+        $('#txtValue').focus()
+        return false;
+    }
+    d1 = window.descuento1
+    d2 = $('#txtDscto2').val()
+    t = $('#txtTotal').val()
+    if (typeof window.el === 'undefined') { // Si no existe la variable window.el (producto a editar) se agrega una fila
+        items = $('#items').val()
+        //preparando fila <tr>
+        tr = `<tr>
+            <input class="unitId" data-unitid="" name="details[${items}][DFUNIDAD]" type="hidden" id="unitId" value="${u}">
+            <td width="100px"><input class="form-control-sm form-control-plaintext productId" data-productid="" required="required" readonly name="details[${items}][DFCODIGO]" type="text" value="${codigo}"></td>
+            <td width="100px"><input class="form-control-sm form-control-plaintext txtProduct" data-product="" required="required" readonly name="details[${items}][DFDESCRI]" type="text" value="${desc}"></td>
+            <td width="100px"><input class="form-control-sm form-control-plaintext txtCantidad text-right" data-cantidad="" readonly name="details[${items}][DFCANTID]" type="text" value="${q}"></td>
+            <td width="100px" class="withTax"><input class="form-control-sm form-control-plaintext txtPrecio text-right" data-precio="" readonly name="details[${items}][price]" type="text" value="${v*1.18}"></td>
+            <td width="100px" class="withoutTax"><input class="form-control-sm form-control-plaintext txtValue text-right" data-value="" readonly name="details[${items}][DFPREC_ORI]" type="text" value="${v}"></td>
+            <td width="100px"><input class="form-control-plaintext form-control-sm txtDscto text-right" data-dscto="" readonly name="details[${items}][CFPORDESCL]" type="text" value="${d1}"></td>
+            <td width="100px"><input class="form-control-sm form-control-plaintext txtDscto2 text-right" data-dscto2="" readonly name="details[${items}][DFPORDES]" type="text" value="${d2}"></td>
+            <td width="100px" class="withoutTax"> <span class='form-control-sm form-control-plaintext txtTotal text-right' data-total>${t}</span> </td>
+            <td width="100px" class="withTax"> <span class='form-control-sm form-control-plaintext txtPriceItem text-right' data-price_item>${t*1.18}</span> </td>
+            <td width="100px" class="text-center form-inline">
+                <a href="#" class="btn btn-outline-primary btn-sm btn-edit-item" title="Editar">{!! $icons['edit'] !!}</a>
+                <a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar"><i class="far fa-trash-alt"></i></a>
+            </td>
+        </tr>`
+
+        items = parseInt(items) + 1
+        $('#items').val(items)
+        $("#tableItems").append(tr)
+
+        if ($('#with_tax').val() == 1){
+            $('.withTax').show()
+            $('.withoutTax').hide()
+        } else {
+            $('.withTax').hide()
+            $('.withoutTax').show()
+        }
+
+    } else {
+
+        window.el.find('.txtProduct').val($('#txtProduct').val())
+        window.el.find('.txtCodigo').val($('#txtCodigo').val())
+        window.el.find('.unitId').val($('#unitId').val())
+        window.el.find('.txtCantidad').val($('#txtCantidad').val())
+        window.el.find('.txtValue').val($('#txtValue').val())
+        window.el.find('.txtDscto2').val($('#txtDscto2').val())
+
+        $('#exampleModalx').modal('hide')
+    }
+    calcTotal()
+    window.descuento2 = d2
+    clearModalProduct()
+
+}
+
 function get_product() {
     codigo = $("#codigo").val()
     url = $('#form-buscar-codigo').attr('action').replace('ID', codigo)
     
     $.get(url, function(data){
-        console.log(data)
         if (data.hasOwnProperty('ACODIGO') && data.ACODIGO != null) {
             $("#codigo").val('')
             $("#codigox").text(data.ACODIGO)
@@ -678,10 +843,9 @@ function calcTotal () {
         if (!($(vtr).find('.isdeleted').is(':checked'))) {
             q = parseFloat($(vtr).find('.txtCantidad').val())
             // v = parseFloat((($(vtr).find('.txtPrecio').val()*100)/118).toFixed(6))
-            p = parseFloat((($(vtr).find('.txtPrecio').val()*118)/100).toFixed(6))
+            p = parseFloat((($(vtr).find('.txtValue').val()*118)/100).toFixed(6))
             // p = parseFloat($(vtr).find('.txtPrecio').val())
             v = parseFloat($(vtr).find('.txtValue').val())
-            console.log(`Valor unitario ${v}`)
             // v = p * 100 / (100 + 18);
             // v = parseFloat($(vtr).find('.txtValue').val());
             d1 = parseFloat($(vtr).find('.txtDscto').val())
@@ -690,8 +854,7 @@ function calcTotal () {
             t = Math.round(q*p*(100-d1)*(100-d2)/100) / 100
             $(vtr).find('.txtTotal').text( vt.toFixed(2) )
             $(vtr).find('.txtPriceItem').text( t.toFixed(2) )
-            console.log(vt)
-            console.log(t)
+
             discount = Math.round(100*q*v)/100 - vt
 
             gross_value += Math.round(100*q*v)/100
@@ -699,11 +862,8 @@ function calcTotal () {
             d_items += discount
             subtotal += vt
             total += t
-            // gross_value = (Math.round(q*v*100)/100) + gross_value;
-            // discount = (Math.round(q*v*d)/100) + discount;
-            // subtotal = gross_value - (Math.round(q*v*d)/100) + subtotal;
         }
-    });
+    })
     gross_value = Math.round(100 * gross_value) / 100
     gross_precio = Math.round(100 * gross_precio) / 100
     subtotal = Math.round(100 * subtotal) / 100
@@ -716,13 +876,6 @@ function calcTotal () {
     } else {
         total = Math.round(118 * subtotal) / 100
     }
-    // if ($('#with_tax').val() == 1){
-    //  subtotal = Math.round(total * 10000 / (100 + 18)) / 100;
-    // } else {
-    //  total = Math.round(subtotal * (100 + 18))/100;
-    // }
-    // discount = (gross_value - subtotal);
-
 
     $('#mGrossValue').text(gross_value.toFixed(2))
     $('#mDiscount').text(d_items.toFixed(2))
@@ -742,37 +895,15 @@ function validateItem (myElement, id, decimales=2) {
 }
 
 function calcTotalItem (myElement) {
-    var with_tax = false
-    if ($('#with_tax').val() == 1) {
-        with_tax = true
-    }
-    cantidad = validateItem(myElement,'.txtCantidad', 2)
-    precio = validateItem(myElement,'.txtPrecio', 4)
-    value = validateItem(myElement,'.txtValue', 4)
-    dscto = validateItem(myElement,'.txtDscto', 0)
-    dscto2 = validateItem(myElement,'.txtDscto2', 0)
-    if ($(myElement).hasClass('txtPrecio')) {
-        $(myElement).parent().parent().find('.txtValue').val( (precio/1.18).toFixed(4) )
-        value = validateItem(myElement,'.txtValue')
-    } else if($(myElement).hasClass('txtValue')) {
-        $(myElement).parent().parent().find('.txtPrecio').val( (value*1.18).toFixed(4) )
-        precio = validateItem(myElement,'.txtPrecio')
-    }
-    if (with_tax) {
-        price_item = Math.round((cantidad*precio)*(100-dscto)*(100-dscto2)/100)/100;
-        total = Math.round(price_item*10000/118)/100
-    } else {
-        total = Math.round((cantidad*value)*(100-dscto)*(100-dscto2)/100)/100;
-        price_item = Math.round(total*118)/100
-    }
-    console.log("with_tax: "+with_tax)
-    console.log("Valor Item: "+total)
-    console.log("Precio Item: "+price_item)
-    // D = Math.round(cantidad * value * dscto) / 100;
-    D = Math.round(cantidad * value - total) / 100
-    // total = Math.round((cantidad*value-D)*100)/100;
-    $(myElement).parent().parent().find('.txtTotal').text( total.toFixed(2) )
-    $(myElement).parent().parent().find('.txtPriceItem').text( price_item.toFixed(2) )
+    q = parseFloat($('#txtCantidad').val())
+    p = parseFloat((($('#txtPrecio').val()*118)/100).toFixed(6))
+    v = parseFloat($('#txtValue').val())
+    d1 = parseFloat(window.descuento1)
+    d2 = parseFloat($('#txtDscto2').val())
+    vt = Math.round(q*v*(100-d1)*(100-d2)/100) / 100 // total por item
+    t = Math.round(q*p*(100-d1)*(100-d2)/100) / 100
+    $('#txtTotal').val( vt.toFixed(2) )
+    $('#txtPriceItem').val( t.toFixed(2) )
 }
 
 function addRowProduct(data='') {
@@ -943,7 +1074,6 @@ function cargaProvincias(){
         $dis.empty("")
     } else {
         $.get(page, function(data){
-            console.log(data)
             $pro.empty();
             $pro.append("<option value=''>Seleccionar</option>");
             $.each(data, function (index, ProvinciaObj) {
