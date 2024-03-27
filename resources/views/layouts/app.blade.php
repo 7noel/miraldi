@@ -317,7 +317,7 @@ $(document).ready(function () {
         editModalProduct()
         setTimeout(function() {
             $('#txtCantidad').focus()
-            $('#txtCantidad').select()
+            // $('#txtCantidad').select()
         }, 500)
     })
 
@@ -375,7 +375,7 @@ $(document).ready(function () {
                 $('#txtDscto2').val(window.descuento2)
                 $('#txtCantidad').val(1)
                 $('#txtCantidad').focus()
-                $('#txtCantidad').select()
+                // $('#txtCantidad').select()
                 calcTotalItem()
             }
         }
