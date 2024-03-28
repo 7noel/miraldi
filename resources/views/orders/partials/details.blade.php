@@ -1,17 +1,16 @@
 @php $i=0; @endphp
-<div class="">
-<table class="table table-sm table-responsive">
+<div class="table-responsive">
+<table class="table table-sm">
 	<thead>
 		<tr>
-			<th width="100px">Código</th>
-			<th width="300px">Descripción</th>
-			<th width="100px">Cantidad</th>
-			<th class="withTax" width="100px">Precio</th>
-			<th class="withoutTax" width="100px">Valor</th>
-			<th width="100px">Dscto1(%)</th>
-			<th width="100px" class="">Dscto2(%)</th>
-			<th class="withoutTax" width="100px">V.Total</th>
-			<th class="withTax" width="100px">P.Total</th>
+			<th>Código</th>
+			<th>Descripción</th>
+			<th>Cantidad</th>
+			<th class="withTax">Precio</th>
+			<th class="withoutTax">Valor</th>
+			<th class="">Dscto2(%)</th>
+			<th class="withoutTax">V.Total</th>
+			<th class="withTax">P.Total</th>
 			<th>Acciones</th>
 		</tr>
 	</thead>
@@ -22,20 +21,14 @@
 		<tr data-id="{{ $detail->id }}">
 			{!! Form::hidden("details[$i][DFSECUEN]", $detail->DFSECUEN, ['class'=>'detailId','data-detailId'=>'']) !!}
 			{!! Form::hidden("details[$i][DFUNIDAD]", $detail->DFUNIDAD, ['class'=>'unitId','data-unitid'=>'']) !!}
-			<td>{!! Form::text("details[$i][DFCODIGO]", $detail->DFCODIGO, ['class'=>'form-control-sm form-control-plaintext productId', 'data-productid'=>'', 'required'=>'required', 'readonly']); !!}</td>
-			<td>{!! Form::text("details[$i][DFDESCRI]", $detail->DFDESCRI, ['class'=>'form-control-sm form-control-plaintext txtProduct', 'data-product'=>'', 'required'=>'required', 'readonly']); !!}</td>
-			<td>{!! Form::text("details[$i][DFCANTID]", number_format($detail->DFCANTID, 2, '.', ''), ['class'=>'form-control-sm form-control-plaintext txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
-			@if(config('options.cambiar_precios'))
-				<td class="withTax">{!! Form::text("details[$i][value]", $detail->DFPREC_ORI*1.18, ['class'=>'form-control-sm form-control-plaintext txtPrecio text-right', 'data-precio'=>'']) !!}</td>
-				<td class="withoutTax">{!! Form::text("details[$i][DFPREC_ORI]", ($detail->DFPREC_ORI), ['class'=>'form-control-sm form-control-plaintext txtValue text-right', 'data-value'=>'']) !!}</td>
-			@else
-				<td class="withTax">{!! Form::text("details[$i][value]", number_format($detail->DFPREC_ORI*1.18, 2, '.', ''), ['class'=>'form-control-sm form-control-plaintext txtPrecio text-right', 'data-precio'=>'', 'readonly'=>'readonly']) !!}</td>
-				<td class="withoutTax">{!! Form::text("details[$i][DFPREC_ORI]", ($detail->DFPREC_ORI), ['class'=>'form-control-sm form-control-plaintext txtValue text-right', 'data-value'=>'', 'readonly'=>'readonly']) !!}</td>
-			@endif
-			<td>{!! Form::text("details[$i][CFPORDESCL]", number_format($model->CFPORDESCL, 0, '.',''), ['class'=>'form-control-plaintext form-control-sm txtDscto text-right', 'data-dscto'=>'', 'readonly']) !!}</td>
-			<td>{!! Form::text("details[$i][DFPORDES]", number_format($detail->DFPORDES, 0, '.', ''), ['class'=>'form-control-sm form-control-plaintext txtDscto2 text-right', 'data-dscto'=>'']) !!}</td>
-			<td class="withoutTax"> <span class='form-control-sm form-control-plaintext txtTotal text-right' data-total>{{ number_format($detail->DFIMPMN/1.18, 4, '.', '') }}</span> </td>
-			<td class="withTax"> <span class='form-control-sm form-control-plaintext txtPriceItem text-right' data-price_item>{{ number_format($detail->DFIMPMN, 4, '.', '') }}</span> </td>
+			<td><span class='spanCodigo'>{{ $detail->DFCODIGO }}</span>{!! Form::hidden("details[$i][DFCODIGO]", $detail->DFCODIGO, ['class'=>'productId', 'data-productid'=>'', 'required'=>'required', 'readonly']); !!}</td>
+			<td><span class='spanProduct'>{{ $detail->DFDESCRI }}</span>{!! Form::hidden("details[$i][DFDESCRI]", $detail->DFDESCRI, ['class'=>'txtProduct', 'data-product'=>'', 'required'=>'required', 'readonly']); !!}</td>
+			<td class="text-center"><span class='spanCantidad'>{{ round($detail->DFCANTID) }}</span>{!! Form::hidden("details[$i][DFCANTID]", number_format($detail->DFCANTID, 2, '.', ''), ['class'=>'txtCantidad', 'data-cantidad'=>'']) !!}</td>
+			<td class="withTax text-right"><span class='spanPrecio'>{{ number_format(round($detail->DFPREC_ORI*1.18, 2), 2, '.', '') }}</span>{!! Form::hidden("details[$i][price]", $detail->DFPREC_ORI*1.18, ['class'=>'txtPrecio']) !!}</td>
+			<td class="withoutTax text-right"><span class='spanValue'>{{ $detail->DFPREC_ORI + 0 }}</span>{!! Form::hidden("details[$i][DFPREC_ORI]", ($detail->DFPREC_ORI), ['class'=>'txtValue']) !!}</td>
+			<td class="text-center"><span class='spanDscto2'>{{ $detail->DFPORDES + 0 }}</span>{!! Form::hidden("details[$i][DFPORDES]", number_format($detail->DFPORDES, 0, '.', ''), ['class'=>'txtDscto2']) !!}</td>
+			<td class="withoutTax text-right"> <span class='txtTotal text-right' data-total>{{ number_format($detail->DFIMPMN/1.18, 6, '.', '') + 0 }}</span> </td>
+			<td class="withTax text-right"> <span class='txtPriceItem text-right' data-price_item>{{ number_format($detail->DFIMPMN, 4, '.', '') + 0 }}</span> </td>
 			<td class="text-center form-inline">
 			<a href="#" class="btn btn-outline-primary btn-sm btn-edit-item" title="Editar">{!! $icons['edit'] !!}</a>
 				<a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar">{!! $icons['remove'] !!}</a>
@@ -47,29 +40,7 @@
 	</tbody>
 </table>
 </div>
-<template id="template-row-item">
-	<tr>
-		{!! Form::hidden('data2', null, ['class'=>'unitId','data-unitid'=>'']) !!}
-		<td width="100px">{!! Form::text('data1', null, ['class'=>'form-control-sm form-control-plaintext productId', 'data-productid'=>'', 'required'=>'required', 'readonly']); !!}</td>
-		<td width="100px">{!! Form::text('data3', null, ['class'=>'form-control form-control-sm txtProduct', 'data-product'=>'', 'required'=>'required']); !!}</td>
-		<td width="100px">{!! Form::text('data4', null, ['class'=>'form-control form-control-sm txtCantidad text-right', 'data-cantidad'=>'']) !!}</td>
-		@if(config('options.cambiar_precios'))
-			<td width="100px" class="withTax">{!! Form::text('data5', null, ['class'=>'form-control form-control-sm txtPrecio text-right', 'data-precio'=>'']) !!}</td>
-			<td width="100px" class="withoutTax">{!! Form::text('data7', null, ['class'=>'form-control form-control-sm txtValue text-right', 'data-value'=>'']) !!}</td>
-		@else
-			<td width="100px" class="withTax">{!! Form::text('data5', null, ['class'=>'form-control form-control-sm txtPrecio text-right', 'data-precio'=>'', 'readonly'=>'readonly']) !!}</td>
-			<td width="100px" class="withoutTax">{!! Form::text('data7', null, ['class'=>'form-control form-control-sm txtValue text-right', 'data-value'=>'', 'readonly'=>'readonly']) !!}</td>
-		@endif
-		<td width="100px">{!! Form::text('data6', null, ['class'=>'form-control-plaintext form-control-sm txtDscto text-right', 'data-dscto'=>'', 'readonly']) !!}</td>
-		<td width="100px">{!! Form::text('data8', null, ['class'=>'form-control form-control-sm txtDscto2 text-right', 'data-dscto2'=>'']) !!}</td>
-		<td width="100px" class="withoutTax"> <span class='form-control form-control-sm txtTotal text-right' data-total></span> </td>
-		<td width="100px" class="withTax"> <span class='form-control form-control-sm txtPriceItem text-right' data-price_item></span> </td>
-		<td width="100px" class="text-center form-inline">
-			<a href="#" class="btn btn-outline-primary btn-sm btn-edit-item" title="Editar">{!! $icons['edit'] !!}</a>
-			<a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar">{!! $icons['remove'] !!}</a>
-		</td>
-	</tr>
-</template>
+
 {!! Form::hidden('items', $i, ['id'=>'items']) !!}
 <a href="#" id="btnAddProduct" class="btn btn-success btn-sm" data-toggle="modal" data-target="#exampleModalx" title="Agregar Producto">{!! $icons['add'] !!} Agregar</a>
 

@@ -211,7 +211,7 @@ $(document).ready(function () {
     $("#CFPORDESCL").change(function () {
         n = $("#CFPORDESCL").val()
         window.descuento1 = $("#CFPORDESCL").val()
-        $(".txtDscto").val(n)
+        // $(".txtDscto").val(n)
         calcTotal()
     })
     $("#form-buscar-codigo").submit(function(e){
@@ -623,16 +623,15 @@ function addRowProduct2() {
         //preparando fila <tr>
         tr = `<tr>
             <input class="unitId" data-unitid="" name="details[${items}][DFUNIDAD]" type="hidden" id="unitId" value="${u}">
-            <td width="100px"><input class="form-control-sm form-control-plaintext productId" data-productid="" required="required" readonly name="details[${items}][DFCODIGO]" type="text" value="${codigo}"></td>
-            <td width="100px"><input class="form-control-sm form-control-plaintext txtProduct" data-product="" required="required" readonly name="details[${items}][DFDESCRI]" type="text" value="${desc}"></td>
-            <td width="100px"><input class="form-control-sm form-control-plaintext txtCantidad text-right" data-cantidad="" readonly name="details[${items}][DFCANTID]" type="text" value="${q}"></td>
-            <td width="100px" class="withTax"><input class="form-control-sm form-control-plaintext txtPrecio text-right" data-precio="" readonly name="details[${items}][price]" type="text" value="${v*1.18}"></td>
-            <td width="100px" class="withoutTax"><input class="form-control-sm form-control-plaintext txtValue text-right" data-value="" readonly name="details[${items}][DFPREC_ORI]" type="text" value="${v}"></td>
-            <td width="100px"><input class="form-control-plaintext form-control-sm txtDscto text-right" data-dscto="" readonly name="details[${items}][CFPORDESCL]" type="text" value="${d1}"></td>
-            <td width="100px"><input class="form-control-sm form-control-plaintext txtDscto2 text-right" data-dscto2="" readonly name="details[${items}][DFPORDES]" type="text" value="${d2}"></td>
-            <td width="100px" class="withoutTax"> <span class='form-control-sm form-control-plaintext txtTotal text-right' data-total>${t}</span> </td>
-            <td width="100px" class="withTax"> <span class='form-control-sm form-control-plaintext txtPriceItem text-right' data-price_item>${t*1.18}</span> </td>
-            <td width="100px" class="text-center form-inline">
+            <td><span class='spanCodigo'>${codigo}</span><input class="productId" name="details[${items}][DFCODIGO]" type="text" value="${codigo}"></td>
+            <td><span class='spanProduct'>${desc}</span><input class="txtProduct" name="details[${items}][DFDESCRI]" type="text" value="${desc}"></td>
+            <td class="text-center"><span class='spanCantidad text-right'>${q}</span><input class="txtCantidad" name="details[${items}][DFCANTID]" type="text" value="${q}"></td>
+            <td class="withTax text-right"><span class='spanPrecio'>${v*1.18}</span><input class="txtPrecio" name="details[${items}][price]" type="text" value="${v*1.18}"></td>
+            <td class="withoutTax text-right"><span class='spanValue'>${v}</span><input class="txtValue" name="details[${items}][DFPREC_ORI]" type="text" value="${v}"></td>
+            <td class="text-right"><span class='spanDscto2'>${d2}</span><input class="txtDscto2" name="details[${items}][DFPORDES]" type="text" value="${d2}"></td>
+            <td class="withoutTax text-right"> <span class='txtTotal'>${t}</span> </td>
+            <td class="withTax text-right"> <span class='txtPriceItem'>${t*1.18}</span> </td>
+            <td class="text-center form-inline">
                 <a href="#" class="btn btn-outline-primary btn-sm btn-edit-item" title="Editar">{!! $icons['edit'] !!}</a>
                 <a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar"><i class="far fa-trash-alt"></i></a>
             </td>
@@ -653,11 +652,16 @@ function addRowProduct2() {
     } else {
 
         window.el.find('.txtProduct').val($('#txtProduct').val())
+        window.el.find('.spanProduct').text($('#txtProduct').val())
         window.el.find('.txtCodigo').val($('#txtCodigo').val())
+        window.el.find('.spanCodigo').text($('#txtCodigo').val())
         window.el.find('.unitId').val($('#unitId').val())
         window.el.find('.txtCantidad').val($('#txtCantidad').val())
+        window.el.find('.spanCantidad').text($('#txtCantidad').val())
         window.el.find('.txtValue').val($('#txtValue').val())
+        window.el.find('.spanValue').text($('#txtValue').val())
         window.el.find('.txtDscto2').val($('#txtDscto2').val())
+        window.el.find('.spanDscto2').text($('#txtDscto2').val())
 
         $('#exampleModalx').modal('hide')
     }
@@ -850,7 +854,7 @@ function calcTotal () {
             v = parseFloat($(vtr).find('.txtValue').val())
             // v = p * 100 / (100 + 18);
             // v = parseFloat($(vtr).find('.txtValue').val());
-            d1 = parseFloat($(vtr).find('.txtDscto').val())
+            d1 = parseFloat(window.descuento1)
             d2 = parseFloat($(vtr).find('.txtDscto2').val())
             vt = Math.round(q*v*(100-d1)*(100-d2)/100) / 100 // total por item
             t = Math.round(q*p*(100-d1)*(100-d2)/100) / 100
@@ -904,8 +908,8 @@ function calcTotalItem (myElement) {
     d2 = parseFloat($('#txtDscto2').val())
     vt = Math.round(q*v*(100-d1)*(100-d2)/100) / 100 // total por item
     t = Math.round(q*p*(100-d1)*(100-d2)/100) / 100
-    $('#txtTotal').val( vt.toFixed(2) )
-    $('#txtPriceItem').val( t.toFixed(2) )
+    $('#txtTotal').val( vt.toFixed(6) )
+    $('#txtPriceItem').val( t.toFixed(6) )
 }
 
 function addRowProduct(data='') {
