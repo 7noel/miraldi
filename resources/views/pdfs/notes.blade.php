@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>NOTA: {{ $model->CFORDCOM }}</title>
+	<title>PEDIDO: {{ $model->CFNUMPED }}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
@@ -21,15 +21,12 @@
 		<div>
 			<div class="center">
 				<h2 class="center">
-					NOTA DE PEDIDO: {{ $model->CFORDCOM }} <span style="margin-left: 50px; font-size: 14px;">IMPORTACIONES MIRALDI S.A.C.</span>
+					PEDIDO: {{ $model->CFNUMPED }} <span style="margin-left: 50px; font-size: 14px;">IMPORTACIONES MIRALDI S.A.C.</span>
 				</h2>
 			</div>
 		</div>
 	</div>
 	<div>
-		<div>
-			<strong class="label">Pedido:</strong><span class="data-header-1">{{ $model->CFNUMPED }}</span>
-		</div>
 		<div>
 			<strong class="label">{{ config('options.client_doc.'.$model->company->CTIPO_DOCUMENTO) }}:</strong><span class="data-header-1">{{ $model->company->CCODCLI }}</span>
 			<strong class="label">Usuario:</strong><span class="data-header">Usuariox {{ date('d/m/Y h:i a') }}</span>
