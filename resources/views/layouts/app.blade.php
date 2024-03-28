@@ -317,7 +317,7 @@ $(document).ready(function () {
         editModalProduct()
         setTimeout(function() {
             $('#txtCantidad').focus()
-            // $('#txtCantidad').select()
+            $('#txtCantidad').select()
         }, 500)
     })
 
@@ -374,10 +374,10 @@ $(document).ready(function () {
                 $('#txtPrecio').val((($p.price.PRE_ACT*118)/100).toFixed(6))
                 $('#txtDscto2').val(window.descuento2)
                 $('#txtCantidad').val(1)
-                setTimeout(function() {
+                setTimeout(function() { // El retardo es necesario para los moviles
                     $('#txtCantidad').focus()
+                    $('#txtCantidad').select()
                 }, 100)
-                // $('#txtCantidad').select()
                 calcTotalItem()
             }
         }
