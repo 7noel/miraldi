@@ -23,4 +23,3 @@ Homestead.json
 .phpunit.result.cache
 composer.lock
 /storage
-/storage
