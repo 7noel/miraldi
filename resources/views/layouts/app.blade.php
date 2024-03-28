@@ -374,7 +374,9 @@ $(document).ready(function () {
                 $('#txtPrecio').val((($p.price.PRE_ACT*118)/100).toFixed(6))
                 $('#txtDscto2').val(window.descuento2)
                 $('#txtCantidad').val(1)
-                $('#txtCantidad').focus()
+                setTimeout(function() {
+                    $('#txtCantidad').focus()
+                }, 100)
                 // $('#txtCantidad').select()
                 calcTotalItem()
             }
