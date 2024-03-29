@@ -276,22 +276,22 @@ $(document).ready(function () {
         });
     });
 
-    $('#p_value').change(function () {
-        x = Math.round($('#p_value').val()*118)/100
-        $('#p_price').val(x)
-    })
-    $('#p_price').change(function () {
-        x = Math.round($('#p_price').val()*10000/118)/100
-        $('#p_value').val(x)
-    })
-    $('#p_value_cost').change(function () {
-        x = Math.round($('#p_value_cost').val()*118)/100
-        $('#p_price_cost').val(x)
-    })
-    $('#p_price_cost').change(function () {
-        x = Math.round($('#p_price_cost').val()*10000/118)/100
-        $('#p_value_cost').val(x)
-    })
+    // $('#p_value').change(function () {
+    //     x = Math.round($('#p_value').val()*118)/100
+    //     $('#p_price').val(x)
+    // })
+    // $('#p_price').change(function () {
+    //     x = Math.round($('#p_price').val()*10000/118)/100
+    //     $('#p_value').val(x)
+    // })
+    // $('#p_value_cost').change(function () {
+    //     x = Math.round($('#p_value_cost').val()*118)/100
+    //     $('#p_price_cost').val(x)
+    // })
+    // $('#p_price_cost').change(function () {
+    //     x = Math.round($('#p_price_cost').val()*10000/118)/100
+    //     $('#p_value_cost').val(x)
+    // })
     if ($('#with_tax').val() == 1) {
         $('.withTax').show()
         $('.withoutTax').hide()
@@ -323,37 +323,36 @@ $(document).ready(function () {
 
     $(document).on('change','#txtCantidad, #txtPrecio, #txtValue, #txtDscto2', function (e) {
         calcTotalItem(this)
-        //calcTotal()
     });
 
     //autocomplete para elementos agregados por javascript
-    $(document).on('focus','x.txtProduct', function (e) {
-        $this = this
-        if ( !$($this).data("autocomplete") ) {
-            e.preventDefault()
-            $($this).autocomplete({
-                source: "/api/products/autocompleteAjax",
-                minLength: 4,
-                select: function(event, ui){
-                    $p = ui.item.id
-                    $($this).parent().parent().find('.categoryId').val($p.category_id)
-                    $($this).parent().parent().find('.subCategoryId').val($p.sub_category_id)
-                    if ($('#is_downloadable')) {
-                        $($this).parent().parent().find('.is_downloadable').val($p.is_downloadable)
-                    }
-                    $($this).parent().parent().find('.productId').val($p.ACODIGO)
-                    $($this).parent().parent().find('.txtProduct').val($p.ADESCRI)
-                    $($this).parent().parent().find('.unitId').val($p.AUNIDAD)
-                    $($this).parent().parent().find('.txtValue').val($p.price.PRE_ACT) // PRE_ACT es precio sin IGV
-                    $($this).parent().parent().find('.txtPrecio').val((($p.price.PRE_ACT*118)/100).toFixed(6))
-                    $($this).parent().parent().find('.txtDscto').val(window.descuento1)
-                    $($this).parent().parent().find('.txtDscto2').val(window.descuento2)
-                    $($this).parent().parent().find('.intern_code').text($p.ACODIGO)
-                    $($this).parent().parent().find('.txtCantidad').focus()
-                }
-            })
-        }
-    })
+    // $(document).on('focus','x.txtProduct', function (e) {
+    //     $this = this
+    //     if ( !$($this).data("autocomplete") ) {
+    //         e.preventDefault()
+    //         $($this).autocomplete({
+    //             source: "/api/products/autocompleteAjax",
+    //             minLength: 4,
+    //             select: function(event, ui){
+    //                 $p = ui.item.id
+    //                 $($this).parent().parent().find('.categoryId').val($p.category_id)
+    //                 $($this).parent().parent().find('.subCategoryId').val($p.sub_category_id)
+    //                 if ($('#is_downloadable')) {
+    //                     $($this).parent().parent().find('.is_downloadable').val($p.is_downloadable)
+    //                 }
+    //                 $($this).parent().parent().find('.productId').val($p.ACODIGO)
+    //                 $($this).parent().parent().find('.txtProduct').val($p.ADESCRI)
+    //                 $($this).parent().parent().find('.unitId').val($p.AUNIDAD)
+    //                 $($this).parent().parent().find('.txtValue').val($p.price.PRE_ACT) // PRE_ACT es precio sin IGV
+    //                 $($this).parent().parent().find('.txtPrecio').val((($p.price.PRE_ACT*118)/100).toFixed(6))
+    //                 $($this).parent().parent().find('.txtDscto').val(window.descuento1)
+    //                 $($this).parent().parent().find('.txtDscto2').val(window.descuento2)
+    //                 $($this).parent().parent().find('.intern_code').text($p.ACODIGO)
+    //                 $($this).parent().parent().find('.txtCantidad').focus()
+    //             }
+    //         })
+    //     }
+    // })
 
     //Autocomplete de productos
     $('#txtProducto').autocomplete({
@@ -429,15 +428,15 @@ $(document).ready(function () {
         }
     })
 
-    $('#btnNewAttribute').click(function() {
-        var items = $('#items-attribute').val()
-        console.log("items = " + items)
-        if (items>0 && $("input[name='attributes["+(items-1)+"][id]']").val() == "") {
-            $("input[name='attributes["+(items-1)+"][name]']").focus()
-        } else {
-            renderTemplateRowAttribute()
-        }
-    })
+    // $('#btnNewAttribute').click(function() {
+    //     var items = $('#items-attribute').val()
+    //     console.log("items = " + items)
+    //     if (items>0 && $("input[name='attributes["+(items-1)+"][id]']").val() == "") {
+    //         $("input[name='attributes["+(items-1)+"][name]']").focus()
+    //     } else {
+    //         renderTemplateRowAttribute()
+    //     }
+    // })
 
     changeIdType()
     $('#id_type').change(function(){
@@ -457,9 +456,9 @@ $(document).ready(function () {
 
     //changeCountry()
 
-    $('#country').change(function(){
-        changeCountry()
-    });
+    // $('#country').change(function(){
+    //     changeCountry()
+    // });
     //carga departamentos
     $('#departamento').change(function(){
         cargaProvincias()
@@ -476,77 +475,76 @@ $(document).ready(function () {
         $(this).val(cadena)
     })
 
-    $('#btnAddBranch').click(function(e){
-        addRowBranch()
-    });
+    // $('#btnAddBranch').click(function(e){
+    //     addRowBranch()
+    // });
 
-    $(document).on('focus','.txtUbigeo', function (e) {
-        // console.log($(this));
-        $var = {}
-        $var.this = this;
-        if ( !$($var.this).data("autocomplete") ) {
-            e.preventDefault()
-            $($var.this).autocomplete({
-                source: "/api/ubigeos/autocompleteAjax",
-                minLength: 2,
-                select: function(event, ui){
-                    console.log(ui)
-                    var cod=ui.item.id
-                    $($var.this).parent().parent().find('.ubigeoId').val(cod)
-                }
-            });
-        }
-    });
-    $('#vin').change(function (e) {
-        vin = $('#vin').val().trim().toUpperCase()
-        $('#vin').val(vin) //3HGRM3830CG603778
-        $('#codigo').val(vin.substring(3, 7))
-        arr_years = {A:2010, B:2011, C:2012, D:2013, E:2014, F:2015, G:2016, H:2017, J:2018, K:2019, L:2020, M:2021, N:2022, P:2023, R:2024, S:2025, T:2026, V:2027, W:2028, X:2029, Y:2030, 1:2031, 2:2032, 3:2033, 4:2034, 5:2035, 6:2036, 7:2037, 8:2038, 9:2039}
-        year = arr_years[vin.substring(9, 10)]
-        $('#year').val(year)
-    })
-    $('#add_contact').change(function (e) {
-        if ($('#add_contact').is(':checked')) {
-            $('.contact').removeClass("d-none")
-            $('#contact_name').attr("required", "required")
-        } else {
-            $('.contact').addClass( "d-none")
-            $('#contact_name').removeAttr("required", "required")
-        }
-    })
-    if ($('#add_contact').is(':checked')) {
-        $('.contact').removeClass("d-none");
-        $('#contact_name').attr("required", "required");
-    }
+    // $(document).on('focus','.txtUbigeo', function (e) {
+    //     $var = {}
+    //     $var.this = this;
+    //     if ( !$($var.this).data("autocomplete") ) {
+    //         e.preventDefault()
+    //         $($var.this).autocomplete({
+    //             source: "/api/ubigeos/autocompleteAjax",
+    //             minLength: 2,
+    //             select: function(event, ui){
+    //                 console.log(ui)
+    //                 var cod=ui.item.id
+    //                 $($var.this).parent().parent().find('.ubigeoId').val(cod)
+    //             }
+    //         });
+    //     }
+    // });
+    // $('#vin').change(function (e) {
+    //     vin = $('#vin').val().trim().toUpperCase()
+    //     $('#vin').val(vin) //3HGRM3830CG603778
+    //     $('#codigo').val(vin.substring(3, 7))
+    //     arr_years = {A:2010, B:2011, C:2012, D:2013, E:2014, F:2015, G:2016, H:2017, J:2018, K:2019, L:2020, M:2021, N:2022, P:2023, R:2024, S:2025, T:2026, V:2027, W:2028, X:2029, Y:2030, 1:2031, 2:2032, 3:2033, 4:2034, 5:2035, 6:2036, 7:2037, 8:2038, 9:2039}
+    //     year = arr_years[vin.substring(9, 10)]
+    //     $('#year').val(year)
+    // })
+    // $('#add_contact').change(function (e) {
+    //     if ($('#add_contact').is(':checked')) {
+    //         $('.contact').removeClass("d-none")
+    //         $('#contact_name').attr("required", "required")
+    //     } else {
+    //         $('.contact').addClass( "d-none")
+    //         $('#contact_name').removeAttr("required", "required")
+    //     }
+    // })
+    // if ($('#add_contact').is(':checked')) {
+    //     $('.contact').removeClass("d-none");
+    //     $('#contact_name').attr("required", "required");
+    // }
 
-    $('#placa').change(function (e) {
-        getCar()
-    })
-    $('#txtplaca').change(function (e) {
-        checkCar()
-    })
-    $('#type_service').change(function (e) {
-        if ('PREVENTIVO' == $('#type_service').val()) {
-            $('#preventivo').parent().parent().removeClass("d-none")
-            $('#preventivo').attr("required", "required")
-        } else {
-            $('#preventivo').parent().parent().addClass( "d-none")
-            $('#preventivo').removeAttr("required", "required")
-        }
-    })
-   // $("#type_detail_p").prop("checked", true);
-    $(".send_cpe").submit(function(e) {
-        e.preventDefault()
-        var form = $(this)
-        //console.log(form.serializeArray()[0].value)
-        console.log(form.serialize())
-        var url = "/send_cpe?"+form.serialize();
-        console.log(url)
-        $('.dropdown-toggle').dropdown('hide')
-        $.get(url, function(data){
-            console.log(data)
-        });
-    })
+    // $('#placa').change(function (e) {
+    //     getCar()
+    // })
+    // $('#txtplaca').change(function (e) {
+    //     checkCar()
+    // })
+    // $('#type_service').change(function (e) {
+    //     if ('PREVENTIVO' == $('#type_service').val()) {
+    //         $('#preventivo').parent().parent().removeClass("d-none")
+    //         $('#preventivo').attr("required", "required")
+    //     } else {
+    //         $('#preventivo').parent().parent().addClass( "d-none")
+    //         $('#preventivo').removeAttr("required", "required")
+    //     }
+    // })
+
+    // $(".send_cpe").submit(function(e) {
+    //     e.preventDefault()
+    //     var form = $(this)
+    //     //console.log(form.serializeArray()[0].value)
+    //     console.log(form.serialize())
+    //     var url = "/send_cpe?"+form.serialize();
+    //     console.log(url)
+    //     $('.dropdown-toggle').dropdown('hide')
+    //     $.get(url, function(data){
+    //         console.log(data)
+    //     });
+    // })
 })
 
 function existCodeInList(code) {
@@ -623,12 +621,12 @@ function addRowProduct2() {
         //preparando fila <tr>
         tr = `<tr>
             <input class="unitId" data-unitid="" name="details[${items}][DFUNIDAD]" type="hidden" id="unitId" value="${u}">
-            <td><span class='spanCodigo'>${codigo}</span><input class="productId" name="details[${items}][DFCODIGO]" type="text" value="${codigo}"></td>
-            <td><span class='spanProduct'>${desc}</span><input class="txtProduct" name="details[${items}][DFDESCRI]" type="text" value="${desc}"></td>
-            <td class="text-center"><span class='spanCantidad text-right'>${q}</span><input class="txtCantidad" name="details[${items}][DFCANTID]" type="text" value="${q}"></td>
+            <td><span class='spanCodigo'>${codigo}</span><input class="productId" name="details[${items}][DFCODIGO]" type="hidden" value="${codigo}"></td>
+            <td><span class='spanProduct'>${desc}</span><input class="txtProduct" name="details[${items}][DFDESCRI]" type="hidden" value="${desc}"></td>
+            <td class="text-center"><span class='spanCantidad text-right'>${q}</span><input class="txtCantidad" name="details[${items}][DFCANTID]" type="hidden" value="${q}"></td>
             <td class="withTax text-right"><span class='spanPrecio'>${v*1.18}</span><input class="txtPrecio" name="details[${items}][price]" type="text" value="${v*1.18}"></td>
-            <td class="withoutTax text-right"><span class='spanValue'>${v}</span><input class="txtValue" name="details[${items}][DFPREC_ORI]" type="text" value="${v}"></td>
-            <td class="text-right"><span class='spanDscto2'>${d2}</span><input class="txtDscto2" name="details[${items}][DFPORDES]" type="text" value="${d2}"></td>
+            <td class="withoutTax text-right"><span class='spanValue'>${v}</span><input class="txtValue" name="details[${items}][DFPREC_ORI]" type="hidden" value="${v}"></td>
+            <td class="text-right"><span class='spanDscto2'>${d2}</span><input class="txtDscto2" name="details[${items}][DFPORDES]" type="hidden" value="${d2}"></td>
             <td class="withoutTax text-right"> <span class='txtTotal'>${t}</span> </td>
             <td class="withTax text-right"> <span class='txtPriceItem'>${t*1.18}</span> </td>
             <td class="text-center form-inline">
@@ -890,15 +888,15 @@ function calcTotal () {
     $('#mTotal').text(total.toFixed(2))
 }
 
-function validateItem (myElement, id, decimales=2) {
-    n = $(myElement).parent().parent().find(id).val()
-    n = Math.round(parseFloat(n)*1000000)/1000000
-    if (isNaN(n)) {n=0.00}
-    $(myElement).parent().parent().find(id).val(n.toFixed(decimales))
-    //if (id=='.txtDscto') {window.descuento1 = n.toFixed(2)}
-    if (id=='.txtDscto2') {window.descuento2 = n.toFixed(2)}
-    return n
-}
+// function validateItem (myElement, id, decimales=2) {
+//     n = $(myElement).parent().parent().find(id).val()
+//     n = Math.round(parseFloat(n)*1000000)/1000000
+//     if (isNaN(n)) {n=0.00}
+//     $(myElement).parent().parent().find(id).val(n.toFixed(decimales))
+//     //if (id=='.txtDscto') {window.descuento1 = n.toFixed(2)}
+//     if (id=='.txtDscto2') {window.descuento2 = n.toFixed(2)}
+//     return n
+// }
 
 function calcTotalItem (myElement) {
     q = parseFloat($('#txtCantidad').val())
@@ -906,112 +904,112 @@ function calcTotalItem (myElement) {
     v = parseFloat($('#txtValue').val())
     d1 = parseFloat(window.descuento1)
     d2 = parseFloat($('#txtDscto2').val())
-    vt = Math.round(q*v*(100-d1)*(100-d2)/100) / 100 // total por item
-    t = Math.round(q*p*(100-d1)*(100-d2)/100) / 100
-    $('#txtTotal').val( vt.toFixed(6) )
-    $('#txtPriceItem').val( t.toFixed(6) )
+    vt = 100*Math.round(q*v*(100-d1)*(100-d2))/1000000 // total por item
+    t = 100*Math.round(q*p*(100-d1)*(100-d2))/1000000
+    $('#txtTotal').val( vt )
+    $('#txtPriceItem').val( t )
 }
 
-function addRowProduct(data='') {
-    var items = $('#items').val()
-    if (items>0) {
-        if ($("input[name='details["+(items-1)+"][DFCODIGO]']").val() == "") {
-            $("input[name='details["+(items-1)+"][DFDESCRI]']").focus()
-        } else{
-            renderTemplateRowProduct(data)
-        };
-    } else{
-        renderTemplateRowProduct(data)
-    };
-    if ($('#with_tax').val() == 1){
-        $('.withTax').show()
-        $('.withoutTax').hide()
-    } else {
-        $('.withTax').hide()
-        $('.withoutTax').show()
-    }
-}
+// function addRowProduct(data='') {
+//     var items = $('#items').val()
+//     if (items>0) {
+//         if ($("input[name='details["+(items-1)+"][DFCODIGO]']").val() == "") {
+//             $("input[name='details["+(items-1)+"][DFDESCRI]']").focus()
+//         } else{
+//             renderTemplateRowProduct(data)
+//         };
+//     } else{
+//         renderTemplateRowProduct(data)
+//     };
+//     if ($('#with_tax').val() == 1){
+//         $('.withTax').show()
+//         $('.withoutTax').hide()
+//     } else {
+//         $('.withTax').hide()
+//         $('.withoutTax').show()
+//     }
+// }
 
-function renderTemplateRowProduct (data) {
-    if (data != "") {
-        ele = document.getElementById("tableItems").lastElementChild.querySelector("[data-product]");
-        if (!isDesignEnabled(ele, data.id)) {return true}
-    }
-    var clone = activateTemplate("#template-row-item")
-    var items = $('#items').val()
-    clone.querySelector("[data-productid]").setAttribute("name", "details[" + items + "][DFCODIGO]")
-    clone.querySelector("[data-unitid]").setAttribute("name", "details[" + items + "][DFUNIDAD]")
-    clone.querySelector("[data-product]").setAttribute("name", "details[" + items + "][DFDESCRI]")
-    clone.querySelector("[data-cantidad]").setAttribute("name", "details[" + items + "][DFCANTID]")
-    clone.querySelector("[data-precio]").setAttribute("name", "details[" + items + "][price]")
-    clone.querySelector("[data-value]").setAttribute("name", "details[" + items + "][DFPREC_ORI]")
-    clone.querySelector("[data-dscto]").setAttribute("name", "details[" + items + "][CFPORDESCL]")
-    clone.querySelector("[data-dscto]").setAttribute("value", window.descuento1)
-    clone.querySelector("[data-dscto2]").setAttribute("name", "details[" + items + "][DFPORDES]")
-    clone.querySelector("[data-dscto2]").setAttribute("value", window.descuento2)
-    // clone.querySelector("[data-isdeleted]").setAttribute("name", "details[" + items + "][is_deleted]")
-    if (items>0) {$("input[name='details["+(items-1)+"][DFDESCRI]']").addClass('form-control-plaintext text')}
+// function renderTemplateRowProduct (data) {
+//     if (data != "") {
+//         ele = document.getElementById("tableItems").lastElementChild.querySelector("[data-product]");
+//         if (!isDesignEnabled(ele, data.id)) {return true}
+//     }
+//     var clone = activateTemplate("#template-row-item")
+//     var items = $('#items').val()
+//     clone.querySelector("[data-productid]").setAttribute("name", "details[" + items + "][DFCODIGO]")
+//     clone.querySelector("[data-unitid]").setAttribute("name", "details[" + items + "][DFUNIDAD]")
+//     clone.querySelector("[data-product]").setAttribute("name", "details[" + items + "][DFDESCRI]")
+//     clone.querySelector("[data-cantidad]").setAttribute("name", "details[" + items + "][DFCANTID]")
+//     clone.querySelector("[data-precio]").setAttribute("name", "details[" + items + "][price]")
+//     clone.querySelector("[data-value]").setAttribute("name", "details[" + items + "][DFPREC_ORI]")
+//     clone.querySelector("[data-dscto]").setAttribute("name", "details[" + items + "][CFPORDESCL]")
+//     clone.querySelector("[data-dscto]").setAttribute("value", window.descuento1)
+//     clone.querySelector("[data-dscto2]").setAttribute("name", "details[" + items + "][DFPORDES]")
+//     clone.querySelector("[data-dscto2]").setAttribute("value", window.descuento2)
+//     // clone.querySelector("[data-isdeleted]").setAttribute("name", "details[" + items + "][is_deleted]")
+//     if (items>0) {$("input[name='details["+(items-1)+"][DFDESCRI]']").addClass('form-control-plaintext text')}
     
-    items = parseInt(items) + 1
-    $('#items').val(items)
-    $("#tableItems").append(clone)
-    el = document.getElementById("tableItems").lastElementChild.querySelector("[data-product]")
-    if (data != '') {
-        setRowProduct(el, data)
-    }
+//     items = parseInt(items) + 1
+//     $('#items').val(items)
+//     $("#tableItems").append(clone)
+//     el = document.getElementById("tableItems").lastElementChild.querySelector("[data-product]")
+//     if (data != '') {
+//         setRowProduct(el, data)
+//     }
 
-    $("input[name='details["+(items-1)+"][DFDESCRI]']").focus()
-}
-function renderTemplateRowAttribute () {
-    var clone = activateTemplate("#template-row-attribute");
-    var items = $('#items-attribute').val()
-    clone.querySelector("[data-name]").setAttribute("name", "attributes[" + items + "][name]")
-    clone.querySelector("[data-value]").setAttribute("name", "attributes[" + items + "][value_1]")
-    clone.querySelector("[data-isdeleted]").setAttribute("name", "attributes[" + items + "][is_deleted]")
-    //if (items>0) {$("input[name='accessories["+(items-1)+"][name]']").attr('disabled', true);};
+//     $("input[name='details["+(items-1)+"][DFDESCRI]']").focus()
+// }
+// function renderTemplateRowAttribute () {
+//     var clone = activateTemplate("#template-row-attribute");
+//     var items = $('#items-attribute').val()
+//     clone.querySelector("[data-name]").setAttribute("name", "attributes[" + items + "][name]")
+//     clone.querySelector("[data-value]").setAttribute("name", "attributes[" + items + "][value_1]")
+//     clone.querySelector("[data-isdeleted]").setAttribute("name", "attributes[" + items + "][is_deleted]")
+//     //if (items>0) {$("input[name='accessories["+(items-1)+"][name]']").attr('disabled', true);};
     
-    $("#tbodyAttributes").append(clone)
-    items = parseInt(items) + 1
-    $('#items-attribute').val(items)
-}
+//     $("#tbodyAttributes").append(clone)
+//     items = parseInt(items) + 1
+//     $('#items-attribute').val(items)
+// }
 
-function addRowBranch() {
-    var items = $('#items').val()
-    if (items>0) {
-        if ($("input[name='branches["+(items-1)+"][name]']").val() == "") {
-            console.log('en el segundo if')
-            $("input[name='branches["+(items-1)+"][name]']").focus()
-        } else if ($("input[name='branches["+(items-1)+"][address]']").val() == "") {
-            $("input[name='branches["+(items-1)+"][address]']").focus()
-        } else if ($("input[name='branches["+(items-1)+"][ubigeo_code]']").val() == "") {
-            $("input[name='branches["+(items-1)+"][ubigeo]']").focus()
-        } else{
-            renderTemplateRowBranch()
-        }
-    } else{
-        renderTemplateRowBranch()
-    }
-}
+// function addRowBranch() {
+//     var items = $('#items').val()
+//     if (items>0) {
+//         if ($("input[name='branches["+(items-1)+"][name]']").val() == "") {
+//             console.log('en el segundo if')
+//             $("input[name='branches["+(items-1)+"][name]']").focus()
+//         } else if ($("input[name='branches["+(items-1)+"][address]']").val() == "") {
+//             $("input[name='branches["+(items-1)+"][address]']").focus()
+//         } else if ($("input[name='branches["+(items-1)+"][ubigeo_code]']").val() == "") {
+//             $("input[name='branches["+(items-1)+"][ubigeo]']").focus()
+//         } else{
+//             renderTemplateRowBranch()
+//         }
+//     } else{
+//         renderTemplateRowBranch()
+//     }
+// }
 
-function renderTemplateRowBranch () {
-    var clone = activateTemplate("#template-row-item");
-    var items = $('#items').val()
-    clone.querySelector("[data-branchId]").setAttribute("name", "branches[" + items + "][branch_id]")
-    clone.querySelector("[data-ubigeoId]").setAttribute("name", "branches[" + items + "][ubigeo_code]")
-    clone.querySelector("[data-name]").setAttribute("name", "branches[" + items + "][company_name]")
-    clone.querySelector("[data-address]").setAttribute("name", "branches[" + items + "][address]")
-    clone.querySelector("[data-ubigeo]").setAttribute("name", "branches[" + items + "][ubigeo]")
-    clone.querySelector("[data-mobile]").setAttribute("name", "branches[" + items + "][mobile]")
-    clone.querySelector("[data-contact]").setAttribute("name", "branches[" + items + "][contact]")
-    clone.querySelector("[data-isdeleted]").setAttribute("name", "branches[" + items + "][is_deleted]")
-    //if (items>0) {$("input[name='branches["+(items-1)+"][txtProduct]']").attr('disabled', true);};
+// function renderTemplateRowBranch () {
+//     var clone = activateTemplate("#template-row-item");
+//     var items = $('#items').val()
+//     clone.querySelector("[data-branchId]").setAttribute("name", "branches[" + items + "][branch_id]")
+//     clone.querySelector("[data-ubigeoId]").setAttribute("name", "branches[" + items + "][ubigeo_code]")
+//     clone.querySelector("[data-name]").setAttribute("name", "branches[" + items + "][company_name]")
+//     clone.querySelector("[data-address]").setAttribute("name", "branches[" + items + "][address]")
+//     clone.querySelector("[data-ubigeo]").setAttribute("name", "branches[" + items + "][ubigeo]")
+//     clone.querySelector("[data-mobile]").setAttribute("name", "branches[" + items + "][mobile]")
+//     clone.querySelector("[data-contact]").setAttribute("name", "branches[" + items + "][contact]")
+//     clone.querySelector("[data-isdeleted]").setAttribute("name", "branches[" + items + "][is_deleted]")
+//     //if (items>0) {$("input[name='branches["+(items-1)+"][txtProduct]']").attr('disabled', true);};
     
-    items = parseInt(items) + 1
-    $('#items').val(items);
-    $("#tableItems").append(clone)
+//     items = parseInt(items) + 1
+//     $('#items').val(items);
+//     $("#tableItems").append(clone)
 
-    $("input[name='branches["+(items-1)+"][name]']").focus()
-}
+//     $("input[name='branches["+(items-1)+"][name]']").focus()
+// }
 
 function getDataPadron (doc, type) {
     urls = {"1":`https://dniruc.apisperu.com/api/v1/dni/${doc}?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5vZWwubG9nYW5AZ21haWwuY29tIn0.pSSHu1Rh3RUgPubnjemiDNyMAN0ZjgTCXaupa8VsEYY`, "6":`https://dniruc.apisperu.com/api/v1/ruc/${doc}?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5vZWwubG9nYW5AZ21haWwuY29tIn0.pSSHu1Rh3RUgPubnjemiDNyMAN0ZjgTCXaupa8VsEYY`}

@@ -1,3 +1,4 @@
+<div class="table-responsive">
 <table class="{{ config('options.styles.table') }}">
 	<thead class="{{ config('options.styles.thead') }}">
 		<tr>
@@ -46,3 +47,4 @@
 		@endforeach
 	</tbody>
 </table>
+</div>
