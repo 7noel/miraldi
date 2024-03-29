@@ -31,6 +31,9 @@ class OrderController extends Controller
         }
 
         $q = Order::with('seller', 'company');
+        if (\Auth::user()->role_id == 2) {
+            $q->where('CFVENDE', \Auth::user()->seller_code);
+        }
         if ($filter->sn > 0) {
             $models = $q->where('CFNUMPED', str_pad($filter->sn, 7, "0", STR_PAD_LEFT))->orderBy('CFNUMPED', 'desc')->paginate();
         } else {
@@ -42,7 +45,13 @@ class OrderController extends Controller
             }
             $models = $q->orderBy('CFNUMPED', 'desc')->paginate();
         }
-        $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
+        if (\Auth::user()->role_id == 2) {
+            $sellers = Seller::where('COD_VEN', \Auth::user()->seller_code)->pluck('DES_VEN', 'COD_VEN')->toArray();
+        } else {
+            $sellers = ['' => 'Seleccionar'] + Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
+        }
+        
+            // $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
         return view('partials.filter',compact('models', 'filter', 'sellers'));
     }
 
@@ -55,7 +64,11 @@ class OrderController extends Controller
     {
         $cambio = \DB::connection('starsoft2')->table('TIPO_CAMBIO_SUNAT')->orderBy('FECHA', 'desc')->first();
         $conditions = Condition::all()->pluck('DES_FP', 'COD_FP')->toArray();
-        $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
+        if (\Auth::user()->role_id == 2) {
+            $sellers = Seller::where('COD_VEN', \Auth::user()->seller_code)->pluck('DES_VEN', 'COD_VEN')->toArray();
+        } else {
+            $sellers = ['' => 'Seleccionar'] + Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
+        }
         return view('partials.create', compact('conditions', 'sellers', 'cambio'));
     }
 
@@ -97,7 +110,12 @@ class OrderController extends Controller
     {
         $model = Order::findOrFail($id);
         $conditions = Condition::all()->pluck('DES_FP', 'COD_FP')->toArray();
-        $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
+        if (\Auth::user()->role_id == 2) {
+            $sellers = Seller::where('COD_VEN', \Auth::user()->seller_code)->pluck('DES_VEN', 'COD_VEN')->toArray();
+        } else {
+            $sellers = ['' => 'Seleccionar'] + Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
+        }
+        // $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
         return view('partials.show', compact('model', 'conditions', 'sellers'));
     }
 
@@ -111,7 +129,12 @@ class OrderController extends Controller
     {
         $model = Order::findOrFail($id);
         $conditions = Condition::all()->pluck('DES_FP', 'COD_FP')->toArray();
-        $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
+        if (\Auth::user()->role_id == 2) {
+            $sellers = Seller::where('COD_VEN', \Auth::user()->seller_code)->pluck('DES_VEN', 'COD_VEN')->toArray();
+        } else {
+            $sellers = ['' => 'Seleccionar'] + Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
+        }
+        // $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
         return view('partials.edit', compact('model', 'conditions', 'sellers'));
     }
 
@@ -255,9 +278,9 @@ class OrderController extends Controller
 
                 $data['ids'][] = $detail['DFCODIGO'];
             }
-            $subtotal = round($vbruto - $data['CFDESVAL'], 2);
             $data['CFIMPORTE'] = round($data['CFIMPORTE'], 2);
             $data['CFDESVAL'] = round($data['CFDESVAL'], 2);
+            $subtotal = round($vbruto - $data['CFDESVAL'], 2);
             $data['CFIGV'] = round($data['CFIMPORTE'] - $subtotal, 2);
         }
         return $data;

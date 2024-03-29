@@ -47,6 +47,12 @@
             /*font-family: 'Roboto', sans-serif;*/
             /*font-family: 'Roboto Condensed', sans-serif;*/
         }
+        th {
+            text-wrap: balance;
+        }
+        td, td span {
+            text-wrap: pretty;
+        }
         .ui-autocomplete {
             max-height: 400px;
             overflow-y: auto;
@@ -631,7 +637,7 @@ function addRowProduct2() {
             <td class="text-right"><span class='spanDscto2'>${d2}</span><input class="txtDscto2" name="details[${items}][DFPORDES]" type="hidden" value="${d2}"></td>
             <td class="withTax text-right"> <span class='txtTotal'>${t}</span> </td>
             <td class="withoutTax text-right"> <span class='txtPriceItem'>${t*1.18}</span> </td>
-            <td class="text-center form-inline">
+            <td class="text-center form-inline" style="white-space: nowrap;">
                 <a href="#" class="btn btn-outline-primary btn-sm btn-edit-item" title="Editar">{!! $icons['edit'] !!}</a>
                 <a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar"><i class="far fa-trash-alt"></i></a>
             </td>
@@ -859,8 +865,8 @@ function calcTotal () {
             d2 = parseFloat($(vtr).find('.txtDscto2').val())
             _d2 = Math.round((q*v-_d1)*d2*10000)/1000000
             discount = Math.round(1000000*(_d1 + _d2))/1000000
-            vt = Math.round(100*(q*v-discount))/100 // total por item
-            t = Math.round(118*(q*v-discount))/100
+            vt = Math.round(1000000*(q*v-discount))/1000000 // total por item
+            t = Math.round(1180000*(q*v-discount))/1000000
             $(vtr).find('.txtTotal').text( vt.toFixed(2) )
             $(vtr).find('.txtPriceItem').text( t.toFixed(2) )
             console.log(`cantidad: ${q}, valor: ${v}, precio: ${p}, d1: ${_d1}, d2: ${_d2}, descuento: ${discount} ValorItem: ${vt}, PrecioTotal: ${t}`)

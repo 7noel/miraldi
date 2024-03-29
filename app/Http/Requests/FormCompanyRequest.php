@@ -39,7 +39,6 @@ class FormCompanyRequest extends Request {
 				break;
 		}
 
-		//dd();
 		return [
 				'CTIPO_DOCUMENTO'=>['required', Rule::in(array_keys(config('options.client_doc')))],
 				'CCODCLI' => [$rules, 'required', Rule::unique('sqlsrv.MAECLI', 'CCODCLI')->ignore($id, 'CCODCLI')],
@@ -67,7 +66,7 @@ class FormCompanyRequest extends Request {
 	        'CPRIMER_NOMBRE' => 'Nombre',
 	        'CAPELLIDO_PATERNO' => 'Apellido Paterno',
 	        'CDIRCLI' => 'Dirección',
-	        'UBIGEO' => 'Dirección',
+	        'UBIGEO' => 'Distrito',
 	        'CTELEFO' => 'Celular',
 	        'CEMAIL' => 'Email',
 	    ];

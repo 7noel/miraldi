@@ -20,11 +20,11 @@
 		{!! Field::text('CFNOMBRE', ((isset($model->company_id)) ? $model->company->company_name : null), ['label' => 'Cliente', 'class'=>'form-control-sm text-uppercase', 'id'=>'txtCompany', 'required', 'autofocus']) !!}
 		@endif
 	</div>
-	<div class="col-sm-1">
-		{!! Field::select('CFCODMON', config('options.table_sunat.moneda'), (isset($model) ? null : 'MN'), ['label'=>'Moneda', 'class'=>'form-control-sm', 'required']) !!}
-	</div>
 	<div class="col-md-2 col-sm-4">
-		{!! Field::select('CFVENDE', $sellers, ['empty'=>'Seleccionar', 'label'=>'Vendedor', 'class'=>'form-control-sm', 'required']) !!}
+		<div class="form-group">
+			{!! Form::label('CFVENDE', 'Vendedor', ['class' => 'awesome']) !!}
+			{!! Form::select('CFVENDE', $sellers, null, ['class'=>'form-control form-control-sm', 'required']) !!}
+		</div>
 	</div>
 	<div class="col-md-2 col-sm-4">
 		{!! Field::select('CFFORVEN', $conditions, (isset($model) ? null : '00'), ['empty'=>'Seleccionar', 'label'=>'Condición', 'class'=>'form-control-sm', 'required']) !!}
@@ -32,7 +32,10 @@
 	{{--<div class="col-md-2 col-sm-4">
 		{!! Field::number('CFORDCOM', ['label' => 'Nota Venta', 'class'=>'form-control-sm text-uppercase']) !!}
 	</div>--}}
-	<div class="col-md-1 col-sm-4">
+	<div class="col-6 col-sm-1">
+		{!! Field::select('CFCODMON', config('options.table_sunat.moneda'), (isset($model) ? null : 'MN'), ['label'=>'Moneda', 'class'=>'form-control-sm', 'required']) !!}
+	</div>
+	<div class="col-6 col-md-1 col-sm-4">
 		{!! Field::number('CFPORDESCL', ['label' => 'Descuento', 'class'=>'form-control-sm text-uppercase']) !!}
 	</div>
 	<div class="col-md-4 col-sm-6">

@@ -13,10 +13,10 @@
 					<div class="">
 						@include( $views['filter'] )
 						<div class="form-row mb-3">
-							<div class="col-sm-2 offset-sm-1">
+							<div class="col-sm-2 offset-sm-1 mb-3">
 								<button type="submit" class="btn btn-outline-success btn-sm">{!! $icons['search'] !!} Buscar</button>
 							</div>
-							<div class="col-sm-2">
+							<div class="col-sm-2 mb-3">
 								<a class="btn btn-outline-primary btn-sm" href="{{ route( $routes['create'] ) }}" role="button">{!! $icons['add'] !!} {{ $labels['index.create'] }}</a>
 							</div>
 						</div>

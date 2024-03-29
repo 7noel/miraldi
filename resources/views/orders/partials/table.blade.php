@@ -2,14 +2,14 @@
 <table class="{{ config('options.styles.table') }}">
 	<thead class="{{ config('options.styles.thead') }}">
 		<tr>
-			<th>#</th>
-			<th>Fecha</th>
-			<th>Cliente</th>
-			<th>Vendedor</th>
-			<th>Mnd</th>
-			<th>Total</th>
-			<th>Estado</th>
-			<th>Acciones</th>
+			<th class="text-center">#</th>
+			<th class="text-center">Fecha</th>
+			<th style="min-width: 250px">Cliente</th>
+			<th style="min-width: 200px">Vendedor</th>
+			<th class="text-center">Mnd</th>
+			<th class="text-center">Total</th>
+			<th class="text-center">Estado</th>
+			<th class="text-center">Acciones</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -27,10 +27,10 @@
 		@endphp
 		<tr data-id="{{ $model->id }}" data-tipo="OT">
 			<td>{{ $model->CFNUMPED }}</td>
-			<td>{{ date('d/m/Y', strtotime($model->CFFECDOC)) }}</td>
+			<td class="text-center">{{ date('d/m/Y', strtotime($model->CFFECDOC)) }}</td>
 			<td>{{ $model->CFNOMBRE }} </td>
 			<td>{{ $model->seller->DES_VEN }}</td>
-			<td>{{ $model->CFCODMON }}</td>
+			<td class="text-center">{{ $model->CFCODMON }}</td>
 			<td class="text-right">{{ number_format($model->CFIMPORTE, 2, '.', '') }}</td>
 			<td class="text-center status"><span class="{{ $clase }}">{{ $model->CFCOTIZA }}</span></td>
 			<td style="white-space: nowrap;">
