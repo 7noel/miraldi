@@ -11,7 +11,7 @@
 <div class="form-row">
 	<div class="col-md-1 col-sm-2">
 		{!! Form::label('sn', 'PD') !!}
-		{!! Form::text('CFNUMPED', null,['class'=>'form-control-sm form-control-plaintext text-center', 'readonly']) !!}
+		{!! Form::text('CFNUMPED', null,['class'=>'form-control-sm form-control-plaintext', 'readonly']) !!}
 	</div>
 	<div class="col-sm-4">
 		@if(isset($client->id))
