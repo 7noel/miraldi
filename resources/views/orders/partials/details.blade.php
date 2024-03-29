@@ -9,8 +9,8 @@
 			<th class="withTax">Precio</th>
 			<th class="withoutTax">Valor</th>
 			<th class="">Dscto2(%)</th>
-			<th class="withoutTax">V.Total</th>
-			<th class="withTax">P.Total</th>
+			<th class="withTax">V.Total</th>
+			<th class="withoutTax">P.Total</th>
 			<th>Acciones</th>
 		</tr>
 	</thead>
@@ -27,8 +27,8 @@
 			<td class="withTax text-right"><span class='spanPrecio'>{{ number_format(round($detail->DFPREC_ORI*1.18, 2), 2, '.', '') }}</span>{!! Form::hidden("details[$i][price]", $detail->DFPREC_ORI*1.18, ['class'=>'txtPrecio']) !!}</td>
 			<td class="withoutTax text-right"><span class='spanValue'>{{ $detail->DFPREC_ORI + 0 }}</span>{!! Form::hidden("details[$i][DFPREC_ORI]", $detail->DFPREC_ORI + 0, ['class'=>'txtValue']) !!}</td>
 			<td class="text-center"><span class='spanDscto2'>{{ $detail->DFPORDES + 0 }}</span>{!! Form::hidden("details[$i][DFPORDES]", $detail->DFPORDES + 0, ['class'=>'txtDscto2']) !!}</td>
-			<td class="withoutTax text-right"> <span class='txtTotal'>{{ number_format($detail->DFIMPMN/1.18, 6, '.', '') + 0 }}</span> </td>
-			<td class="withTax text-right"> <span class='txtPriceItem'>{{ number_format($detail->DFIMPMN, 6, '.', '') + 0 }}</span> </td>
+			<td class="withTax text-right"> <span class='txtTotal'>{{ number_format($detail->DFIMPMN/1.18, 2, '.', '') + 0 }}</span> </td>
+			<td class="withoutTax text-right"> <span class='txtPriceItem'>{{ number_format($detail->DFIMPMN, 2, '.', '') + 0 }}</span> </td>
 			<td class="text-center form-inline">
 			<a href="#" class="btn btn-outline-primary btn-sm btn-edit-item" title="Editar">{!! $icons['edit'] !!}</a>
 				<a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar">{!! $icons['remove'] !!}</a>
@@ -75,8 +75,10 @@
 					<input type="number" class="form-control form-control-sm text-center" id="txtDscto2">
 				</div>
 				<div class="form-group col-3 text-center">
-					<label for="txtTotal">Total</label>
-					<input type="text" class="form-control-sm form-control-plaintext text-center" id="txtTotal" readonly>
+					<label>Total</label>
+					<span id="spanPriceItem" class="form-control-sm form-control-plaintext"></span>
+					<input type="hidden" id="txtTotal">
+					<input type="hidden" id="txtPriceItem">
 				</div>
 			</div>
 			<div class="modal-footer">

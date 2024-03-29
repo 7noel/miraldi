@@ -214,6 +214,7 @@ class OrderController extends Controller
         $data['CFDESVAL'] = 0;
         $data['CFIGV'] = 0;
         $item = 0;
+        $vbruto = 0;
         if (isset($data['details'])) {
             foreach ($data['details'] as $key => $detail) {
                 $item += 1;
@@ -230,6 +231,7 @@ class OrderController extends Controller
                 $data['details'][$key]['DFALMA'] = '01';
                 $data['details'][$key]['DFSALDO'] = $detail['DFCANTID'];
 
+                $vbruto += round($detail['DFCANTID']*$detail['DFPREC_ORI'], 2); // valor bruto
                 $vventa = $detail['DFCANTID']*$detail['DFPREC_ORI']; // valor de item antes del descuento
                 $data['details'][$key]['DFDESCLI'] = $vventa*$data['CFPORDESCL']/100;
                 $vventa = round($vventa - $data['details'][$key]['DFDESCLI'], 6); // valor de item luego del descuento cliente
@@ -253,8 +255,11 @@ class OrderController extends Controller
 
                 $data['ids'][] = $detail['DFCODIGO'];
             }
+            $subtotal = round($vbruto - $data['CFDESVAL'], 2);
+            $data['CFIMPORTE'] = round($data['CFIMPORTE'], 2);
+            $data['CFDESVAL'] = round($data['CFDESVAL'], 2);
+            $data['CFIGV'] = round($data['CFIMPORTE'] - $subtotal, 2);
         }
-        // dd($data);
         return $data;
     }
 }

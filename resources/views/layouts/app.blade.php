@@ -587,6 +587,8 @@ function editModalProduct() {
     $('#txtValue').val(window.el.find('.txtValue').val())
     $('#txtDscto2').val(window.el.find('.txtDscto2').val())
     $('#txtTotal').val(window.el.find('.txtTotal').text())
+    $('#txtPriceItem').val(window.el.find('.txtPriceItem').text())
+    $('#spanPriceItem').text(window.el.find('.txtPriceItem').text())
     $('#exampleModalx').modal('show')
 }
 
@@ -627,8 +629,8 @@ function addRowProduct2() {
             <td class="withTax text-right"><span class='spanPrecio'>${v*1.18}</span><input class="txtPrecio" name="details[${items}][price]" type="text" value="${v*1.18}"></td>
             <td class="withoutTax text-right"><span class='spanValue'>${v}</span><input class="txtValue" name="details[${items}][DFPREC_ORI]" type="hidden" value="${v}"></td>
             <td class="text-right"><span class='spanDscto2'>${d2}</span><input class="txtDscto2" name="details[${items}][DFPORDES]" type="hidden" value="${d2}"></td>
-            <td class="withoutTax text-right"> <span class='txtTotal'>${t}</span> </td>
-            <td class="withTax text-right"> <span class='txtPriceItem'>${t*1.18}</span> </td>
+            <td class="withTax text-right"> <span class='txtTotal'>${t}</span> </td>
+            <td class="withoutTax text-right"> <span class='txtPriceItem'>${t*1.18}</span> </td>
             <td class="text-center form-inline">
                 <a href="#" class="btn btn-outline-primary btn-sm btn-edit-item" title="Editar">{!! $icons['edit'] !!}</a>
                 <a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar"><i class="far fa-trash-alt"></i></a>
@@ -649,11 +651,11 @@ function addRowProduct2() {
 
     } else {
 
-        window.el.find('.txtProduct').val($('#txtProduct').val())
-        window.el.find('.spanProduct').text($('#txtProduct').val())
-        window.el.find('.txtCodigo').val($('#txtCodigo').val())
-        window.el.find('.spanCodigo').text($('#txtCodigo').val())
-        window.el.find('.unitId').val($('#unitId').val())
+        // window.el.find('.txtProduct').val($('#txtProduct').val())
+        // window.el.find('.spanProduct').text($('#txtProduct').val())
+        // window.el.find('.txtCodigo').val($('#txtCodigo').val())
+        // window.el.find('.spanCodigo').text($('#txtCodigo').val())
+        // window.el.find('.unitId').val($('#unitId').val())
         window.el.find('.txtCantidad').val($('#txtCantidad').val())
         window.el.find('.spanCantidad').text($('#txtCantidad').val())
         window.el.find('.txtValue').val($('#txtValue').val())
@@ -847,38 +849,43 @@ function calcTotal () {
         if (!($(vtr).find('.isdeleted').is(':checked'))) {
             q = parseFloat($(vtr).find('.txtCantidad').val())
             // v = parseFloat((($(vtr).find('.txtPrecio').val()*100)/118).toFixed(6))
-            p = parseFloat((($(vtr).find('.txtValue').val()*118)/100).toFixed(6))
             // p = parseFloat($(vtr).find('.txtPrecio').val())
             v = parseFloat($(vtr).find('.txtValue').val())
+            p = parseFloat((($(vtr).find('.txtValue').val()*118)/100).toFixed(6))
             // v = p * 100 / (100 + 18);
             // v = parseFloat($(vtr).find('.txtValue').val());
             d1 = parseFloat(window.descuento1)
+            _d1 = Math.round(q*v*d1*10000)/1000000
             d2 = parseFloat($(vtr).find('.txtDscto2').val())
-            vt = Math.round(q*v*(100-d1)*(100-d2)/100) / 100 // total por item
-            t = Math.round(q*p*(100-d1)*(100-d2)/100) / 100
+            _d2 = Math.round((q*v-_d1)*d2*10000)/1000000
+            discount = Math.round(1000000*(_d1 + _d2))/1000000
+            vt = Math.round(100*(q*v-discount))/100 // total por item
+            t = Math.round(118*(q*v-discount))/100
             $(vtr).find('.txtTotal').text( vt.toFixed(2) )
             $(vtr).find('.txtPriceItem').text( t.toFixed(2) )
+            console.log(`cantidad: ${q}, valor: ${v}, precio: ${p}, d1: ${_d1}, d2: ${_d2}, descuento: ${discount} ValorItem: ${vt}, PrecioTotal: ${t}`)
 
-            discount = Math.round(100*q*v)/100 - vt
 
             gross_value += Math.round(100*q*v)/100
             gross_precio += Math.round(100*q*p)/100
             d_items += discount
-            subtotal += vt
+            // subtotal += vt
             total += t
         }
     })
+    d_items = Math.round(100*d_items)/100
     gross_value = Math.round(100 * gross_value) / 100
     gross_precio = Math.round(100 * gross_precio) / 100
-    subtotal = Math.round(100 * subtotal) / 100
-    total = Math.round(100 * total) / 100
+    subtotal = Math.round(100*(gross_value - d_items))/100
+    console.log(`vbruto: ${gross_value}, descuentos: ${d_items}, subtotal: ${subtotal}, total: ${total}`)
+    // subtotal = Math.round(100 * subtotal) / 100
+    // total = Math.round(100 * total) / 100
     if (with_tax) {
-        subtotal = Math.round(10000 * total / 118) / 100
-        gross_value = Math.round(10000 * gross_precio / 118) / 100
+        // subtotal = Math.round(10000 * total / 118) / 100
+        // gross_value = Math.round(10000 * gross_precio / 118) / 100
         d_items = gross_value - subtotal
-        // gross_value = Math.round(subtotal*1000000/((100-d1)*(100-d2))) / 100
     } else {
-        total = Math.round(118 * subtotal) / 100
+        // total = Math.round(118 * subtotal) / 100
     }
 
     $('#mGrossValue').text(gross_value.toFixed(2))
@@ -900,14 +907,15 @@ function calcTotal () {
 
 function calcTotalItem (myElement) {
     q = parseFloat($('#txtCantidad').val())
-    p = parseFloat((($('#txtPrecio').val()*118)/100).toFixed(6))
     v = parseFloat($('#txtValue').val())
+    p = parseFloat((v*118/100).toFixed(6))
     d1 = parseFloat(window.descuento1)
     d2 = parseFloat($('#txtDscto2').val())
     vt = 100*Math.round(q*v*(100-d1)*(100-d2))/1000000 // total por item
     t = 100*Math.round(q*p*(100-d1)*(100-d2))/1000000
-    $('#txtTotal').val( vt )
-    $('#txtPriceItem').val( t )
+    $('#txtTotal').val( vt.toFixed(2) )
+    $('#txtPriceItem').val( t.toFixed(2) )
+    $('#spanPriceItem').text( t.toFixed(2) )
 }
 
 // function addRowProduct(data='') {
