@@ -16,7 +16,7 @@
 			<td class="text-center">{{ $model->CCODCLI }}</td>
 			<td class="text-center">{{ $model->DFECINS }}</td>
 			<td class="text-center">{{ $model->DFECMOD }}</td>
-			<td style="white-space: nowrap;">
+			<td class="text-center" style="white-space: nowrap;">
 				<a href="{{ route($routes['show'], $model) }}" class="btn btn-outline-secondary btn-sm" title="Ver">{!! $icons['view'] !!}</a>
 				<a href="{{ route( $routes['edit'] , $model) }}" class="btn btn-outline-primary btn-sm" title="Editar">{!! $icons['edit'] !!}</a>
 				{{-- <a href="#" class="btn-delete btn btn-outline-danger btn-sm" title="Eliminar">{!! $icons['remove'] !!}</a> --}}

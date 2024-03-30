@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
-            <div class="card-group">
+            <div class="card-deck">
                 <div class="card">
                     <div class="card-body text-center">
                         <a href="{{ route('companies.index') }}" class="card-title text-dark">CLIENTES

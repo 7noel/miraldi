@@ -33,7 +33,7 @@
 			<td class="text-center">{{ $model->CFCODMON }}</td>
 			<td class="text-right">{{ number_format($model->CFIMPORTE, 2, '.', '') }}</td>
 			<td class="text-center status"><span class="{{ $clase }}">{{ $model->CFCOTIZA }}</span></td>
-			<td style="white-space: nowrap;">
+			<td class="text-center" style="white-space: nowrap;">
 				<a href="{{ route( 'orders.print_note' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-info btn-sm" title="Imprimir Nota">{!! $icons['pdf'] !!}</a>
 				<button type="button" onclick="printJS('{{ route( 'orders.print' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido">{!! $icons['printer'] !!}</button>
 				@if($model->CFCOTIZA=='EMITIDO')
