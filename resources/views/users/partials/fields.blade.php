@@ -1,6 +1,6 @@
 <div class="form-row">
 	<div class="col-sm-4">
-		{!! Field::text('name', ['label' => 'Nombre', 'class'=>'form-control-sm', 'required'=>'required']) !!}
+		{!! Field::text('name', ['label' => 'Nombre', 'class'=>'form-control-sm text-uppercase', 'required'=>'required']) !!}
 	</div>
 	<div class="col-sm-4">
 		{!! Field::email('email', ['label' => 'Correo Electrónico', 'class'=>'form-control-sm', 'required'=>'required']) !!}
