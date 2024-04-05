@@ -31,7 +31,7 @@
 		{!! Field::select('CFFORVEN', $conditions, (isset($model) ? null : '00'), ['empty'=>'Seleccionar', 'label'=>'Condición', 'class'=>'form-control-sm', 'required']) !!}
 	</div>
 	<div class="col-sm-3">
-		{!! Field::text('NOM_TRANSPORTISTA', ((isset($model->COD_TRANSPORTISTA)) ? $model->shipper->TRANOMBRE : null), ['label' => 'Transportista', 'class'=>'form-control-sm text-uppercase', 'id'=>'txtShipper']) !!}
+		{!! Field::text('NOM_TRANSPORTISTA', ((isset($model->COD_TRANSPORTISTA) and $model->COD_TRANSPORTISTA>0) ? $model->shipper->TRANOMBRE : null), ['label' => 'Transportista', 'class'=>'form-control-sm text-uppercase', 'id'=>'txtShipper']) !!}
 	</div>
 	{{--<div class="col-md-2 col-sm-4">
 		{!! Field::number('CFORDCOM', ['label' => 'Nota Venta', 'class'=>'form-control-sm text-uppercase']) !!}

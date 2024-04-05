@@ -424,7 +424,7 @@ $(document).ready(function () {
         source: "/api/shippersAutocomplete/",
         minLength: 4,
         select: function(event, ui){
-            $('#shipper_id').val(ui.item.TRACODIGO)
+            $('#shipper_id').val(ui.item.id.TRACODIGO)
         }
     })
 
@@ -1031,7 +1031,7 @@ function getDataPadron (doc, type) {
                 $('#name').val('')
                 if (data.hasOwnProperty('ubigeo') && data.ubigeo != null) {
                     //$('#address').val(data.direccion.replace(` ${data.departamento} ${data.provincia} ${data.distrito}`, ''))
-                    $('#address').val(data.direccion.replace(` ${data.departamento} ${data.provincia} ${data.distrito}`, '') + ` ${data.distrito} ${data.provincia} ${data.departamento}`)
+                    $('#address').val(data.direccion.replace(` ${data.departamento} ${data.provincia} ${data.distrito}`, '') + ` - ${data.distrito} - ${data.provincia} - ${data.departamento}`)
                     $('#departamento').val(data.departamento)
                     $('#provincia').val(data.provincia)
                     $('#ubigeo_code').val(data.ubigeo)

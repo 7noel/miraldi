@@ -32,7 +32,7 @@ class Order extends Model
 
     public function shipper()
     {
-        return $this->hasOne(Company::class, 'TRACODIGO', 'COD_TRANSPORTISTA');
+        return $this->hasOne(Shipper::class, 'TRACODIGO', 'COD_TRANSPORTISTA');
     }
 
     public function condition()

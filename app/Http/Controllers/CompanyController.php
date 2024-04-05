@@ -47,7 +47,7 @@ class CompanyController extends Controller
     {
         $data = request()->all();
         $data = $this->prepareData($data);
-        dd($data);
+        // dd($data);
         Company::create($data);
 
         if (isset($data['last_page']) && $data['last_page'] != '') {
