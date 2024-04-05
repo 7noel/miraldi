@@ -91,7 +91,8 @@ class ProductController extends Controller
         $models =  Product::with('stock', 'price')->has('price')->has('stock')->where('ACODIGO','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->get();
         $result=[];
         foreach ($models as $model) {
-            if (!is_null($model->stock) and !is_null($model->price) and $model->stock->STSKDIS > 0) {
+            if (!is_null($model->stock) and !is_null($model->price) ) {
+            //if (!is_null($model->stock) and !is_null($model->price) and $model->stock->STSKDIS > 0) {
                 $result[]=[
                     'value' => $model->ADESCRI,
                     'id' => $model,
