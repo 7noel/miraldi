@@ -123,7 +123,7 @@ class ShipperController extends Controller
 
         $result = $models->map(function ($model){
             return [
-                'value' => $model->CNOMCLI,
+                'value' => $model->TRANOMBRE,
                 'id' => $model,
                 'label' => config('options.client_doc.'.$model->TRATIPO_DOCUMENTO).' '.$model->TRACODIGO.' '.$model->TRANOMBRE,
             ];
@@ -177,4 +177,20 @@ class ShipperController extends Controller
         
         return $data;
     }
+
+    // public function ajaxAutocomplete()
+    // {
+    //     $term = request()->get('term');
+    //     $models =  Company::where('TRANOMBRE','like',"%$term%")->orWhere('TRACODIGO','like',"%$term%")->get();
+    //     // dd($models);
+
+    //     $result = $models->map(function ($model){
+    //         return [
+    //             'value' => $model->TRANOMBRE,
+    //             'id' => $model,
+    //             'label' => $model->TRACODIGO.' '.$model->TRANOMBRE,
+    //         ];
+    //     });
+    //     return response()->json($result);
+    // }
 }

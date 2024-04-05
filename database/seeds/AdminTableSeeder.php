@@ -39,7 +39,15 @@ class AdminTableSeeder extends Seeder {
         Role::create(['name' => 'ADMINISTRADOR']);
         Role::create(['name' => 'VENDEDOR']);
         Role::create(['name' => 'ALMACEN']);
-        User::create(['name' => 'Noel', 'email' => 'noel.logan@gmail.com', 'password' => '123', 'role_id' => 1]);
+
+        User::create(['name' => 'Noel', 'email' => 'noel.logan@gmail.com', 'password' => '44243484', 'role_id' => 1, 'user_code' => 'VEND30', 'seller_code' => 30]);
+        User::create(['name' => 'EDGAR HUGO MIRANDA ALARCON', 'email' => 'vend10@miraldi.com.pe', 'password' => '20658438', 'role_id' => 2, 'user_code' => 'VEND10', 'seller_code' => 10]);
+        User::create(['name' => 'LOIDA EUNICE GALLARDO RIVERA', 'email' => 'vend18@miraldi.com.pe', 'password' => '70218177', 'role_id' => 2, 'user_code' => 'VEND18', 'seller_code' => 18]);
+        User::create(['name' => 'VICTOR ALEJANDRO LA ROSA SALGU', 'email' => 'vend20@miraldi.com.pe', 'password' => '41720001', 'role_id' => 2, 'user_code' => 'VEND20', 'seller_code' => 20]);
+        User::create(['name' => 'JOSEPH DANTANA TUCTO POLONIO', 'email' => 'vend60@miraldi.com.pe', 'password' => '43058658', 'role_id' => 2, 'user_code' => 'VEND60', 'seller_code' => 60]);
+        User::create(['name' => 'RANDI PAUL TUCTO POLONIO', 'email' => 'vend67@miraldi.com.pe', 'password' => '44140029', 'role_id' => 2, 'user_code' => 'VEND67', 'seller_code' => 67]);
+        User::create(['name' => 'DAVID ESPINOZA CASAS', 'email' => 'vend88@miraldi.com.pe', 'password' => '40218951', 'role_id' => 2, 'user_code' => 'VEND88', 'seller_code' => 88]);
+        User::create(['name' => 'JOSUE VEGA BERNAL', 'email' => 'vend91@miraldi.com.pe', 'password' => '46955199', 'role_id' => 2, 'user_code' => 'VEND91', 'seller_code' => 91]);
 
 /*
         PermissionGroup::create(['name' => 'SISTEMAS']);

@@ -114,7 +114,6 @@ class CompanyController extends Controller
         return redirect()->route('companies.index');
     }
 
-
     public function ajaxAutocomplete()
     {
         $term = request()->get('term');

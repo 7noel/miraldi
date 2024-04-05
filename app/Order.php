@@ -13,7 +13,7 @@ class Order extends Model
     protected $primaryKey = 'CFNUMPED';
     protected $keyType = 'string';
     public $timestamps = false;
-    protected $fillable = ['CFNUMPED','CFFECDOC','CFFECVEN','CFVENDE','CFPUNVEN','CFCODCLI','CFNOMBRE','CFDIRECC','CFRUC','CFIMPORTE','CFPORDESCL','CFPORDESES','CFFORVEN','CFTIPCAM','CFCODMON','CFESTADO','CFUSER','CFGLOSA','CFORDCOM','CFIGV','CFDESCTO','CFDESIMP','CFDESVAL','CFCOTIZA','TIPO','IMP_CFNUMPED','FLG_PDMOVIL','FLG_PORTAL'];
+    protected $fillable = ['CFNUMPED','CFFECDOC','CFFECVEN','CFVENDE','CFPUNVEN','CFCODCLI','CFNOMBRE','CFDIRECC','CFRUC','CFIMPORTE','CFPORDESCL','CFPORDESES','CFFORVEN','CFTIPCAM','CFCODMON','CFESTADO','CFUSER','CFGLOSA','CFORDCOM','CFIGV','CFDESCTO','CFDESIMP','CFDESVAL','CFCOTIZA','TIPO','IMP_CFNUMPED','FLG_PDMOVIL','FLG_PORTAL', 'COD_TRANSPORTISTA'];
 
     public function details()
     {
@@ -28,6 +28,11 @@ class Order extends Model
     public function company()
     {
         return $this->hasOne(Company::class, 'CCODCLI', 'CFCODCLI');
+    }
+
+    public function shipper()
+    {
+        return $this->hasOne(Company::class, 'TRACODIGO', 'COD_TRANSPORTISTA');
     }
 
     public function condition()

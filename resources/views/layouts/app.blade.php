@@ -421,16 +421,10 @@ $(document).ready(function () {
     })
 
     $('#txtShipper').autocomplete({
-        source: "/api/companies/autocompleteAjax/shippers/"+my_company+"/",
+        source: "/api/shippersAutocomplete/",
         minLength: 4,
         select: function(event, ui){
-            $('#shipper_id').val(ui.item.id)
-            $('#branch_shipper_id').empty()
-            $('#branch_shipper_id').append(`<option value=''>Seleccionar</option>`)
-            ui.item.branches.forEach(function (b) {
-                $('#branch_shipper_id').append(`<option value='${b.id}'>${b.company_name}</option>`)
-            })
-            $('#branch_shipper_id').focus()
+            $('#shipper_id').val(ui.item.TRACODIGO)
         }
     })
 

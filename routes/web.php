@@ -36,6 +36,7 @@ Auth::routes();
 Route::get('listarProvincias/{departamento}', ['as' => 'ajaxprovincias', 'uses' => 'UbigeoController@ajaxProvincias']);
 Route::get('listarDistritos/{departamento}/{provincia}', ['as' => 'ajaxdistritos','uses' => 'UbigeoController@ajaxDistritos']);
 Route::get('api/companiesAutocomplete/', ['as' => 'companiesAutocomplete', 'uses' => 'CompanyController@ajaxAutocomplete']);
+Route::get('api/shippersAutocomplete/', ['as' => 'shippersAutocomplete', 'uses' => 'ShipperController@ajaxAutocomplete']);
 Route::get('api/products/autocompleteAjax', ['as' => 'productsAutocomplete','uses' => 'ProductController@ajaxAutocomplete']);
 Route::get('get_picking/{qr}', ['as' => 'get_picking', 'uses' => 'OrderController@get_picking']);
 
