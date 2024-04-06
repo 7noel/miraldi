@@ -47,7 +47,7 @@
 				<strong class="label_2">Vendedor:</strong><span class="data-header">{{ $model->seller->DES_VEN }}</span>
 			</div>
 			<div>
-				<strong class="label_2">Agencia:</strong><span class="data-header"></span>
+				<strong class="label_2">Agencia:</strong><span class="data-header">{{$model->shipper->TRANOMBRE}}</span>
 			</div>
 			<div>
 				<strong class="label_2">Observaciones</strong><span class="data-header">{{ $model->CFGLOSA }}</span>
@@ -71,7 +71,7 @@
 				<tr>
 					<th class="th1 border center">ITEM</th>
 					<th class="th1 border center">CORREC.</th>
-					<th class="th3 border center">UND</th>
+					<th class="th3 border center">CANT.</th>
 					<th class="th2 border center">DESCRIPCIÓN</th>
 					<th class="th4 border center">BULTO</th>
 				</tr>
@@ -82,7 +82,7 @@
 						<td class="border center">{{ $key + 1 }}</td>
 						<td class="border center"></td>
 						<td class="border center">{{ number_format($detail->DFCANTID, 2, '.', '').' '.$detail->DFUNIDAD }}</td>
-						<td class="border">{{ $detail->DFDESCRI }}</td>
+						<td class="border">{{ $detail->DFCODIGO }} {{ $detail->DFDESCRI }}</td>
 						<td class="border center"></td>
 					</tr>
 				@endforeach

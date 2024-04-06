@@ -59,7 +59,13 @@ body{
 .label{
 	vertical-align: top;
 	display: inline-block;
-	width: 15%;
+	width: 14%;
+	text-transform: uppercase;
+}
+.label-2{
+	vertical-align: top;
+	display: inline-block;
+	width: 9%;
 	text-transform: uppercase;
 }
 .label_2{
@@ -75,7 +81,7 @@ body{
 .data-header-1{
 	vertical-align: top;
 	display: inline-block;
-	width: 45%;
+	width: 40%;
 }
 .container-items{
 	/*border: 1px solid green;*/

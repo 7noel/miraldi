@@ -29,7 +29,7 @@
 	<div>
 		<div>
 			<strong class="label">{{ config('options.client_doc.'.$model->company->CTIPO_DOCUMENTO) }}:</strong><span class="data-header-1">{{ $model->company->CCODCLI }}</span>
-			<strong class="label">Usuario:</strong><span class="data-header">Usuariox {{ date('d/m/Y h:i a') }}</span>
+			<strong class="label-2">Usuario:</strong><span class="data-header">Usuariox {{ date('d/m/Y h:i a') }}</span>
 		</div>
 		<div>
 			<strong class="label">Señor(a):</strong><span class="data-header">{{ $model->CFNOMBRE }}</span>
@@ -42,10 +42,10 @@
 		</div>
 		<div>
 			<strong class="label">Vendedor:</strong><span class="data-header-1">{{ $model->seller->DES_VEN }}</span>
-			<strong class="label">Agencia:</strong><span class="data-header"></span>
+			<strong class="label-2">Agencia:</strong><span class="data-header">{{$model->shipper->TRANOMBRE}}</span>
 		</div>
 		<div>
-			<strong class="label">Observaciones</strong><span class="data-header">{{ $model->CFGLOSA }}</span>
+			<strong class="label">Observaciones:</strong><span class="data-header">{{ $model->CFGLOSA }}</span>
 		</div>
 	</div>
 	<br>
@@ -55,7 +55,7 @@
 				<tr>
 					<th class="th1 border center">ITEM</th>
 					<th class="th2 border center">DESCRIPCIÓN</th>
-					<th class="th3 border center">UND</th>
+					<th class="th3 border center">CANT.</th>
 					<th class="th4 border center">P. UNIT.</th>
 					<th class="th5 border center">DSCT.</th>
 					<th class="th6 border center">TOTAL</th>
@@ -69,7 +69,7 @@
 					@endphp
 					<tr>
 						<td class="border center">{{ $key + 1 }}</td>
-						<td class="border">{{ $detail->DFDESCRI }}</td>
+						<td class="border">{{ $detail->DFCODIGO }} {{ $detail->DFDESCRI }}</td>
 						<td class="border center">{{ number_format($detail->DFCANTID, 2, '.', '').' '.$detail->DFUNIDAD }}</td>
 						<td class="border center">{{ number_format($detail->DFPREC_ORI, 2, '.', '') }}</td>
 						<td class="border center">{{ intval($model->CFPORDESCL) }}% {{ intval($detail->DFPORDES) }}%</td>
