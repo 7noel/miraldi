@@ -625,7 +625,7 @@ function addRowProduct2() {
         items = $('#items').val()
         //preparando fila <tr>
         tr = `<tr>
-            <input class="unitId" data-unitid="" name="details[${items}][DFUNIDAD]" type="hidden" id="unitId" value="${u}">
+            <input class="unitId" name="details[${items}][DFUNIDAD]" type="hidden" value="${u}">
             <td><span class='spanCodigo'>${codigo}</span><input class="productId" name="details[${items}][DFCODIGO]" type="hidden" value="${codigo}"></td>
             <td><span class='spanProduct'>${desc}</span><input class="txtProduct" name="details[${items}][DFDESCRI]" type="hidden" value="${desc}"></td>
             <td class="text-center"><span class='spanCantidad text-right'>${q} ${u}</span><input class="txtCantidad" name="details[${items}][DFCANTID]" type="hidden" value="${q}"></td>
@@ -639,6 +639,7 @@ function addRowProduct2() {
                 <a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar"><i class="far fa-trash-alt"></i></a>
             </td>
         </tr>`
+        console.log(tr)
 
         items = parseInt(items) + 1
         $('#items').val(items)
