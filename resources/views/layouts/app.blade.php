@@ -661,12 +661,12 @@ function addRowProduct2() {
         // window.el.find('.txtCodigo').val($('#txtCodigo').val())
         // window.el.find('.spanCodigo').text($('#txtCodigo').val())
         // window.el.find('.unitId').val($('#unitId').val())
-        window.el.find('.txtCantidad').val($('#txtCantidad').val())
-        window.el.find('.spanCantidad').text($('#txtCantidad').val())
-        window.el.find('.txtValue').val($('#txtValue').val())
-        window.el.find('.spanValue').text($('#txtValue').val())
-        window.el.find('.txtDscto2').val($('#txtDscto2').val())
-        window.el.find('.spanDscto2').text($('#txtDscto2').val())
+        window.el.find('.txtCantidad').val(q)
+        window.el.find('.spanCantidad').text(q+' '+u)
+        window.el.find('.txtValue').val(v)
+        window.el.find('.spanValue').text(v)
+        window.el.find('.txtDscto2').val(d2)
+        window.el.find('.spanDscto2').text(d2)
 
         $('#exampleModalx').modal('hide')
     }
