@@ -155,8 +155,10 @@ class OrderController extends Controller
         $toDelete = array_diff($old_ids, $data['ids']);
         // dd($toDelete);
         if (isset($toDelete) and count($toDelete)>0) {
+            // dd('DENTRO de delete');
             OrderDetail::where('DFNUMPED', $id)->whereIn('DFCODIGO', $toDelete)->delete();
         }
+        // dd('fuera de delete');
         if (isset($data['details'])) {
             foreach ($data['details'] as $key => $detail) {
                 if (in_array($detail['DFCODIGO'], $old_ids)) {

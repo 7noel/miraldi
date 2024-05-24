@@ -591,6 +591,7 @@ function editModalProduct() {
     $('#txtTotal').val(window.el.find('.txtTotal').text())
     $('#txtPriceItem').val(window.el.find('.txtPriceItem').text())
     $('#spanPriceItem').text(window.el.find('.txtPriceItem').text())
+    $('#label-cantidad').text(window.el.find('.unitId').val())
     $('#exampleModalx').modal('show')
 }
 
@@ -639,7 +640,7 @@ function addRowProduct2() {
                 <a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar"><i class="far fa-trash-alt"></i></a>
             </td>
         </tr>`
-        console.log(tr)
+        //console.log(tr)
 
         items = parseInt(items) + 1
         $('#items').val(items)
