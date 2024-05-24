@@ -24,7 +24,7 @@
 			{!! Form::hidden("details[$i][DFUNIDAD]", $detail->DFUNIDAD, ['class'=>'unitId','data-unitid'=>'']) !!}
 			<td><span class='spanCodigo'>{{ $detail->DFCODIGO }}</span>{!! Form::hidden("details[$i][DFCODIGO]", $detail->DFCODIGO, ['class'=>'productId']); !!}</td>
 			<td><span class='spanProduct'>{{ $detail->DFDESCRI }}</span>{!! Form::hidden("details[$i][DFDESCRI]", $detail->DFDESCRI, ['class'=>'txtProduct']); !!}</td>
-			<td class="text-center"><span class='spanCantidad'>{{ $detail->DFCANTID + 0 }}</span>{!! Form::hidden("details[$i][DFCANTID]", $detail->DFCANTID + 0, ['class'=>'txtCantidad']) !!}</td>
+			<td class="text-center"><span class='spanCantidad'>{{ $detail->DFCANTID + 0 }} {{ $detail->DFUNIDAD }}</span>{!! Form::hidden("details[$i][DFCANTID]", $detail->DFCANTID + 0, ['class'=>'txtCantidad']) !!}</td>
 			<td class="withTax text-right"><span class='spanPrecio'>{{ number_format(round($detail->DFPREC_ORI*1.18, 2), 2, '.', '') }}</span>{!! Form::hidden("details[$i][price]", $detail->DFPREC_ORI*1.18, ['class'=>'txtPrecio']) !!}</td>
 			<td class="withoutTax text-right"><span class='spanValue'>{{ $detail->DFPREC_ORI + 0 }}</span>{!! Form::hidden("details[$i][DFPREC_ORI]", $detail->DFPREC_ORI + 0, ['class'=>'txtValue']) !!}</td>
 			<td class="text-center"><span class='spanDscto2'>{{ $detail->DFPORDES + 0 }}</span>{!! Form::hidden("details[$i][DFPORDES]", $detail->DFPORDES + 0, ['class'=>'txtDscto2']) !!}</td>
@@ -63,7 +63,7 @@
 					<input type="hidden" id="unitId">
 				</div>
 				<div class="form-group col-3 text-center">
-					<label for="txtCantidad">Cantidad</label>
+					<label for="txtCantidad">Cantidad <span id="label-cantidad"></span> </label>
 					<input type="number" class="form-control form-control-sm text-center" id="txtCantidad">
 				</div>
 				<div class="form-group col-3 text-center">

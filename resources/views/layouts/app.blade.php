@@ -237,11 +237,11 @@ $(document).ready(function () {
         $("#image_base64").val(document.querySelector("#canvas").toDataURL('image/jpeg').replace(/^data:image\/jpeg;base64,/, ""))
     })
     $(".pagar-venta").click(function(e){
-        console.log($(this).data('id'))
+        //console.log($(this).data('id'))
         m_id = $(this).data('id')
 
         $.get(`/get_cpe/${m_id}`, function(data){
-            console.log(data)
+            //console.log(data)
             $("#pagarModalLabel").html(data.sn)
             if (data.currency_id==2) {
                 $("#currency_id").html('DOLARES')
@@ -271,7 +271,7 @@ $(document).ready(function () {
         }
         
         $.post(url, data, function(result){
-            console.log(result);
+            //console.log(result);
             alert(`${tipo}-${result.sn} fue anulado`)
             //alert(result.message);
             row.find('.status').html('<span class="badge badge-danger">ANUL</span>')
@@ -383,6 +383,7 @@ $(document).ready(function () {
                     $('#txtCantidad').focus()
                     $('#txtCantidad').select()
                 }, 100)
+                $('#label-cantidad').text($p.AUNIDAD)
                 calcTotalItem()
             }
         }
@@ -572,6 +573,7 @@ function clearModalProduct() {
     $('#txtValue').val("0")
     $('#txtDscto2').val(window.descuento2)
     $('#txtTotal').val("0.00")
+    $('#label-cantidad').text('')
 }
 
 function editModalProduct() {
@@ -603,6 +605,7 @@ function addRowProduct2() {
         return false;
     }
     u = $('#unitId').val()
+    //console.log(u)
     q = $('#txtCantidad').val()
     if (!isNaN(q) && q <= 0) {
         $('#txtCantidad').val("")
@@ -625,7 +628,7 @@ function addRowProduct2() {
             <input class="unitId" data-unitid="" name="details[${items}][DFUNIDAD]" type="hidden" id="unitId" value="${u}">
             <td><span class='spanCodigo'>${codigo}</span><input class="productId" name="details[${items}][DFCODIGO]" type="hidden" value="${codigo}"></td>
             <td><span class='spanProduct'>${desc}</span><input class="txtProduct" name="details[${items}][DFDESCRI]" type="hidden" value="${desc}"></td>
-            <td class="text-center"><span class='spanCantidad text-right'>${q}</span><input class="txtCantidad" name="details[${items}][DFCANTID]" type="hidden" value="${q}"></td>
+            <td class="text-center"><span class='spanCantidad text-right'>${q} ${u}</span><input class="txtCantidad" name="details[${items}][DFCANTID]" type="hidden" value="${q}"></td>
             <td class="withTax text-right"><span class='spanPrecio'>${v*1.18}</span><input class="txtPrecio" name="details[${items}][price]" type="text" value="${v*1.18}"></td>
             <td class="withoutTax text-right"><span class='spanValue'>${v}</span><input class="txtValue" name="details[${items}][DFPREC_ORI]" type="hidden" value="${v}"></td>
             <td class="text-right"><span class='spanDscto2'>${d2}</span><input class="txtDscto2" name="details[${items}][DFPORDES]" type="hidden" value="${d2}"></td>
@@ -863,7 +866,7 @@ function calcTotal () {
             t = Math.round(1180000*(q*v-discount))/1000000
             $(vtr).find('.txtTotal').text( vt.toFixed(2) )
             $(vtr).find('.txtPriceItem').text( t.toFixed(2) )
-            console.log(`cantidad: ${q}, valor: ${v}, precio: ${p}, d1: ${_d1}, d2: ${_d2}, descuento: ${discount} ValorItem: ${vt}, PrecioTotal: ${t}`)
+            //console.log(`cantidad: ${q}, valor: ${v}, precio: ${p}, d1: ${_d1}, d2: ${_d2}, descuento: ${discount} ValorItem: ${vt}, PrecioTotal: ${t}`)
 
 
             gross_value += Math.round(100*q*v)/100
@@ -877,7 +880,7 @@ function calcTotal () {
     gross_value = Math.round(100 * gross_value) / 100
     gross_precio = Math.round(100 * gross_precio) / 100
     subtotal = Math.round(100*(gross_value - d_items))/100
-    console.log(`vbruto: ${gross_value}, descuentos: ${d_items}, subtotal: ${subtotal}, total: ${total}`)
+    //console.log(`vbruto: ${gross_value}, descuentos: ${d_items}, subtotal: ${subtotal}, total: ${total}`)
     // subtotal = Math.round(100 * subtotal) / 100
     // total = Math.round(100 * total) / 100
     if (with_tax) {
@@ -1023,7 +1026,7 @@ function getDataPadron (doc, type) {
     urls = {"1":`https://dniruc.apisperu.com/api/v1/dni/${doc}?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5vZWwubG9nYW5AZ21haWwuY29tIn0.pSSHu1Rh3RUgPubnjemiDNyMAN0ZjgTCXaupa8VsEYY`, "6":`https://dniruc.apisperu.com/api/v1/ruc/${doc}?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Im5vZWwubG9nYW5AZ21haWwuY29tIn0.pSSHu1Rh3RUgPubnjemiDNyMAN0ZjgTCXaupa8VsEYY`}
     $.get(urls[type], function(data){
         if (data) {
-            console.log(data)
+            //console.log(data)
             if (type=='6') {
                 $('#company_name').val(data.razonSocial)
                 $('#paternal_surname').val('')
