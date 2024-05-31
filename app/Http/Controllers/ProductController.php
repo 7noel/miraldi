@@ -110,7 +110,7 @@ class ProductController extends Controller
 
     public function get_search($id)
     {
-        $result = Product::with('stock','price','family','lockers')->where('ACODIGO', $id)->first();
+        $result = Product::with('stock','price','family','lockers')->where('ACODIGO', $id)->orWhere('ACODIGO2', $id)->first();
         return response()->json($result);
     } 
 }

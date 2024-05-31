@@ -37,6 +37,7 @@
 								<thead class="{{ config('options.styles.thead') }}">
 									<tr>
 										<th>Código</th>
+										<th>Cod Fabr</th>
 										<th>Descripción</th>
 										<th>PL</th>
 										<th>ES</th>

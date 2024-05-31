@@ -733,14 +733,15 @@ function addPrPicking() {
     // Recorre los tr
     $("#table-picking tr").each(function(){
         let codigo = $(this).children().eq(0)
+        let codigo2 = $(this).children().eq(1) // codigo de fabricante
         es_total = parseInt($("#es").val())
-        es = parseInt($(this).children().eq(3).text())
-        pl = parseInt($(this).children().eq(2).text())
+        es = parseInt($(this).children().eq(4).text())
+        pl = parseInt($(this).children().eq(3).text())
         // Cuando encuentra el código
-        if (codigo.text() == code) {
+        if (codigo.text() == code || codigo2.text() == code) {
             code_exist = true
             es = 1 + es
-            $(this).children().eq(3).text(es)
+            $(this).children().eq(4).text(es)
             $(this).find(".es").val(es)
             es_total += 1
             if (pl == es) {
@@ -763,7 +764,7 @@ function addPrPicking() {
                     $(this).removeClass("table-warning")
                 } else {
                     // Si se omite la lectura del scaner
-                    $(this).children().eq(3).text(es - 1)
+                    $(this).children().eq(4).text(es - 1)
                     $(this).find(".es").val(es - 1)
                     es_total -= 1
                 }
@@ -820,10 +821,12 @@ function get_picking() {
         $.each(data.products, function (index, pr) {
             tr=`<tr>
                     <td>${pr.ACODIGO}</td>
+                    <td>${pr.ACODIGO2}</td>
                     <td>${pr.ADESCRI}</td>
                     <td>${prs[pr.ACODIGO]}</td>
                     <td>0</td>
                     <input type="hidden" class="codigo" name="details[${i}][codigo]" value="${pr.ACODIGO}">
+                    <input type="hidden" class="codigo" name="details[${i}][codigo2]" value="${pr.ACODIGO2}">
                     <input type="hidden" class="name" name="details[${i}][name]" value="${pr.ADESCRI}">
                     <input type="hidden" class="pl" name="details[${i}][pl]" value="${prs[pr.ACODIGO]}">
                     <input type="hidden" class="es" name="details[${i}][es]" value="0">
