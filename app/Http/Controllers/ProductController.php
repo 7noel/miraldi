@@ -112,5 +112,17 @@ class ProductController extends Controller
     {
         $result = Product::with('stock','price','family','lockers')->where('ACODIGO', $id)->orWhere('ACODIGO2', $id)->first();
         return response()->json($result);
-    } 
+    }
+
+    public function excel_codbars()
+    {
+        $models = Product::all();
+        //dd($models);
+        return view('products.excel_codbars', compact('models'));
+    }
+    public function excel_codbars_download()
+    {
+        $data = request()->all();
+        return response()->json($data);
+    }
 }

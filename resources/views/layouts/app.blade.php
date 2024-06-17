@@ -201,6 +201,15 @@
     <script>
 $(document).ready(function () {
 
+    $(".text-cantidad-codbar").change(function () {
+        $input = $(this)
+        if ($input.val() > 0) {
+            $input.parent().parent().addClass("select")
+        } else {
+            $input.parent().parent().removeClass("select")
+        }
+    })
+
     n = $('#tableItems tr:last').find('.txtDscto2').val()
     n = Math.round(parseFloat(n)*1000000)/1000000
     if (isNaN(n)) {n = 0}
@@ -547,6 +556,49 @@ $(document).ready(function () {
     //     });
     // })
 })
+
+function excel_codbar() {
+    var box = {}; // my object
+    var boxes =  []; // my array
+    $(".select").each(function (index, el) {
+        box = {
+            cantidad : $(el).find('.text-cantidad-codbar').val(),
+            codigo : $(el).find('.text-codigo').text(),
+            description : $(el).find('.text-description').text()
+        }
+        boxes.push(box)
+    })
+    $.post('/excel_codbars_download', boxes, function(result){
+        console.log(result);
+    })
+}
+
+function filtro_tabla(table_report_warehouse) {
+  // Declare variables 
+  var input, filter, table, tr, td, i, j, visible;
+  input = document.getElementById("search");
+  filter = input.value.toUpperCase();
+  size = filter.length
+  table = document.getElementById(table_report_warehouse);
+  tr = table.getElementsByTagName("tr");
+
+  // Loop through all table rows, and hide those who don't match the search query
+  for (i = 0; i < tr.length; i++) {
+    visible = false;
+    /* Obtenemos todas las celdas de la fila, no sólo la primera */
+    td = tr[i].getElementsByTagName("td");
+    for (j = 0; j < td.length; j++) {
+      if (size>3 && td[j] && td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
+        visible = true;
+      }
+    }
+    if (visible === true) {
+      tr[i].style.display = "";
+    } else {
+      tr[i].style.display = "none";
+    }
+  }
+}
 
 function existCodeInList(code) {
     existe_codigo = false
