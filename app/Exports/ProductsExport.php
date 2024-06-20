@@ -1,19 +1,18 @@
 <?php
-
 namespace App\Exports;
 
-use App\Modules\Storage\Product;
-use App\Modules\Storage\Stock;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-class ProductsExport implements FromView, ShouldAutoSize
+class ProductsExport implements FromView
 {
+    public function __construct($view, $models)
+    {
+        $this->view = $view;
+        $this->models = $models;
+    }
     public function view(): View
     {
-        return view('exports.stocks', [
-            'stocks' => Stock::with('product')->get()
-        ]);
+        return view($this->view, ['models' => $this->models]);
     }
 }

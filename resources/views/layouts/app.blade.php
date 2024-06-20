@@ -201,6 +201,22 @@
     <script>
 $(document).ready(function () {
 
+    $("#btn-excel-codbar").click(function(e) {
+        e.preventDefault()
+        i = 0
+        $(".select").each(function() {
+            codigo = $(this).children().eq(1).text()
+            descripcion = $(this).children().eq(2).text()
+            cantidad = $(this).children().eq(0).find(".text-cantidad-codbar").val()
+            elements = `<input class="input-excel" name="products[${i}][codigo]" type="hidden" value="${codigo}">
+            <input class="input-excel" name="products[${i}][descripcion]" type="hidden" value="${descripcion}">
+            <input class="input-excel" name="products[${i}][cantidad]" type="hidden" value="${cantidad}">`
+            $("#form-excel-codbar").append(elements)
+            i = i + 1
+        })
+        $("#form-excel-codbar").submit()
+    })
+
     $(".text-cantidad-codbar").change(function () {
         $input = $(this)
         if ($input.val() > 0) {
@@ -557,7 +573,28 @@ $(document).ready(function () {
     // })
 })
 
-function excel_codbar() {
+function get_oc() {
+    oc = $("#ocompra").val()
+    url = `/get_oc/${oc}`
+    $.get(url, function(data){
+        var oc_codigos = data.map((obj) => obj.OC_CCODIGO)
+        //console.log(data)
+        $("#table-report tr").each(function(){
+            this.style.display = "none";
+            codigo = $(this).children().eq(1).text()
+            orden = oc_codigos.indexOf(codigo)
+            if (orden >-1) {
+                console.log('aqui encontro codigo')
+                $(this).children().eq(0).find(".text-cantidad-codbar").val(parseInt(data[orden].OC_NCANTID))
+                $(this).addClass("select")
+                this.style.display = "";
+            }
+
+        })
+    })
+}
+
+/*function excel_codbar() {
     var box = {}; // my object
     var boxes =  []; // my array
     $(".select").each(function (index, el) {
@@ -571,7 +608,7 @@ function excel_codbar() {
     $.post('/excel_codbars_download', boxes, function(result){
         console.log(result);
     })
-}
+}*/
 
 function filtro_tabla(table_report_warehouse) {
   // Declare variables 
@@ -1104,7 +1141,7 @@ function getDataPadron (doc, type) {
             }
             //console.log(data)
         }
-    });
+    })
 }
 
 function changeIdType() {

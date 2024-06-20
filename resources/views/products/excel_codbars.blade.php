@@ -9,13 +9,22 @@
 				</h5>
 				<div class="card-body">
 					<div class="form-group row">
-                        <label for="search" class="col-sm-1 col-form-label">Filtro</label>
+                        <label for="ocompra" class="col-sm-2 col-form-label">OCompra</label>
+						<div class="col-sm-3">
+                            <input class="form-control" placeholder="Orden de compra" name="ocompra" type="text" value="" id="ocompra">
+                        </div>
+                        <div class="col-sm-2">
+                            <button type="submit" class="btn btn-outline-primary" onclick="get_oc()">{!! $icons['search'] !!} Buscar</button>
+                        </div>
+                    </div>
+					<div class="form-group row">
+                        <label for="search" class="col-sm-2 col-form-label">Filtro</label>
 						<div class="col-sm-8">
                             <input class="form-control" onkeyup="filtro_tabla('table-report')" placeholder="Buscar por Codigo o Descripción" name="search" type="text" value="" id="search">
                         </div>
                         <div class="col-sm-2">
                         	{!! Form::open(['route'=> ['products.excel_codbars_download'], 'method'=>'POST', 'id'=>"form-excel-codbar"]) !!}
-                            <button type="submit" class="btn btn-success" onclick="excel_codbar()"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> Descargar</button>
+                            <button type="submit" class="btn btn-outline-success" id="btn-excel-codbar">{!! $icons['excel'] !!} Descargar</button>
                             {!! Form::close() !!}
                         </div>
                     </div>

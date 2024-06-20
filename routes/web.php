@@ -39,7 +39,7 @@ Route::get('api/companiesAutocomplete/', ['as' => 'companiesAutocomplete', 'uses
 Route::get('api/shippersAutocomplete/', ['as' => 'shippersAutocomplete', 'uses' => 'ShipperController@ajaxAutocomplete']);
 Route::get('api/products/autocompleteAjax', ['as' => 'productsAutocomplete','uses' => 'ProductController@ajaxAutocomplete']);
 Route::get('get_picking/{qr}', ['as' => 'get_picking', 'uses' => 'OrderController@get_picking']);
-    Route::post('excel_codbars_download', ['as' => 'products.excel_codbars_download', 'uses' => 'ProductController@excel_codbars_download']);
+Route::get('get_oc/{id}', ['as' => 'products.get_oc', 'uses' => 'ProductController@get_oc']);
 
 Route::group(['middleware'=>['auth', 'permissions']], function(){
     Route::resource('pickings','PickingController');
@@ -53,4 +53,5 @@ Route::group(['middleware'=>['auth', 'permissions']], function(){
     Route::get('get_product/{id}', ['as' => 'products.get_product', 'uses' => 'ProductController@get_search']);
     Route::get('picking/print/{id}', ['as' => 'pickings.print', 'uses' => 'PickingController@print']);
     Route::get('excel_codbars', ['as' => 'products.excel_codbars', 'uses' => 'ProductController@excel_codbars']);
+    Route::post('excel_codbars_download', ['as' => 'products.excel_codbars_download', 'uses' => 'ProductController@excel_codbars_download']);
 });

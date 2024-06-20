@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Product;
 use App\Stock;
+use App\Exports\ProductsExport;
 
 class ProductController extends Controller
 {
@@ -123,6 +124,21 @@ class ProductController extends Controller
     public function excel_codbars_download()
     {
         $data = request()->all();
-        return response()->json($data);
+        $models = $data['products'];
+        //dd($models);
+        //return response()->json($data);
+        return \Excel::download(new ProductsExport('products.export_excel_codbar', $models), 'codigo_barras.xlsx');
+
+        /*return \Excel::create('codigo_barras', function($excel) use ($models){
+            $excel->sheet('Hoja1', function($sheet) use($models) {
+                $sheet->loadView('products.partials.table_report_warehouse', compact('models'));
+            });
+        })->export('xlsx');*/
+    }
+    public function get_oc($id)
+    {
+        $id = str_pad($id, 13, "0", STR_PAD_LEFT);
+        $result = \DB::connection('sqlsrv')->select('select OC_CCODIGO, OC_NCANTID from COMOVD where OC_CNUMORD = :id', ['id' => $id]);
+        return response()->json($result);
     }
 }
