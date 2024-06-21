@@ -54,4 +54,5 @@ Route::group(['middleware'=>['auth', 'permissions']], function(){
     Route::get('picking/print/{id}', ['as' => 'pickings.print', 'uses' => 'PickingController@print']);
     Route::get('excel_codbars', ['as' => 'products.excel_codbars', 'uses' => 'ProductController@excel_codbars']);
     Route::post('excel_codbars_download', ['as' => 'products.excel_codbars_download', 'uses' => 'ProductController@excel_codbars_download']);
+    Route::post('codbars_save', ['as' => 'products.codbars_save', 'uses' => 'ProductController@codbars_save']);
 });

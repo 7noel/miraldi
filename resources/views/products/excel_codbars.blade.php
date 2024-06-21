@@ -14,13 +14,20 @@
                             <input class="form-control" placeholder="Orden de compra" name="ocompra" type="text" value="" id="ocompra">
                         </div>
                         <div class="col-sm-2">
-                            <button type="submit" class="btn btn-outline-primary" onclick="get_oc()">{!! $icons['search'] !!} Buscar</button>
+                            <button type="submit" class="btn btn-outline-secondary" onclick="get_oc()">{!! $icons['search'] !!} Buscar</button>
                         </div>
                     </div>
 					<div class="form-group row">
                         <label for="search" class="col-sm-2 col-form-label">Filtro</label>
 						<div class="col-sm-8">
                             <input class="form-control" onkeyup="filtro_tabla('table-report')" placeholder="Buscar por Codigo o Descripción" name="search" type="text" value="" id="search">
+                        </div>
+                    </div>
+					<div class="form-group row">
+                        <div class="col-sm-2">
+                        	{!! Form::open(['route'=> ['products.codbars_save'], 'method'=>'POST', 'id'=>"form-codbar-save"]) !!}
+                            <button type="submit" class="btn btn-outline-primary" id="btn-codbar-save">{!! $icons['db'] !!} Guardar</button>
+                            {!! Form::close() !!}
                         </div>
                         <div class="col-sm-2">
                         	{!! Form::open(['route'=> ['products.excel_codbars_download'], 'method'=>'POST', 'id'=>"form-excel-codbar"]) !!}

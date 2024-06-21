@@ -105,7 +105,8 @@ class ComposerServiceProvider extends ServiceProvider
             'close' => '<i class="fas fa-times"></i>',
             'car' => '<i class="fas fa-car"></i>',
             'refresh' => '<i class="fas fa-sync"></i>',
-            'excel' => '<i class="far fa-file-excel"></i>',
+            'excel' => '<i class="fas fa-file-excel"></i>',
+            'db' => '<i class="fas fa-database"></i>',
         ];
     }
 

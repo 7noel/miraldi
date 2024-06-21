@@ -203,6 +203,9 @@ $(document).ready(function () {
 
     $("#btn-excel-codbar").click(function(e) {
         e.preventDefault()
+        // eliminar los elementos con clase "input-excel"
+        $(".input-excel").remove()
+
         i = 0
         $(".select").each(function() {
             codigo = $(this).children().eq(1).text()
@@ -214,7 +217,32 @@ $(document).ready(function () {
             $("#form-excel-codbar").append(elements)
             i = i + 1
         })
+        // eliminar clase "style", ocultar los "tr" y eliminar las "cantidades" de los input en los tr
+        $("#table-report tr").removeClass("style")
+        $("#table-report tr").css("display","none")
+        $("#table-report tr td input").val('')
+        $("#ocompra").val('')
+        $("#search").val('')
+        // Enviar formulario
         $("#form-excel-codbar").submit()
+    })
+
+    $("#btn-codbar-save").click(function(e) {
+        e.preventDefault()
+        i = 0
+        $(".select").each(function() {
+            codigo = $(this).children().eq(1).text()
+            descripcion = $(this).children().eq(2).text()
+            cantidad = $(this).children().eq(0).find(".text-cantidad-codbar").val()
+            elements = `<input class="input-excel" name="products[${i}][codigo]" type="hidden" value="${codigo}">
+            <input class="input-excel" name="products[${i}][descripcion]" type="hidden" value="${descripcion}">
+            <input class="input-excel" name="products[${i}][cantidad]" type="hidden" value="${cantidad}">`
+            $("#form-codbar-save").append(elements)
+            i = i + 1
+        })
+        $("#form-codbar-save").submit()
+        // alert('Se guardaron los registros')
+        //window.location.reload()
     })
 
     $(".text-cantidad-codbar").change(function () {

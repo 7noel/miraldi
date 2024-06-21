@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Product;
 use App\Stock;
+use App\Barcode;
 use App\Exports\ProductsExport;
 
 class ProductController extends Controller
@@ -134,6 +135,21 @@ class ProductController extends Controller
                 $sheet->loadView('products.partials.table_report_warehouse', compact('models'));
             });
         })->export('xlsx');*/
+    }
+    public function codbars_save()
+    {
+        $data = request()->all();
+        $models = $data['products'];
+        $contador = 0;
+        Barcode::truncate();
+        foreach ($models as $key => $model) {
+            for ($i=0; $i < $model['cantidad']; $i++) { 
+                Barcode::create(['code'=>$model['codigo'], 'description'=>$model['descripcion']]);
+                $contador++;
+            }
+        }
+        return redirect()->route('products.excel_codbars');
+        return response()->json(['code'=>'1', 'message'=>"Se guardaron $contador registros"]);
     }
     public function get_oc($id)
     {
