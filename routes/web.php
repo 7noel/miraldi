@@ -55,4 +55,8 @@ Route::group(['middleware'=>['auth', 'permissions']], function(){
     Route::get('excel_codbars', ['as' => 'products.excel_codbars', 'uses' => 'ProductController@excel_codbars']);
     Route::post('excel_codbars_download', ['as' => 'products.excel_codbars_download', 'uses' => 'ProductController@excel_codbars_download']);
     Route::post('codbars_save', ['as' => 'products.codbars_save', 'uses' => 'ProductController@codbars_save']);
+    Route::get('update_prices', function () {
+        return view('products.update_prices');
+    });
+    Route::post('update_prices2', ['as' => 'products.update_prices2', 'uses' => 'ProductController@update_prices2']);
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Product;
 use App\Stock;
+use App\Price;
 use App\Barcode;
 use App\Exports\ProductsExport;
 
@@ -156,5 +157,44 @@ class ProductController extends Controller
         $id = str_pad($id, 13, "0", STR_PAD_LEFT);
         $result = \DB::connection('sqlsrv')->select('select OC_CCODIGO, OC_NCANTID from COMOVD where OC_CNUMORD = :id', ['id' => $id]);
         return response()->json($result);
+    }
+    public function update_prices2()
+    {
+        $fecha = request()->input('fecha');
+        $prices = \DB::connection('mysql_old')->select('select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Fecha1 < :f1 limit 2', ['f1' => $fecha]);
+        // dd($prices[0]->CodInterno);
+        // $codes = array_map(function($price){
+        //     return $price->CodInterno;
+        // }, $prices);
+        // $models = Price::where('COD_ARTI', $codes)->get();
+
+        foreach ($prices as $key => $price) {
+            $p_l = Price::where('COD_ARTI', $price->CodInterno)->first();
+            if ($p_l) {
+                // Actualizar Precio Lista
+                $p_l->PRE_ANT = $price->PRE_ACT;
+                $p_l->FLAG_IGVANT = $price->FLAG_IGVACT;
+                $p_l->FLAG_IGVACT = 0;
+                $p_l->PRECIO_BASE = $price->ValorCompra;
+                $p_l->POR_GASTOS_ADMINISTRATIVOS = $price->GastosAdmin;
+                $p_l->POR_UTILIDAD = $price->Utilidad;
+                $p_l->PRE_ACT = $price->ValorVenta;
+                $p_l->save();
+
+            } else {
+                $p = Product::where('ACODIGO', $price->CodInterno)->first();
+                if ($p) {
+                    // Crear Precio Lista
+                    $agregar = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$p->ACODIGO, 'PRE_ACT'=>$price->ValorVenta, 'PRE_ANT'=>0, 'DIA_HORA'=>date('Y-m-d H:i:s'), 'USUA_RES'=>'1', 'FLAG_IGVACT'=>0, 'FLAG_IGVANT'=>0, 'UNI_LISPRE'=>$p->AUNIDAD, 'MON_PRE'=>'MN', 'PRECIO_BASE'=>$price->ValorCompra, 'POR_GASTOS_ADMINISTRATIVOS'=>$price->GastosAdmin, 'POR_UTILIDAD'=>$price->Utilidad];
+                    $where = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$p->ACODIGO];
+
+                    $p_l = Price::updateOrCreate($agregar, $where);
+                }
+            }
+            if ($p_l) {
+                // code...
+            }
+        }
+
     }
 }
