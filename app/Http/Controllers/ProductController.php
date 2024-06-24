@@ -160,9 +160,13 @@ class ProductController extends Controller
     }
     public function update_prices2()
     {
+        set_time_limit(240);
         $fecha = request()->input('fecha');
-        $prices = \DB::connection('mysql_old')->select('select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Fecha1 < :f1 limit 2', ['f1' => $fecha]);
-        // dd($prices[0]->CodInterno);
+        // $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Datos3='' and Fecha1 < :f1 limit 2000", ['f1' => $fecha]);
+        $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Datos3=''");
+        $count_updates = 0;
+        $count_creates = 0;
+        // dd($prices);
         // $codes = array_map(function($price){
         //     return $price->CodInterno;
         // }, $prices);
@@ -172,29 +176,34 @@ class ProductController extends Controller
             $p_l = Price::where('COD_ARTI', $price->CodInterno)->first();
             if ($p_l) {
                 // Actualizar Precio Lista
-                $p_l->PRE_ANT = $price->PRE_ACT;
-                $p_l->FLAG_IGVANT = $price->FLAG_IGVACT;
+                $p_l->PRE_ANT = $p_l->PRE_ACT;
+                $p_l->FLAG_IGVANT = $p_l->FLAG_IGVACT;
                 $p_l->FLAG_IGVACT = 0;
                 $p_l->PRECIO_BASE = $price->ValorCompra;
                 $p_l->POR_GASTOS_ADMINISTRATIVOS = $price->GastosAdmin;
                 $p_l->POR_UTILIDAD = $price->Utilidad;
                 $p_l->PRE_ACT = $price->ValorVenta;
                 $p_l->save();
+                $count_updates++;
 
             } else {
                 $p = Product::where('ACODIGO', $price->CodInterno)->first();
                 if ($p) {
                     // Crear Precio Lista
-                    $agregar = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$p->ACODIGO, 'PRE_ACT'=>$price->ValorVenta, 'PRE_ANT'=>0, 'DIA_HORA'=>date('Y-m-d H:i:s'), 'USUA_RES'=>'1', 'FLAG_IGVACT'=>0, 'FLAG_IGVANT'=>0, 'UNI_LISPRE'=>$p->AUNIDAD, 'MON_PRE'=>'MN', 'PRECIO_BASE'=>$price->ValorCompra, 'POR_GASTOS_ADMINISTRATIVOS'=>$price->GastosAdmin, 'POR_UTILIDAD'=>$price->Utilidad];
+                    $agregar = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$p->ACODIGO, 'PRE_ACT'=>$price->ValorVenta, 'PRE_ANT'=>0, 'DIA_HORA'=>date('Y-d-m H:i:s'), 'USUA_RES'=>'1', 'FLAG_IGVACT'=>0, 'FLAG_IGVANT'=>0, 'UNI_LISPRE'=>$p->AUNIDAD, 'MON_PRE'=>'MN', 'PRECIO_BASE'=>$price->ValorCompra, 'POR_GASTOS_ADMINISTRATIVOS'=>$price->GastosAdmin, 'POR_UTILIDAD'=>$price->Utilidad];
                     $where = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$p->ACODIGO];
 
                     $p_l = Price::updateOrCreate($agregar, $where);
+                    $count_creates;
                 }
             }
             if ($p_l) {
-                // code...
+                \DB::connection('mysql_old')->select("update stocks set Datos3='1' where CodInterno = :codigo", ['codigo' => $price->CodInterno]);
+            } else {
+                \DB::connection('mysql_old')->select("update stocks set Datos3='2' where CodInterno = :codigo", ['codigo' => $price->CodInterno]);
             }
         }
+        return "Se actualizaron $count_updates registros y se crearon $count_creates registros";
 
     }
 }
