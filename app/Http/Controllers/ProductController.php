@@ -162,8 +162,9 @@ class ProductController extends Controller
     {
         set_time_limit(240);
         $fecha = request()->input('fecha');
+        $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and and (Fecha1 = :f1 or Fecha2 = :f1)", ['f1' => $fecha]);
         // $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Datos3='' and Fecha1 < :f1 limit 2000", ['f1' => $fecha]);
-        $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Datos3=''");
+        // $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Datos3=''");
         $count_updates = 0;
         $count_creates = 0;
         // dd($prices);

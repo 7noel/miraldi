@@ -201,6 +201,11 @@
     <script>
 $(document).ready(function () {
 
+    $("#form-oc").submit(function (e) {
+        e.preventDefault()
+        get_oc()
+    })
+
     $("#btn-excel-codbar").click(function(e) {
         e.preventDefault()
         // eliminar los elementos con clase "input-excel"
@@ -838,6 +843,7 @@ function get_product() {
 }
 
 function addPrPicking() {
+    quantity = parseInt($("#cantidad").val().trim())
     code = $("#codigo").val().trim()
     if (code == '') {
         $("#codigo").focus()
@@ -854,13 +860,13 @@ function addPrPicking() {
         es_total = parseInt($("#es").val())
         es = parseInt($(this).children().eq(4).text())
         pl = parseInt($(this).children().eq(3).text())
-        // Cuando encuentra el código
-        if (codigo.text() == code || codigo2.text() == code) {
+        // Cuando encuentra el código interno o el de fabrica
+        if ((codigo.text() != '' && codigo.text() == code) || (codigo2.text() == code && codigo.text() != '')) {
             code_exist = true
-            es = 1 + es
+            es = quantity + es
             $(this).children().eq(4).text(es)
             $(this).find(".es").val(es)
-            es_total += 1
+            es_total += quantity
             if (pl == es) {
                 // Cuando se completa un item
                 $(this).addClass("table-success")
@@ -881,9 +887,9 @@ function addPrPicking() {
                     $(this).removeClass("table-warning")
                 } else {
                     // Si se omite la lectura del scaner
-                    $(this).children().eq(4).text(es - 1)
-                    $(this).find(".es").val(es - 1)
-                    es_total -= 1
+                    $(this).children().eq(4).text(es - quantity)
+                    $(this).find(".es").val(es - quantity)
+                    es_total -= quantity
                 }
             } else {
                 // Cuando aún no se completa el item
