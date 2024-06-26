@@ -17,7 +17,7 @@ class Permissions {
 	{
 		$names = [
 			2 => ['orders', 'companies', 'shippers', 'orders.print', 'orders.print_note'], // permisos para vendedor
-			3 => ['pickings', 'products.search', 'products.get_product', 'pickings.print'], // permisos para almacen
+			3 => ['pickings', 'products', 'products.get_product', 'pickings.print'], // permisos para almacen
 		];
     
 		if (\Auth::user()->role_id == 1) { // si es rol administrador ingresa a la ruta
@@ -28,6 +28,7 @@ class Permissions {
 			if (in_array($action, $names[\Auth::user()->role_id])) { // verifica si la ruta a ingresar está dentro de las rutas del rol del usuario
 				return $next($request);
 			} else {
+				// La primera parte del nombre
 				$_action = explode('.', $action);
 				$model = array_shift($_action);
 				if (in_array($model, $names[\Auth::user()->role_id])) {
