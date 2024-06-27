@@ -905,6 +905,7 @@ function addPrPicking() {
         audio = document.getElementById("audio-error")
         audio.play()
         console.log('error')
+        window.navigator.vibrate([400, 100, 400])
         alert("No se encontró el código")
     } else if (play_music) {
         if (order_ready) {
