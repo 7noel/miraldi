@@ -902,10 +902,10 @@ function addPrPicking() {
         if (pl > es) { order_ready = false }
     })
     if (!code_exist) {
+        window.navigator.vibrate([400, 100, 400])
         audio = document.getElementById("audio-error")
         audio.play()
         console.log('error')
-        window.navigator.vibrate([400, 100, 400])
         setTimeout(alert("No se encontró el código"), 1000)
         
     } else if (play_music) {
