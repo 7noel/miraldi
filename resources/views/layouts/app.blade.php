@@ -906,7 +906,8 @@ function addPrPicking() {
         audio.play()
         console.log('error')
         window.navigator.vibrate([400, 100, 400])
-        alert("No se encontró el código")
+        setTimeout(alert("No se encontró el código"), 1000)
+        
     } else if (play_music) {
         if (order_ready) {
             audio = document.getElementById("audio-success_3")
