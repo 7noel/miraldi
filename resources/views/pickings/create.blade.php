@@ -48,7 +48,7 @@
 										<th>Descripción</th>
 										<th>PL</th>
 										<th>ES</th>
-										<th>Ubicación</th>
+										<th>UBI</th>
 										<th class="text-center">PRES</th>
 									</tr>
 								</thead>
