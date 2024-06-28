@@ -628,8 +628,11 @@ function get_oc() {
             codigo = $(this).children().eq(1).text()
             orden = oc_codigos.indexOf(codigo)
             if (orden >-1) {
-                console.log('aqui encontro codigo')
-                $(this).children().eq(0).find(".text-cantidad-codbar").val(parseInt(data[orden].OC_NCANTID))
+                cantidad = parseInt(data[orden].OC_NCANTID)
+                pres = $(this).children().eq(4).text()
+                if (cantidad > 1 && pres >1) {cantidad = cantidad / pres}
+                if (cantidad < 1) {cantidad = 1}
+                $(this).children().eq(0).find(".text-cantidad-codbar").val(cantidad)
                 $(this).addClass("select")
                 this.style.display = "";
             }
