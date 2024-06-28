@@ -2,32 +2,11 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use App\Modules\Security\User;
-use App\Modules\Base\Table;
-use App\Modules\Security\Role;
-use App\Modules\Security\PermissionGroup;
-use App\Modules\Security\Permission;
-use App\Modules\Operations\Brand;
-use App\Modules\Operations\Modelo;
-// use App\Modules\Base\UnitType;
-// use App\Modules\Storage\Unit;
-// use App\Modules\Base\Currency;
-// use App\Modules\Finances\Exchange;
-use App\Modules\Finances\Company;
-// use App\Modules\Storage\Category;
-// use App\Modules\Storage\SubCategory;
-// use App\Modules\Storage\Product;
-// use App\Modules\Storage\Stock;
-// use App\Modules\Storage\ProductAccessory;
-use App\Modules\Storage\Warehouse;
-// use App\Modules\Logistics\Brand;
-// use App\Modules\Base\DocumentType;
-// use App\Modules\Base\DocumentControl;
-// use App\Modules\Finances\PaymentCondition;
-// use App\Modules\Sales\Modelo;
-// use App\Modules\HumanResources\Job;
-// use App\Modules\HumanResources\Employee;
-// use App\Modules\Finances\Bank;
+use App\User;
+//use App\Modules\Base\Table;
+use App\Role;
+use App\PermissionGroup;
+use App\Permission;
 
 use Faker\Factory as Faker;
 
