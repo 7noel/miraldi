@@ -134,7 +134,11 @@ class ProductController extends Controller
     public function codbars_save()
     {
         $data = request()->all();
-        $models = $data['products'];
+        if (isset($data['products'])) {
+            $models = $data['products'];
+        } else {
+            $models = [];
+        }
         $contador = 0;
         Barcode::truncate();
         foreach ($models as $key => $model) {
@@ -144,7 +148,6 @@ class ProductController extends Controller
             }
         }
         return redirect()->route('products.excel_codbars');
-        // return response()->json(['code'=>'1', 'message'=>"Se guardaron $contador registros"]);
     }
 
     public function get_oc($id)
