@@ -10,8 +10,8 @@
 				<div class="card-body">
 					<form action="#" class="qr" id="form-picking-qr">
 						<div class="form-group">
-							<!-- <input class="form-control form-control-sm" id="picking_qr" placeholder="Leer código QR" autofocus> -->
-							<textarea class="form-control" id="picking_qr">0000005|50100010 2.000000|50100050 2.000000</textarea>
+							<input class="form-control form-control-sm" id="picking_qr" placeholder="Leer código QR" autofocus>
+							<!-- <textarea class="form-control" id="picking_qr">0000005|50100010 2.000000|50100050 2.000000</textarea> -->
 						</div>
 						<div class="form-group">
 							<button type="submit" id="btn-pk" class="btn btn-outline-info btn-sm" title="picking">{!! $icons['add'] !!} Agregar Productos</button>
@@ -19,7 +19,11 @@
 					</form>
 					<div class="picking d-none">
 						<form id="form-add-picking">
-							<div class="form-group">
+							<div class="custom-control custom-checkbox">
+								<input type="checkbox" class="custom-control-input" id="check-cantidad-pk">
+								<label class="custom-control-label" for="check-cantidad-pk">Ingresar la cantidad a descontar</label>
+							</div>
+							<div class="form-group pk-div-cantidad d-none">
 								<input class="form-control form-control-sm" type="number" placeholder="CANTIDAD" id="cantidad" value="1">
 							</div>
 							<div class="form-group">
@@ -44,6 +48,8 @@
 										<th>Descripción</th>
 										<th>PL</th>
 										<th>ES</th>
+										<th>Ubicación</th>
+										<th class="text-center">PRES</th>
 									</tr>
 								</thead>
 								<tbody id="table-picking">

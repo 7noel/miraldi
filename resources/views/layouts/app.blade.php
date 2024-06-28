@@ -291,6 +291,17 @@ $(document).ready(function () {
         e.preventDefault()
         addPrPicking()
     })
+    $('#check-cantidad-pk').change(function() {
+        if($(this).is(":checked")) {
+            $('.pk-div-cantidad').removeClass("d-none")
+            $('#cantidad').focus()
+            $('#cantidad').select()
+        } else {
+            $('.pk-div-cantidad').addClass('d-none')
+            $('#cantidad').val('1')
+            $('#codigo').focus()
+        }
+    })
     $("#btn-image-load").click(function (e) {
         $("#image_base64").val(document.querySelector("#canvas").toDataURL('image/jpeg').replace(/^data:image\/jpeg;base64,/, ""))
     })
@@ -844,6 +855,7 @@ function get_product() {
 
 function addPrPicking() {
     quantity = parseInt($("#cantidad").val().trim())
+        
     code = $("#codigo").val().trim()
     if (code == '') {
         $("#codigo").focus()
@@ -862,6 +874,9 @@ function addPrPicking() {
         pl = parseInt($(this).children().eq(3).text())
         // Cuando encuentra el código interno o el de fabrica
         if ((codigo.text() != '' && codigo.text() == code) || (codigo2.text() == code && codigo.text() != '')) {
+            if (!$('#check-cantidad-pk').is(":checked")) {
+                quantity = parseInt($(this).children().eq(6).text())
+            }
             code_exist = true
             es = quantity + es
             $(this).children().eq(4).text(es)
@@ -902,15 +917,14 @@ function addPrPicking() {
         if (pl > es) { order_ready = false }
     })
     if (!code_exist) {
-        window.navigator.vibrate([400, 100, 400])
         audio = document.getElementById("audio-error")
         audio.play()
         console.log('error')
-        setTimeout(alert("No se encontró el código"), 1000)
-        
+        alert("No se encontró el código")
     } else if (play_music) {
         if (order_ready) {
             audio = document.getElementById("audio-success_3")
+            window.navigator.vibrate([200, 100, 200])
             console.log('order')
         } else if (item_ready) {
             audio = document.getElementById("audio-success_2")
@@ -940,16 +954,20 @@ function get_picking() {
     })
     // console.log(prs)
     $.get(`/get_picking/${qr}`, function(data){
-        // console.log(data)
+        console.log(data.products[0].lockers)
         $('#table-picking').empty()
         i = 0
         $.each(data.products, function (index, pr) {
+            peso = ((pr.APESO > 1) ? parseInt(pr.APESO) : 1)
+            ubicacion = pr.lockers.map(function(locker){return locker.TCASILLERO}).join(';')
             tr=`<tr>
                     <td>${pr.ACODIGO}</td>
                     <td>${pr.ACODIGO2}</td>
                     <td>${pr.ADESCRI}</td>
                     <td>${prs[pr.ACODIGO]}</td>
                     <td>0</td>
+                    <td>${ubicacion}</td>
+                    <td class="text-center">${peso}</td>
                     <input type="hidden" class="codigo" name="details[${i}][codigo]" value="${pr.ACODIGO}">
                     <input type="hidden" class="codigo" name="details[${i}][codigo2]" value="${pr.ACODIGO2}">
                     <input type="hidden" class="name" name="details[${i}][name]" value="${pr.ADESCRI}">

@@ -123,20 +123,14 @@ class ProductController extends Controller
         //dd($models);
         return view('products.excel_codbars', compact('models'));
     }
+
     public function excel_codbars_download()
     {
         $data = request()->all();
         $models = $data['products'];
-        //dd($models);
-        //return response()->json($data);
         return \Excel::download(new ProductsExport('products.export_excel_codbar', $models), 'codigo_barras.xlsx');
-
-        /*return \Excel::create('codigo_barras', function($excel) use ($models){
-            $excel->sheet('Hoja1', function($sheet) use($models) {
-                $sheet->loadView('products.partials.table_report_warehouse', compact('models'));
-            });
-        })->export('xlsx');*/
     }
+
     public function codbars_save()
     {
         $data = request()->all();
@@ -150,14 +144,16 @@ class ProductController extends Controller
             }
         }
         return redirect()->route('products.excel_codbars');
-        return response()->json(['code'=>'1', 'message'=>"Se guardaron $contador registros"]);
+        // return response()->json(['code'=>'1', 'message'=>"Se guardaron $contador registros"]);
     }
+
     public function get_oc($id)
     {
         $id = str_pad($id, 13, "0", STR_PAD_LEFT);
         $result = \DB::connection('sqlsrv')->select('select OC_CCODIGO, OC_NCANTID from COMOVD where OC_CNUMORD = :id', ['id' => $id]);
         return response()->json($result);
     }
+
     public function update_prices2()
     {
         set_time_limit(240);
@@ -205,6 +201,5 @@ class ProductController extends Controller
             }
         }
         return "Se actualizaron $count_updates registros y se crearon $count_creates registros";
-
     }
 }

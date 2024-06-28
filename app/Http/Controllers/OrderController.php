@@ -220,7 +220,7 @@ class OrderController extends Controller
         foreach ($vals as $key => $val) {
             $p_ids[] = explode(' ', $val)[0];
         }
-        $data['products'] = Product::whereIn('ACODIGO', $p_ids)->get();
+        $data['products'] = Product::with('lockers')->whereIn('ACODIGO', $p_ids)->get();
         return response()->json($data);
     }
     public function prepareData($data)

@@ -137,18 +137,18 @@ class PickingController extends Controller
         return view('orders.picking');
     }
 
-    public function get_picking($qr)
-    {
-        $vals = explode('|', $qr);
-        $order_id = array_shift($vals);
-        $data['order'] = Order::findOrFail($order_id);
-        $p_ids=[];
-        foreach ($vals as $key => $val) {
-            $p_ids[] = explode(' ', $val)[0];
-        }
-        $data['products'] = Product::whereIn('ACODIGO', $p_ids)->get();
-        return response()->json($data);
-    }
+    // public function get_picking($qr)
+    // {
+    //     $vals = explode('|', $qr);
+    //     $order_id = array_shift($vals);
+    //     $data['order'] = Order::findOrFail($order_id);
+    //     $p_ids=[];
+    //     foreach ($vals as $key => $val) {
+    //         $p_ids[] = explode(' ', $val)[0];
+    //     }
+    //     $data['products'] = Product::with('lockers')->whereIn('ACODIGO', $p_ids)->get();
+    //     return response()->json($data);
+    // }
     public function prepareData($data)
     {
         $last_ot = Order::orderBy('CFNUMPED','desc')->first();
