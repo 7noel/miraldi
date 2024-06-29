@@ -27,6 +27,8 @@ class AdminTableSeeder extends Seeder {
         User::create(['name' => 'RANDI PAUL TUCTO POLONIO', 'email' => 'vend67@miraldi.com.pe', 'password' => '44140029', 'role_id' => 2, 'user_code' => 'VEND67', 'seller_code' => 67]);
         User::create(['name' => 'DAVID ESPINOZA CASAS', 'email' => 'vend88@miraldi.com.pe', 'password' => '40218951', 'role_id' => 2, 'user_code' => 'VEND88', 'seller_code' => 88]);
         User::create(['name' => 'JOSUE VEGA BERNAL', 'email' => 'vend91@miraldi.com.pe', 'password' => '46955199', 'role_id' => 2, 'user_code' => 'VEND91', 'seller_code' => 91]);
+        User::create(['name' => 'KARITO', 'email' => 'karitobecerra@miraldi.com.pe', 'password' => 'contraseña', 'role_id' => 2, 'user_code' => 'VEND30', 'seller_code' => 30]);
+        User::create(['name' => 'ALMACEN', 'email' => 'almacen@miraldi.com.pe', 'password' => 'contraseña', 'role_id' => 3, 'user_code' => '1', 'seller_code' => 30]);
 
 /*
         PermissionGroup::create(['name' => 'SISTEMAS']);
