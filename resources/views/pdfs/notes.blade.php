@@ -42,7 +42,9 @@
 		</div>
 		<div>
 			<strong class="label">Vendedor:</strong><span class="data-header-1">{{ $model->seller->DES_VEN }}</span>
+			@if(isset($model->shipper->TRANOMBRE))
 			<strong class="label-2">Agencia:</strong><span class="data-header">{{$model->shipper->TRANOMBRE}}</span>
+			@endif
 		</div>
 		<div>
 			<strong class="label">Observaciones:</strong><span class="data-header">{{ $model->CFGLOSA }}</span>
