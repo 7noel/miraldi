@@ -35,10 +35,10 @@
 				<strong class="label_2">Usuario:</strong><span class="data-header">Usuariox {{ date('d/m/Y h:i a') }}</span>
 			</div>
 			<div>
-				<strong class="label_2">Señor(a):</strong><span class="data-header">{{ $model->CFNOMBRE }}</span>
+				<strong class="label_2">Señor(a):</strong><span class="data-header" style="width: 68%">{{ $model->CFNOMBRE }}</span>
 			</div>
 			<div>
-				<strong class="label_2">Dirección:</strong><span class="data-header">{{ $model->company->CDIRCLI . '-' . $model->company->CPROV . '-' . $model->company->CDEPT }}</span>
+				<strong class="label_2">Dirección:</strong><span class="data-header" style="width: 68%">{{ $model->company->CDIRCLI . '-' . $model->company->CPROV . '-' . $model->company->CDEPT }}</span>
 			</div>
 			<div>
 				<strong class="label_2">Condiciones:</strong><span class="data-header">{{ $model->condition->DES_FP }}</span>
@@ -52,7 +52,7 @@
 			</div>
 			@endif
 			<div>
-				<strong class="label_2">Observaciones</strong><span class="data-header">{{ $model->CFGLOSA }}</span>
+				<strong class="label_2">Observaciones</strong><span class="data-header" style="width: 68%">{{ $model->CFGLOSA }}</span>
 			</div>
 		</div>
 		<div style="width:20%; display: inline-block;">
