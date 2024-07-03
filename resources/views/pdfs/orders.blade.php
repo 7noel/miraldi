@@ -46,9 +46,11 @@
 			<div>
 				<strong class="label_2">Vendedor:</strong><span class="data-header">{{ $model->seller->DES_VEN }}</span>
 			</div>
+			@if(isset($model->shipper->TRANOMBRE))
 			<div>
 				<strong class="label_2">Agencia:</strong><span class="data-header">{{$model->shipper->TRANOMBRE}}</span>
 			</div>
+			@endif
 			<div>
 				<strong class="label_2">Observaciones</strong><span class="data-header">{{ $model->CFGLOSA }}</span>
 			</div>
