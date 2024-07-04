@@ -41,6 +41,11 @@ Route::get('api/products/autocompleteAjax', ['as' => 'productsAutocomplete','use
 Route::get('get_picking/{qr}', ['as' => 'get_picking', 'uses' => 'OrderController@get_picking']);
 Route::get('get_oc/{id}', ['as' => 'products.get_oc', 'uses' => 'ProductController@get_oc']);
 
+Route::group(['middleware'=>['auth']], function(){
+    Route::get('change_password', ['as' => 'change_password', 'uses' => 'UserController@changePassword']);
+    Route::post('update_password', ['as'=>'update_password', 'uses'=>'UserController@updatePassword']);
+});
+
 Route::group(['middleware'=>['auth', 'permissions']], function(){
     Route::resource('pickings','PickingController');
     Route::resource('orders','OrderController');
