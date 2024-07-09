@@ -201,6 +201,13 @@
     </div>
     <script>
 $(document).ready(function () {
+    $('.click-form').click(function (e) {
+        e.preventDefault()
+        if (confirm("¿Seguro que desea guardar los cambios?")) {
+            console.log('adentro del formulario picking')
+            $("#form-picking-create").submit()
+        }
+    })
 
     $("#form-oc").submit(function (e) {
         e.preventDefault()

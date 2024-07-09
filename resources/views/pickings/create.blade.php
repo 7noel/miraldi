@@ -56,7 +56,7 @@
 								<tbody id="table-picking">
 								</tbody>
 							</table>
-							<button type="submit" class="btn btn-sm btn-outline-info">{!! $icons['save'] !!} Guardar</button>
+							<button type="submit" class="btn btn-sm btn-outline-info click-form">{!! $icons['save'] !!} Guardar</button>
 						{!! Form::close() !!}
 						
 					</div>

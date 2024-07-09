@@ -44,6 +44,7 @@ class PickingController extends Controller
     public function store(Request $request)
     {
         $data = request()->all();
+        $data['CFNUMPED'] = str_pad($data['CFNUMPED'], 7, "0", STR_PAD_LEFT);
         $data['details'] = json_encode($data['details']);
         $data['user_id'] = \Auth::user()->id;
         // dd($data);
@@ -149,19 +150,20 @@ class PickingController extends Controller
     //     $data['products'] = Product::with('lockers')->whereIn('ACODIGO', $p_ids)->get();
     //     return response()->json($data);
     // }
-    public function prepareData($data)
-    {
-        $last_ot = Order::orderBy('CFNUMPED','desc')->first();
-        $data['CFNUMPED'] = str_pad((intval($last_ot->CFNUMPED) + 1), 7, "0", STR_PAD_LEFT);
-        $data['CFPUNVEN'] = '01';
-        $data['CFESTADO'] = 'V';
-        $data['CFCOTIZA'] = 'EMITIDO';
-        $data['TIPO'] = 'PD';
-        $data['CFFECDOC'] = date('Y-d-m H:i:s');
-        $data['CFFECVEN'] = date('Y-d-m H:i:s');
-        $data['CFCODMON'] = 'MN';
-        $data['CFUSER'] = \Auth::user()->user_code;
+    // 
+    // public function prepareData($data)
+    // {
+    //     $last_ot = Order::orderBy('CFNUMPED','desc')->first();
+    //     $data['CFNUMPED'] = str_pad((intval($last_ot->CFNUMPED) + 1), 7, "0", STR_PAD_LEFT);
+    //     $data['CFPUNVEN'] = '01';
+    //     $data['CFESTADO'] = 'V';
+    //     $data['CFCOTIZA'] = 'EMITIDO';
+    //     $data['TIPO'] = 'PD';
+    //     $data['CFFECDOC'] = date('Y-d-m H:i:s');
+    //     $data['CFFECVEN'] = date('Y-d-m H:i:s');
+    //     $data['CFCODMON'] = 'MN';
+    //     $data['CFUSER'] = \Auth::user()->user_code;
 
-        return $data;
-    }
+    //     return $data;
+    // }
 }
