@@ -879,7 +879,7 @@ function addPrPicking() {
         // Cuando encuentra el código interno o el de fabrica
         if ((codigo.text() != '' && codigo.text() == code) || (codigo2.text() == code && codigo.text() != '')) {
             if (!$('#check-cantidad-pk').is(":checked")) {
-                quantity = parseInt($(this).children().eq(6).text())
+                quantity = parseInt($(this).children().eq(5).text())
             }
             code_exist = true
             es = quantity + es
@@ -968,10 +968,11 @@ function get_picking() {
                     <td>${pr.ACODIGO}</td>
                     <td>${pr.ACODIGO2}</td>
                     <td>${pr.ADESCRI}</td>
-                    <td>${prs[pr.ACODIGO]}</td>
-                    <td>0</td>
-                    <td>${ubicacion}</td>
+                    <td class="text-center">${prs[pr.ACODIGO]}</td>
+                    <td class="text-center">0</td>
                     <td class="text-center">${peso}</td>
+                    <td class="text-center">${ (typeof pr.stock.STSKDIS === 'undefined') ? 0 : parseInt(0+pr.stock.STSKDIS) }</td>
+                    <td class="text-center">${ubicacion}</td>
                     <input type="hidden" class="codigo" name="details[${i}][codigo]" value="${pr.ACODIGO}">
                     <input type="hidden" class="codigo" name="details[${i}][codigo2]" value="${pr.ACODIGO2}">
                     <input type="hidden" class="name" name="details[${i}][name]" value="${pr.ADESCRI}">

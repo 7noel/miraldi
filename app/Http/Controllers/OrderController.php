@@ -215,12 +215,12 @@ class OrderController extends Controller
     {
         $vals = explode('|', $qr);
         $order_id = array_shift($vals);
-        $data['order'] = Order::findOrFail($order_id);
+        $data['order'] = Order::findOrFail(str_pad($order_id, 7, "0", STR_PAD_LEFT));
         $p_ids=[];
         foreach ($vals as $key => $val) {
             $p_ids[] = explode(' ', $val)[0];
         }
-        $data['products'] = Product::with('lockers')->whereIn('ACODIGO', $p_ids)->get();
+        $data['products'] = Product::with('lockers','stock')->whereIn('ACODIGO', $p_ids)->get();
         return response()->json($data);
     }
     public function prepareData($data)

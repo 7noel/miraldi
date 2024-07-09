@@ -56,10 +56,10 @@
 			</div>
 		</div>
 		<div style="width:20%; display: inline-block;">
-			@php $_code=$model->CFNUMPED.'|' @endphp
+			@php $_code=round($model->CFNUMPED).'|' @endphp
 			@foreach($model->details as $key => $detail)
 				@php
-					$_code = $_code."$detail->DFCODIGO $detail->DFCANTID|";
+					$_code = $_code.$detail->DFCODIGO." ".round($detail->DFCANTID)."|";
 				@endphp
 			@endforeach
 			@php $_code = substr($_code, 0, -1) @endphp

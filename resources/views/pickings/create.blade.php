@@ -46,10 +46,11 @@
 										<th>Código</th>
 										<th>Cod Fabr</th>
 										<th>Descripción</th>
-										<th>PL</th>
-										<th>ES</th>
-										<th>UBI</th>
+										<th class="text-center">PL</th>
+										<th class="text-center">ES</th>
 										<th class="text-center">PRES</th>
+										<th class="text-center">STK</th>
+										<th class="text-center">UBI</th>
 									</tr>
 								</thead>
 								<tbody id="table-picking">
