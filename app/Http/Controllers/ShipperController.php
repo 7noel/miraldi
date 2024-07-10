@@ -118,14 +118,14 @@ class ShipperController extends Controller
     public function ajaxAutocomplete()
     {
         $term = request()->get('term');
-        $models =  Shipper::where('TRANOMBRE','like',"%$term%")->orWhere('TRACODIGO','like',"%$term%")->get();
+        $models =  Shipper::where('TRARAZEMP','like',"%$term%")->orWhere('TRACODIGO','like',"%$term%")->get();
         // dd($models);
 
         $result = $models->map(function ($model){
             return [
                 'value' => $model->TRANOMBRE,
                 'id' => $model,
-                'label' => config('options.client_doc.'.$model->TRATIPO_DOCUMENTO).' '.$model->TRACODIGO.' '.$model->TRANOMBRE,
+                'label' => config('options.client_doc.'.$model->TRATIPO_DOCUMENTO).' '.$model->TRACODIGO.' '.$model->TRARAZEMP,
             ];
         });
         return response()->json($result);
