@@ -452,7 +452,7 @@ $(document).ready(function () {
                 $('#txtCodigo').text($p.ACODIGO)
                 $('#txtProduct').val($p.ADESCRI)
                 $('#unitId').val($p.AUNIDAD)
-                $('#txtValue').val($p.price.PRE_ACT) // PRE_ACT es precio sin IGV
+                $('#txtValue').val(parseFloat($p.price.PRE_ACT)) // PRE_ACT es precio sin IGV
                 $('#txtPrecio').val((($p.price.PRE_ACT*118)/100).toFixed(6))
                 $('#txtDscto2').val(window.descuento2)
                 $('#txtCantidad').val(1)
@@ -764,7 +764,8 @@ function addRowProduct2() {
         return false;
     }
     d1 = window.descuento1
-    d2 = $('#txtDscto2').val()
+    d2 = parseFloat($('#txtDscto2').val())
+    console.log(d2)
     t = $('#txtTotal').val()
     if (typeof window.el === 'undefined') { // Si no existe la variable window.el (producto a editar) se agrega una fila
         items = $('#items').val()
@@ -1074,10 +1075,23 @@ function calcTotalItem (myElement) {
     p = parseFloat((v*118/100).toFixed(6))
     d1 = parseFloat(window.descuento1)
     d2 = parseFloat($('#txtDscto2').val())
+    if (isNaN(q)) {
+        q = 1
+        $('#txtCantidad').val(q)
+    }
+    if (isNaN(v)) {
+        v = 0
+        v = $('#txtValue').val(v)
+    }
+    if (isNaN(d2)) {
+        d2 = 0
+        d2 = $('#txtDscto2').val(d2)
+    }
     vt = 100*Math.round(q*v*(100-d1)*(100-d2))/1000000 // total por item
     t = 100*Math.round(q*p*(100-d1)*(100-d2))/1000000
     $('#txtTotal').val( vt.toFixed(2) )
     $('#txtPriceItem').val( t.toFixed(2) )
+    $('#spanValueItem').text( vt.toFixed(2) )
     $('#spanPriceItem').text( t.toFixed(2) )
 }
 

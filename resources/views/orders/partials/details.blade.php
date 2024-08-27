@@ -76,7 +76,8 @@
 				</div>
 				<div class="form-group col-3 text-center">
 					<label>Total</label>
-					<span id="spanPriceItem" class="form-control-sm form-control-plaintext"></span>
+					<span id="spanPriceItem" class="d-none form-control-sm form-control-plaintext"></span>
+					<span id="spanValueItem" class="form-control-sm form-control-plaintext"></span>
 					<input type="hidden" id="txtTotal">
 					<input type="hidden" id="txtPriceItem">
 				</div>
