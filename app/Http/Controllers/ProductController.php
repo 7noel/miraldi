@@ -143,7 +143,7 @@ class ProductController extends Controller
         Barcode::truncate();
         foreach ($models as $key => $model) {
             for ($i=0; $i < $model['cantidad']; $i++) { 
-                Barcode::create(['code'=>$model['codigo'], 'description'=>$model['descripcion']]);
+                Barcode::create(['code'=>$model['codigo'], 'description'=>str_replace('"', '\'', $model['descripcion'])]);
                 $contador++;
             }
         }
