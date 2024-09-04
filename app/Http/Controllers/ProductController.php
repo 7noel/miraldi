@@ -18,7 +18,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        //
+        $models = Product::all();
+        return view('products.index',compact('models'));
     }
 
     /**
@@ -61,7 +62,8 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $model = Product::with('stock', 'price')->where('ACODIGO', $id)->first();
+        return view('partials.edit', compact('model'));
     }
 
     /**
@@ -73,7 +75,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $data = request()->all();
+        $model = Product::where('ACODIGO', $id)->first();
+        $model->ACODIGO2 = $data['ACODIGO2'];
+        $model->save();
+        return redirect()->route('products.index');
     }
 
     /**

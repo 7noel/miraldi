@@ -114,6 +114,16 @@ class ComposerServiceProvider extends ServiceProvider
     {
         // $pre = $this->controller;
         $arr = [
+            'products' => [
+                'index'=>'Empresas',
+                'index.create'=>'Crear Producto',
+                'create'=>'Registrar Producto',
+                'create.create'=>'Registrar Producto',
+                'show'=>'Vizualizando Producto:',
+                'edit'=>'Editar Producto: ',
+                'edit.update'=>'Actualizar Producto',
+                'edit.delete'=>'Eliminar Producto',
+            ],
             'companies' => [
                 'index'=>'Empresas',
                 'index.create'=>'Crear Empresa',

@@ -51,7 +51,7 @@ class MenuController extends Controller
             ],
             'Almacén'=>[
                 ['name' => 'Picking', 'route' => 'pickings.index'],
-                ['name' => 'Productos', 'route' => 'products.search'],
+                ['name' => 'Productos', 'route' => 'products.index'],
                 ['name' => 'Código de barras', 'route' => 'products.excel_codbars'],
             ],
             'Ventas'=>[

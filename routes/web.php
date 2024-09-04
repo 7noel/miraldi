@@ -47,6 +47,7 @@ Route::group(['middleware'=>['auth']], function(){
 });
 
 Route::group(['middleware'=>['auth', 'permissions']], function(){
+    Route::resource('products','ProductController');
     Route::resource('pickings','PickingController');
     Route::resource('orders','OrderController');
     Route::resource('companies','CompanyController');
