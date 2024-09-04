@@ -247,10 +247,13 @@ $(document).ready(function () {
             codigo = $(this).children().eq(1).text()
             descripcion = $(this).children().eq(2).text()
             cantidad = $(this).children().eq(0).find(".text-cantidad-codbar").val()
-            elements = `<input class="input-excel" name="products[${i}][codigo]" type="hidden" value="${codigo}">
-            <input class="input-excel" name="products[${i}][descripcion]" type="hidden" value="${descripcion}">
-            <input class="input-excel" name="products[${i}][cantidad]" type="hidden" value="${cantidad}">`
+            elements = `<input class="input-excel" id="codigo_${i}" name="products[${i}][codigo]" type="hidden" value="${codigo}">
+            <input class="input-excel" id="descripcion_${i}" name="products[${i}][descripcion]" type="hidden" value="">
+            <input class="input-excel" id="cantidad_${i}" name="products[${i}][cantidad]" type="hidden" value="${cantidad}">`
             $("#form-codbar-save").append(elements)
+
+            $(`#codigo_${i}`).val(codigo)
+            $(`#descripcion_${i}`).val(descripcion)
             i = i + 1
         })
         $("#form-codbar-save").submit()
