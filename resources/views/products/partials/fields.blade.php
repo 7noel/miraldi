@@ -12,7 +12,7 @@
 		<span class="form-control form-control-sm form-control-plaintext" id="name">{{ $model->ADESCRI }}</span>
 	</div>
 </div>
-<div class="form-row">
+{{-- <div class="form-row">
 	<div class="col-sm-2 form-group">
 		<label for="codigox">Moneda</label>
 		<span class="form-control form-control-sm form-control-plaintext">{{ $model->price->MON_PRE }}</span>
@@ -33,7 +33,7 @@
 		<label for="codigox">Precio (sin igv)</label>
 		<span class="form-control form-control-sm form-control-plaintext">{{ $model->price->PRE_ACT }}</span>
 	</div>
-</div>
+</div> --}}
 <div class="form-row">
 	<div class="col-sm-2">
 		{!! Field::text('ACODIGO2', ['label' => 'Código Fabricante', 'class'=>'form-control-sm text-uppercase']) !!}
