@@ -776,7 +776,7 @@ function addRowProduct2() {
         tr = `<tr>
             <input class="unitId" name="details[${items}][DFUNIDAD]" type="hidden" value="${u}">
             <td><span class='spanCodigo'>${codigo}</span><input class="productId" name="details[${items}][DFCODIGO]" type="hidden" value="${codigo}"></td>
-            <td><span class='spanProduct'>${desc}</span><input class="txtProduct" name="details[${items}][DFDESCRI]" type="hidden" value="${desc}"></td>
+            <td><span class='spanProduct'>${desc}</span><input class="txtProduct" name="details[${items}][DFDESCRI]" type="hidden" value=""></td>
             <td class="text-center"><span class='spanCantidad text-right'>${q} ${u}</span><input class="txtCantidad" name="details[${items}][DFCANTID]" type="hidden" value="${q}"></td>
             <td class="withTax text-right"><span class='spanPrecio'>${v*1.18}</span><input class="txtPrecio" name="details[${items}][price]" type="text" value="${v*1.18}"></td>
             <td class="withoutTax text-right"><span class='spanValue'>${v}</span><input class="txtValue" name="details[${items}][DFPREC_ORI]" type="hidden" value="${v}"></td>
@@ -790,9 +790,10 @@ function addRowProduct2() {
         </tr>`
         //console.log(tr)
 
+        $("#tableItems").append(tr)
+        $(`input[name="details[${items}][DFDESCRI]"]`).val(desc)
         items = parseInt(items) + 1
         $('#items').val(items)
-        $("#tableItems").append(tr)
 
         if ($('#with_tax').val() == 1){
             $('.withTax').show()

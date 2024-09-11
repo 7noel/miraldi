@@ -20,7 +20,7 @@ class OrderController extends Controller
     public function index()
     {
         $filter = (object) request()->all();
-        if( !((array) $filter) ) {
+        if( !isset($filter->sn) ) {
             $filter->sn = '';
             $filter->seller_id = '';
             $filter->company_id = '';

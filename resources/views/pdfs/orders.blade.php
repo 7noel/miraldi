@@ -79,7 +79,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				@foreach($model->details as $key => $detail)
+				@foreach($model->details->sortBy('DFCODIGO') as $key => $detail)
 					<tr>
 						<td class="border center">{{ $key + 1 }}</td>
 						<td class="border center"></td>

@@ -65,7 +65,7 @@
 			</thead>
 			<tbody>
 				@php $_code=$model->CFNUMPED.'|' @endphp
-				@foreach($model->details as $key => $detail)
+				@foreach($model->details->sortBy('DFCODIGO') as $key => $detail)
 					@php
 						$_code = $_code."$detail->DFCODIGO $detail->DFCANTID|";
 					@endphp
