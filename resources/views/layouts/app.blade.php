@@ -738,7 +738,7 @@ function clearModalProduct() {
     $('#alert-stock').removeClass("badge-danger")
     $('#alert-stock').text("")
     items = $('#items').val()
-    max = 7
+    max = 50
     $('#alert-items').text(`Items registrados: ${items}`)
     if (items < max) {
         $('#alert-items').removeClass("badge-danger")
