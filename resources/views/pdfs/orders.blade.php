@@ -91,12 +91,20 @@
 			</tbody>
 		</table>
 		<br>
+		<br>
+		<br>
+		<br>
 		<table class="table-total">
 			<tbody>
 				<tr>
-					<td class="left">SUB TOTAL {{ config('options.table_sunat.moneda_symbol.'.$model->CFCODMON)." ".number_format(($model->CFIMPORTE - $model->CFIGV), 2, '.', '') }}</td>
-					<td class="left">IGV (18%) {{ config('options.table_sunat.moneda_symbol.'.$model->CFCODMON)." ".number_format($model->CFIGV, 2, '.', '') }}</td>
-					<td class="left">TOTAL {{ config('options.table_sunat.moneda_symbol.'.$model->CFCODMON)." ".number_format($model->CFIMPORTE, 2, '.', '') }}</td>
+					<td class="center">________________________</td>
+					<td class="center">________________________</td>
+					<td class="center">________________________</td>
+				</tr>
+				<tr>
+					<td class="center">EMBALADO POR:</td>
+					<td class="center">VERIFICADO POR:</td>
+					<td class="center">V° B° ALMACEN:</td>
 				</tr>
 			</tbody>
 		</table>
