@@ -59,6 +59,8 @@
 					<label for="txtProducto">Producto</label>
 					<small id="txtCodigo"></small>
 					<input type="text" class="form-control form-control-sm" id="txtProducto">
+					<span class="badge badge-light" id="alert-items"></span>
+					<span class="badge badge-info" id="alert-stock"></span>
 					<input type="hidden" id="txtProduct">
 					<input type="hidden" id="unitId">
 				</div>

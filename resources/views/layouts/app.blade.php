@@ -459,6 +459,18 @@ $(document).ready(function () {
                 $('#txtPrecio').val((($p.price.PRE_ACT*118)/100).toFixed(6))
                 $('#txtDscto2').val(window.descuento2)
                 $('#txtCantidad').val(1)
+                stk = 0
+                if ($p.stock.hasOwnProperty('STSKDIS') && $p.stock.STSKDIS != null) {
+                    stk = ($p.stock.STSKDIS*1).toFixed(0)
+                }
+                $('#alert-stock').text(`Stock: ${stk} ${$p.AUNIDAD}`)
+                if (stk > 0) {
+                    $('#alert-stock').addClass(`badge-info`)
+                    $('#alert-stock').removeClass(`badge-danger`)
+                } else {
+                    $('#alert-stock').removeClass(`badge-info`)
+                    $('#alert-stock').addClass(`badge-danger`)
+                }
                 setTimeout(function() { // El retardo es necesario para los moviles
                     $('#txtCantidad').focus()
                     $('#txtCantidad').select()
@@ -721,9 +733,37 @@ function clearModalProduct() {
     $('#txtDscto2').val(window.descuento2)
     $('#txtTotal').val("0.00")
     $('#label-cantidad').text('')
+
+    $('#alert-stock').addClass("badge-info")
+    $('#alert-stock').removeClass("badge-danger")
+    $('#alert-stock').text("")
+    items = $('#items').val()
+    max = 7
+    $('#alert-items').text(`Items registrados: ${items}`)
+    if (items < max) {
+        $('#alert-items').removeClass("badge-danger")
+        $('#alert-items').addClass("badge-light")
+        $('#btn-add-product').prop("disabled", false);
+    } else {
+        $('#alert-items').addClass("badge-danger")
+        $('#alert-items').removeClass("badge-light")
+        $('#btn-add-product').prop("disabled", true);
+    }
 }
 
 function editModalProduct() {
+    items = $('#items').val()
+    max = 50
+    $('#alert-items').text(`Items registrados: ${items}`)
+    $('#btn-add-product').prop("disabled", false);
+    if (items < max) {
+        $('#alert-items').removeClass("badge-danger")
+        $('#alert-items').addClass("badge-light")
+    } else {
+        $('#alert-items').addClass("badge-danger")
+        $('#alert-items').removeClass("badge-light")
+    }
+
     $('#txtProducto').removeClass("form-control")
     $('#txtProducto').addClass("form-control-plaintext")
     $('#txtProducto').attr('readonly', true)
@@ -780,10 +820,10 @@ function addRowProduct2() {
             <td class="text-center"><span class='spanCantidad text-right'>${q} ${u}</span><input class="txtCantidad" name="details[${items}][DFCANTID]" type="hidden" value="${q}"></td>
             <td class="withTax text-right"><span class='spanPrecio'>${v*1.18}</span><input class="txtPrecio" name="details[${items}][price]" type="text" value="${v*1.18}"></td>
             <td class="withoutTax text-right"><span class='spanValue'>${v}</span><input class="txtValue" name="details[${items}][DFPREC_ORI]" type="hidden" value="${v}"></td>
-            <td class="text-right"><span class='spanDscto2'>${d2}</span><input class="txtDscto2" name="details[${items}][DFPORDES]" type="hidden" value="${d2}"></td>
+            <td class="text-center"><span class='spanDscto2'>${d2}</span><input class="txtDscto2" name="details[${items}][DFPORDES]" type="hidden" value="${d2}"></td>
             <td class="withTax text-right"> <span class='txtTotal'>${t}</span> </td>
             <td class="withoutTax text-right"> <span class='txtPriceItem'>${t*1.18}</span> </td>
-            <td class="text-center form-inline" style="white-space: nowrap;">
+            <td class="text-center" style="white-space: nowrap;">
                 <a href="#" class="btn btn-outline-primary btn-sm btn-edit-item" title="Editar">{!! $icons['edit'] !!}</a>
                 <a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar"><i class="far fa-trash-alt"></i></a>
             </td>
