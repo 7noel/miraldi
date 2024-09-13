@@ -65,12 +65,13 @@
 			</thead>
 			<tbody>
 				@php $_code=$model->CFNUMPED.'|' @endphp
+				@php $i = 0 @endphp
 				@foreach($model->details->sortBy('DFCODIGO') as $key => $detail)
 					@php
 						$_code = $_code."$detail->DFCODIGO $detail->DFCANTID|";
 					@endphp
 					<tr>
-						<td class="border center">{{ $key + 1 }}</td>
+						<td class="border center">{{ ++$i }}</td>
 						<td class="border">{{ $detail->DFCODIGO }} {{ $detail->DFDESCRI }}</td>
 						<td class="border center">{{ number_format($detail->DFCANTID, 2, '.', '').' '.$detail->DFUNIDAD }}</td>
 						<td class="border center">{{ number_format($detail->DFPREC_ORI, 2, '.', '') }}</td>
