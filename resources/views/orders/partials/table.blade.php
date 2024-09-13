@@ -36,7 +36,8 @@
 			<td class="text-center" style="white-space: nowrap;">
 				<a href="{{ route( 'orders.print_note' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-info btn-sm" title="Imprimir Nota">{!! $icons['pdf'] !!}</a>
 				<button type="button" onclick="printJS('{{ route( 'orders.print' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido">{!! $icons['printer'] !!}</button>
-				@if($model->CFCOTIZA=='EMITIDO')
+				<!-- Permite editar pedido en estado emitido a todos y en estado autorizado solo al administrador y al facturador -->
+				@if($model->CFCOTIZA=='EMITIDO' or ($model->CFCOTIZA=='AUTORIZADO' and in_array(\Auth::user()->role_id, [1, 4])))
 				<a href="{{ route( 'orders.edit' , $model) }}" class="btn btn-outline-primary btn-sm" title="Editar">{!! $icons['edit'] !!}</a>
 				{{--<a href="#" class="btn-anular btn btn-outline-danger btn-sm" title="Eliminar">{!! $icons['remove'] !!}</a>--}}
 				@else

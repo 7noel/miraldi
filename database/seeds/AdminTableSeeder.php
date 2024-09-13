@@ -18,6 +18,7 @@ class AdminTableSeeder extends Seeder {
         Role::create(['name' => 'ADMINISTRADOR']);
         Role::create(['name' => 'VENDEDOR']);
         Role::create(['name' => 'ALMACEN']);
+        Role::create(['name' => 'FACTURADOR']);
 
         User::create(['name' => 'Noel', 'email' => 'noel.logan@gmail.com', 'password' => '44243484', 'role_id' => 1, 'user_code' => 'VEND30', 'seller_code' => 30]);
         User::create(['name' => 'EDGAR HUGO MIRANDA ALARCON', 'email' => 'hugomiranda@miraldi.com.pe', 'password' => '20658438', 'role_id' => 2, 'user_code' => 'VEND10', 'seller_code' => 10]);
