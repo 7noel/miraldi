@@ -922,7 +922,9 @@ function addPrPicking() {
     order_ready = true
     play_music = true
     // Recorre los tr
+    var contador = 0
     $("#table-picking tr").each(function(){
+        contador = contador +1
         let codigo = $(this).children().eq(0)
         let codigo2 = $(this).children().eq(1) // codigo de fabricante
         es_total = parseInt($("#es").val())
@@ -930,6 +932,7 @@ function addPrPicking() {
         pl = parseInt($(this).children().eq(3).text())
         // Cuando encuentra el código interno o el de fabrica
         if ((codigo.text() != '' && codigo.text() == code) || (codigo2.text() == code && codigo.text() != '')) {
+            $row = $(this)
             if (!$('#check-cantidad-pk').is(":checked")) {
                 quantity = parseInt($(this).children().eq(5).text())
             }
@@ -972,6 +975,10 @@ function addPrPicking() {
         }
         if (pl > es) { order_ready = false }
     })
+    console.log(`pl: ${pl}, es: ${es}, code_exist:${code_exist}, item_ready: ${item_ready}, order_ready: ${order_ready}`)
+    if (code_exist) {
+        $row.insertBefore($('#table-picking tr:first'))
+    }
     if (!code_exist) {
         audio = document.getElementById("audio-error")
         audio.play()
@@ -981,15 +988,14 @@ function addPrPicking() {
         if (order_ready) {
             audio = document.getElementById("audio-success_3")
             window.navigator.vibrate([200, 100, 200])
-            console.log('order')
+            audio.play()
         } else if (item_ready) {
             audio = document.getElementById("audio-success_2")
-            console.log('item')
+            audio.play()
         } else if (code_exist) {
-            audio = document.getElementById("audio-success")
-            console.log('codigo')
+            // audio = document.getElementById("audio-success")
+            // audio.play()
         }
-        audio.play()
     }
     $("#codigo").val("")
     $("#codigo").focus()

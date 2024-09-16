@@ -10,8 +10,8 @@
 				<div class="card-body">
 					<form action="#" class="qr" id="form-picking-qr">
 						<div class="form-group">
-							<input class="form-control form-control-sm" inputmode="none" id="picking_qr" placeholder="Leer código QR" autofocus>
-							<!-- <textarea class="form-control" id="picking_qr">0000005|50100010 2.000000|50100050 2.000000</textarea> -->
+							<!-- <input class="form-control form-control-sm" inputmode="none" id="picking_qr" placeholder="Leer código QR" autofocus> -->
+							<textarea class="form-control" id="picking_qr">0000005|50100010 2.000000|50100050 2.000000</textarea>
 						</div>
 						<div class="form-group">
 							<button type="submit" id="btn-pk" class="btn btn-outline-info btn-sm" title="picking">{!! $icons['add'] !!} Agregar Productos</button>
@@ -40,22 +40,24 @@
 							<input type="hidden" id="items" name="items" value="0">
 							<input type="hidden" id="pl" name="pl" value="0">
 							<input type="hidden" id="es" name="es" value="0">
-							<table class="{{ config('options.styles.table') }}">
-								<thead class="{{ config('options.styles.thead') }}">
-									<tr>
-										<th>Código</th>
-										<th>Cod Fabr</th>
-										<th>Descripción</th>
-										<th class="text-center">PL</th>
-										<th class="text-center">ES</th>
-										<th class="text-center">PRES</th>
-										<th class="text-center">STK</th>
-										<th class="text-center">UBI</th>
-									</tr>
-								</thead>
-								<tbody id="table-picking">
-								</tbody>
-							</table>
+							<div class="table-responsive">
+								<table class="{{ config('options.styles.table') }}">
+									<thead class="{{ config('options.styles.thead') }}">
+										<tr>
+											<th>Código</th>
+											<th>Cod Fabr</th>
+											<th>Descripción</th>
+											<th class="text-center">PL</th>
+											<th class="text-center">ES</th>
+											<th class="text-center">PRES</th>
+											<th class="text-center">STK</th>
+											<th class="text-center">UBI</th>
+										</tr>
+									</thead>
+									<tbody id="table-picking">
+									</tbody>
+								</table>
+							</div>
 							<button type="submit" class="btn btn-sm btn-outline-info click-form">{!! $icons['save'] !!} Guardar</button>
 						{!! Form::close() !!}
 						
