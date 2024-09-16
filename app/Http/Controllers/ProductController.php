@@ -91,10 +91,10 @@ class ProductController extends Controller
                 $p_l->PRE_ANT = $p_l->PRE_ACT;
                 $p_l->FLAG_IGVANT = $p_l->FLAG_IGVACT;
                 $p_l->FLAG_IGVACT = 0;
-                $p_l->PRECIO_BASE = $price->ValorCompra;
-                $p_l->POR_GASTOS_ADMINISTRATIVOS = $price->GastosAdmin;
-                $p_l->POR_UTILIDAD = $price->Utilidad;
-                $p_l->PRE_ACT = $price->ValorVenta;
+                $p_l->PRECIO_BASE = $base;
+                $p_l->POR_GASTOS_ADMINISTRATIVOS = $admin;
+                $p_l->POR_UTILIDAD = $utilidad;
+                $p_l->PRE_ACT = $precio;
                 $p_l->save();
             }
         } else {
