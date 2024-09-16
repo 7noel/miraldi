@@ -201,6 +201,13 @@
     </div>
     <script>
 $(document).ready(function () {
+    $('#precio_base, #gastos_admin, #utilidad').change(function () {
+        base = parseFloat($('#precio_base').val())
+        admin = parseFloat($('#gastos_admin').val())
+        utilidad = parseFloat($('#utilidad').val())
+        precio = Math.round(base * (100 + admin) * (100 + utilidad)/ 100) / 100
+        $('#precio').text(precio)
+    })
     $('.click-form').click(function (e) {
         e.preventDefault()
         if (confirm("¿Seguro que desea guardar los cambios?")) {

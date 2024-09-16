@@ -13,4 +13,6 @@ class Locker extends Model
     protected $primaryKey = 'TCODART';
     protected $keyType = 'string';
     public $timestamps = false;
+    
+    protected $fillable = ['TCODALM','TCODART','TCASILLERO'];
 }

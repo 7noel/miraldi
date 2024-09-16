@@ -7,6 +7,7 @@ use App\Product;
 use App\Stock;
 use App\Price;
 use App\Barcode;
+use App\Locker;
 use App\Exports\ProductsExport;
 
 class ProductController extends Controller
@@ -51,7 +52,8 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $model = Product::findOrFail($id);
+        return view('partials.show', compact('model'));
     }
 
     /**
@@ -77,9 +79,40 @@ class ProductController extends Controller
     {
         $data = request()->all();
         $model = Product::where('ACODIGO', $id)->first();
-        $model->ACODIGO2 = $data['ACODIGO2'];
+        $model->ACODIGO2 = $data['ACODIGO2']; // actualiza el codigo del fabricante
+        $p_l = Price::where('COD_ARTI', $model->ACODIGO)->where('COD_LISPRE', '0001')->first();
+        $base = $data['PRECIO_BASE'];
+        $admin = $data['POR_GASTOS_ADMINISTRATIVOS'];
+        $utilidad = $data['POR_UTILIDAD'];
+        $precio = round($base * (100 + $admin) * (100 + $utilidad) / 10000, 2);
+        if ($p_l) {
+            // Actualizar Precio Lista
+            if ($precio != $p_l->PRE_ACT) {
+                $p_l->PRE_ANT = $p_l->PRE_ACT;
+                $p_l->FLAG_IGVANT = $p_l->FLAG_IGVACT;
+                $p_l->FLAG_IGVACT = 0;
+                $p_l->PRECIO_BASE = $price->ValorCompra;
+                $p_l->POR_GASTOS_ADMINISTRATIVOS = $price->GastosAdmin;
+                $p_l->POR_UTILIDAD = $price->Utilidad;
+                $p_l->PRE_ACT = $price->ValorVenta;
+                $p_l->save();
+            }
+        } else {
+            if ($model) {
+                // Crear Precio Lista
+                $agregar = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$model->ACODIGO, 'PRE_ACT'=>$precio, 'PRE_ANT'=>0, 'DIA_HORA'=>date('Y-d-m H:i:s'), 'USUA_RES'=>'1', 'FLAG_IGVACT'=>0, 'FLAG_IGVANT'=>0, 'UNI_LISPRE'=>$model->AUNIDAD, 'MON_PRE'=>'MN', 'PRECIO_BASE'=>$base, 'POR_GASTOS_ADMINISTRATIVOS'=>$admin, 'POR_UTILIDAD'=>$utilidad];
+                $where = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$model->ACODIGO];
+                $p_l = Price::updateOrCreate($agregar, $where);
+            }
+        }
+
+        if (isset($data['TCASILLERO'])) {
+            $ubi = Locker::updateOrCreate(['TCODALM'=>'01', 'TCODART'=>$model->ACODIGO, 'TCASILLERO'=>$data['TCASILLERO']], ['TCODALM'=>'01', 'TCODART'=>$model->ACODIGO]);
+        }
+
         $model->save();
         return redirect()->route('products.index');
+
     }
 
     /**
