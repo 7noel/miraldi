@@ -21,16 +21,16 @@
 		<span class="form-control form-control-sm form-control-plaintext">{{ $mnd }}</span>
 	</div>
 	<div class="col-sm-2 form-group">
-		<label for="codigox">Costo</label>
+		<label for="precio_base">Costo</label>
 		<input class="form-control form-control-sm" id="precio_base" step="0.01" name="PRECIO_BASE" type="number" value="{{ (isset($model->price)) ? round($model->price->PRECIO_BASE,2) : '0' }}">
 	</div>
 	<div class="col-sm-2 form-group">
-		<label for="codigox">Gastos Admin</label>
+		<label for="gastos_admin">Gastos Admin</label>
 		<input class="form-control form-control-sm" id="gastos_admin" name="POR_GASTOS_ADMINISTRATIVOS" type="number" value="{{ (isset($model->price)) ? round($model->price->POR_GASTOS_ADMINISTRATIVOS,2) : '30' }}">
 		{{-- <span class="form-control form-control-sm form-control-plaintext" id="gastos_admin">{{ round($model->price->POR_GASTOS_ADMINISTRATIVOS) }}</span> --}}
 	</div>
 	<div class="col-sm-2 form-group">
-		<label for="codigox">Utilidad</label>
+		<label for="utilidad">Utilidad</label>
 		<input class="form-control form-control-sm" id="utilidad" name="POR_UTILIDAD" type="number" value="{{ (isset($model->price)) ? round($model->price->POR_UTILIDAD, 2) : '18' }}">
 	</div>
 	<div class="col-sm-2 form-group">
@@ -49,7 +49,8 @@
 		<span class="form-control form-control-sm form-control-plaintext" id="codigox">{{ (isset($model->stock)) ? round($model->stock->STSKDIS, 2) : 0 }}</span>
 	</div>
 	<div class="col-sm-9">
-		{!! Field::text('TCASILLERO', ['label' => 'Ubicación 01', 'class'=>'form-control-sm text-uppercase']) !!}
+		<label for="ubicacion">Ubicación 01</label>
+		<input class="form-control form-control-sm text-uppercase" id="ubicacion" name="TCASILLERO" type="text" size="12" value="{{ (isset($model->lockers[0])) ? $model->lockers[0]->TCASILLERO : '' }}">
 	</div>
 	@else
 	<div class="col-sm-10">

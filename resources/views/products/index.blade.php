@@ -8,21 +8,9 @@
 				<h5 class="{{ config('options.styles.card_header') }}">Productos</h5>
 				<div class="card-body">
 					<div class="form-group row">
-                        <label for="search" class="col-sm-2 col-form-label">Filtro</label>
-						<div class="col-sm-8">
+                        <label for="search" class="col-sm-1 col-form-label">Filtro</label>
+						<div class="col-sm-11">
                             <input class="form-control form-control-sm" onkeyup="filtro_tabla('table-report')" placeholder="Buscar por Codigo o Descripción" name="search" type="text" value="" id="search">
-                        </div>
-                    </div>
-					<div class="form-group row">
-                        <div class="col-sm-2">
-                        	{!! Form::open(['route'=> ['products.codbars_save'], 'method'=>'POST', 'id'=>"form-codbar-save"]) !!}
-                            <button type="submit" class="btn btn-sm btn-outline-primary" id="btn-codbar-save">{!! $icons['db'] !!} Guardar</button>
-                            {!! Form::close() !!}
-                        </div>
-                        <div class="col-sm-2">
-                        	{!! Form::open(['route'=> ['products.excel_codbars_download'], 'method'=>'POST', 'id'=>"form-excel-codbar"]) !!}
-                            <button type="submit" class="btn btn-sm btn-outline-success" id="btn-excel-codbar">{!! $icons['excel'] !!} Descargar</button>
-                            {!! Form::close() !!}
                         </div>
                     </div>
 

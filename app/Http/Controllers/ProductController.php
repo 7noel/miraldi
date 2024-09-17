@@ -78,6 +78,7 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $data = request()->all();
+        // dd($data);
         $model = Product::where('ACODIGO', $id)->first();
         $model->ACODIGO2 = $data['ACODIGO2']; // actualiza el codigo del fabricante
         $p_l = Price::where('COD_ARTI', $model->ACODIGO)->where('COD_LISPRE', '0001')->first();
@@ -107,11 +108,26 @@ class ProductController extends Controller
         }
 
         if (isset($data['TCASILLERO'])) {
-            $ubi = Locker::updateOrCreate(['TCODALM'=>'01', 'TCODART'=>$model->ACODIGO, 'TCASILLERO'=>$data['TCASILLERO']], ['TCODALM'=>'01', 'TCODART'=>$model->ACODIGO]);
+            $ubi = Locker::where('TCODALM', '01')->where('TCODART', $model->ACODIGO)->first();
+            $where = ['TCODALM'=>'01', 'TCODART'=>$model->ACODIGO];
+            $agregar = ['TCODALM'=>'01', 'TCODART'=>$model->ACODIGO, 'TCASILLERO'=>trim($data['TCASILLERO'])];
+            if (is_null($ubi)) { // No existe ubicacion
+                if (trim($data['TCASILLERO']) != '') {
+                    dd("No existe ubicacion");
+                    $ubi = Locker::updateOrCreate($agregar, $where);
+                }
+            } else { // Si existe ubicacion
+                if (trim($data['TCASILLERO']) != $ubi->TCASILLERO) {
+                    // dd("Si existe ubicacion");
+                    $ubi = Locker::where('TCODALM', '01')->where('TCODART', $model->ACODIGO)->update(['TCASILLERO'=> trim($data['TCASILLERO'])]);
+                }
+            }
+            
         }
 
         $model->save();
-        return redirect()->route('products.index');
+        return redirect()->route('products.show', ['product' => $id]);
+        // return redirect()->route('products.index');
 
     }
 
@@ -201,7 +217,7 @@ class ProductController extends Controller
     {
         set_time_limit(240);
         $fecha = request()->input('fecha');
-        $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and (Fecha1 >= ? or Fecha2 >= ?)", [$fecha, $fecha]);
+        $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and (Fecha1 >= ? and Fecha2 >= ?)", [$fecha, $fecha]);
         // $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Datos3='' and Fecha1 < :f1 limit 2000", ['f1' => $fecha]);
         // $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Datos3=''");
         $count_updates = 0;
