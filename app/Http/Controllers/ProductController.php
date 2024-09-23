@@ -82,28 +82,31 @@ class ProductController extends Controller
         $model = Product::where('ACODIGO', $id)->first();
         $model->ACODIGO2 = $data['ACODIGO2']; // actualiza el codigo del fabricante
         $p_l = Price::where('COD_ARTI', $model->ACODIGO)->where('COD_LISPRE', '0001')->first();
-        $base = $data['PRECIO_BASE'];
-        $admin = $data['POR_GASTOS_ADMINISTRATIVOS'];
-        $utilidad = $data['POR_UTILIDAD'];
-        $precio = round($base * (100 + $admin) * (100 + $utilidad) / 10000, 2);
-        if ($p_l) {
-            // Actualizar Precio Lista
-            if ($precio != $p_l->PRE_ACT) {
-                $p_l->PRE_ANT = $p_l->PRE_ACT;
-                $p_l->FLAG_IGVANT = $p_l->FLAG_IGVACT;
-                $p_l->FLAG_IGVACT = 0;
-                $p_l->PRECIO_BASE = $base;
-                $p_l->POR_GASTOS_ADMINISTRATIVOS = $admin;
-                $p_l->POR_UTILIDAD = $utilidad;
-                $p_l->PRE_ACT = $precio;
-                $p_l->save();
-            }
-        } else {
-            if ($model) {
-                // Crear Precio Lista
-                $agregar = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$model->ACODIGO, 'PRE_ACT'=>$precio, 'PRE_ANT'=>0, 'DIA_HORA'=>date('Y-d-m H:i:s'), 'USUA_RES'=>'1', 'FLAG_IGVACT'=>0, 'FLAG_IGVANT'=>0, 'UNI_LISPRE'=>$model->AUNIDAD, 'MON_PRE'=>'MN', 'PRECIO_BASE'=>$base, 'POR_GASTOS_ADMINISTRATIVOS'=>$admin, 'POR_UTILIDAD'=>$utilidad];
-                $where = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$model->ACODIGO];
-                $p_l = Price::updateOrCreate($where, $agregar);
+        // Solo actualiza precio si tiene precio base
+        if (isset($data['PRECIO_BASE'])) {
+            $base = $data['PRECIO_BASE'];
+            $admin = $data['POR_GASTOS_ADMINISTRATIVOS'];
+            $utilidad = $data['POR_UTILIDAD'];
+            $precio = round($base * (100 + $admin) * (100 + $utilidad) / 10000, 2);
+            if ($p_l) {
+                // Actualizar Precio Lista
+                if ($precio != $p_l->PRE_ACT) {
+                    $p_l->PRE_ANT = $p_l->PRE_ACT;
+                    $p_l->FLAG_IGVANT = $p_l->FLAG_IGVACT;
+                    $p_l->FLAG_IGVACT = 0;
+                    $p_l->PRECIO_BASE = $base;
+                    $p_l->POR_GASTOS_ADMINISTRATIVOS = $admin;
+                    $p_l->POR_UTILIDAD = $utilidad;
+                    $p_l->PRE_ACT = $precio;
+                    $p_l->save();
+                }
+            } else {
+                if ($model) {
+                    // Crear Precio Lista
+                    $agregar = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$model->ACODIGO, 'PRE_ACT'=>$precio, 'PRE_ANT'=>0, 'DIA_HORA'=>date('Y-d-m H:i:s'), 'USUA_RES'=>'1', 'FLAG_IGVACT'=>0, 'FLAG_IGVANT'=>0, 'UNI_LISPRE'=>$model->AUNIDAD, 'MON_PRE'=>'MN', 'PRECIO_BASE'=>$base, 'POR_GASTOS_ADMINISTRATIVOS'=>$admin, 'POR_UTILIDAD'=>$utilidad];
+                    $where = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$model->ACODIGO];
+                    $p_l = Price::updateOrCreate($where, $agregar);
+                }
             }
         }
 
