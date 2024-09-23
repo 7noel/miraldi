@@ -103,7 +103,7 @@ class ProductController extends Controller
                 // Crear Precio Lista
                 $agregar = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$model->ACODIGO, 'PRE_ACT'=>$precio, 'PRE_ANT'=>0, 'DIA_HORA'=>date('Y-d-m H:i:s'), 'USUA_RES'=>'1', 'FLAG_IGVACT'=>0, 'FLAG_IGVANT'=>0, 'UNI_LISPRE'=>$model->AUNIDAD, 'MON_PRE'=>'MN', 'PRECIO_BASE'=>$base, 'POR_GASTOS_ADMINISTRATIVOS'=>$admin, 'POR_UTILIDAD'=>$utilidad];
                 $where = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$model->ACODIGO];
-                $p_l = Price::updateOrCreate($agregar, $where);
+                $p_l = Price::updateOrCreate($where, $agregar);
             }
         }
 
@@ -114,12 +114,13 @@ class ProductController extends Controller
             if (is_null($ubi)) { // No existe ubicacion
                 if (trim($data['TCASILLERO']) != '') {
                     dd("No existe ubicacion");
-                    $ubi = Locker::updateOrCreate($agregar, $where);
+                    $ubi = Locker::updateOrCreate($where, $agregar);
                 }
             } else { // Si existe ubicacion
                 if (trim($data['TCASILLERO']) != $ubi->TCASILLERO) {
                     // dd("Si existe ubicacion");
-                    $ubi = Locker::where('TCODALM', '01')->where('TCODART', $model->ACODIGO)->update(['TCASILLERO'=> trim($data['TCASILLERO'])]);
+                    $ubi = Locker::updateOrCreate($where, $agregar);
+                    // $ubi = Locker::where('TCODALM', '01')->where('TCODART', $model->ACODIGO)->update(['TCASILLERO'=> trim($data['TCASILLERO'])]);
                 }
             }
             
@@ -249,7 +250,7 @@ class ProductController extends Controller
                     $agregar = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$p->ACODIGO, 'PRE_ACT'=>$price->ValorVenta, 'PRE_ANT'=>0, 'DIA_HORA'=>date('Y-d-m H:i:s'), 'USUA_RES'=>'1', 'FLAG_IGVACT'=>0, 'FLAG_IGVANT'=>0, 'UNI_LISPRE'=>$p->AUNIDAD, 'MON_PRE'=>'MN', 'PRECIO_BASE'=>$price->ValorCompra, 'POR_GASTOS_ADMINISTRATIVOS'=>$price->GastosAdmin, 'POR_UTILIDAD'=>$price->Utilidad];
                     $where = ['COD_LISPRE'=>'0001', 'COD_ARTI'=>$p->ACODIGO];
 
-                    $p_l = Price::updateOrCreate($agregar, $where);
+                    $p_l = Price::updateOrCreate($where, $agregar);
                     $count_creates;
                 }
             }

@@ -55,6 +55,7 @@ Route::group(['middleware'=>['auth', 'permissions']], function(){
     Route::resource('users','UserController');
     Route::get('orders/print/{id}', ['as' => 'orders.print', 'uses' => 'OrderController@print']);
     Route::get('orders/print_note/{id}', ['as' => 'orders.print_note', 'uses' => 'OrderController@print_note']);
+    Route::get('orders/print_original/{id}', ['as' => 'orders.print_original', 'uses' => 'OrderController@print_original']);
     Route::get('products_search', ['as' => 'products.search', 'uses' => 'ProductController@search']);
     Route::get('get_product/{id}', ['as' => 'products.get_product', 'uses' => 'ProductController@get_search']);
     Route::get('picking/print/{id}', ['as' => 'pickings.print', 'uses' => 'PickingController@print']);

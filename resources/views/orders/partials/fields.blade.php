@@ -3,6 +3,13 @@
 {!! Form::hidden('COD_TRANSPORTISTA', null, ['id'=>'shipper_id']) !!}
 {!! Form::hidden('CFRUC', null, ['id'=>'doc']) !!}
 {!! Form::hidden('CFDIRECC', null, ['id'=>'address']) !!}
+{!! Form::hidden('CFCOTIZA', null, ['id'=>'CFCOTIZA']) !!}
+@if(isset($bloquea_original))
+	{!! Form::hidden('bloquea_original', $bloquea_original, ['id'=>'bloquea_original']) !!}
+@endif
+@if(isset($graba_original))
+	{!! Form::hidden('graba_original', $graba_original, ['id'=>'graba_original']) !!}
+@endif
 @if(isset($cambio))
 	{!! Form::hidden('CFTIPCAM', $cambio->VENTA) !!}
 @else
@@ -40,7 +47,13 @@
 		{!! Field::select('CFCODMON', config('options.table_sunat.moneda'), (isset($model) ? null : 'MN'), ['label'=>'Moneda', 'class'=>'form-control-sm', 'required']) !!}
 	</div>
 	<div class="col-6 col-md-1 col-sm-3">
-		{!! Field::number('CFPORDESCL', ['label' => 'Descuento', 'class'=>'form-control-sm text-uppercase']) !!}
+		{!! Field::number('CFPORDESCL', ['label' => 'Descuento 1', 'class'=>'form-control-sm text-uppercase']) !!}
+	</div>
+	<div class="col-6 col-md-1 col-sm-3">
+		<div id="field_discount_2" class="form-group">
+			<label for="discount_2">Descuento 2</label>
+			<input class="form-control form-control-sm text-uppercase" id="discount_2" name="discount_2" type="number" value="{{ (isset($model->original)) ? $model->original->discount_2 : '0' }}">
+		</div>
 	</div>
 	<div class="col-md-4 col-sm-6">
 		{!! Field::text('CFGLOSA', ['label' => 'Comentarios', 'class'=>'form-control-sm text-uppercase']) !!}

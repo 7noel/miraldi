@@ -39,4 +39,9 @@ class Order extends Model
     {
         return $this->hasOne(Condition::class, 'COD_FP', 'CFFORVEN');
     }
+
+    public function original()
+    {
+        return $this->hasOne(Original::class, 'CFNUMPED', 'CFNUMPED');
+    }
 }

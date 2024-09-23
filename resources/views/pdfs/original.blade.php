@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>PEDIDO: {{ $model->CFNUMPED }}</title>
+	<title>PEDIDO ORIGINAL: {{ $model->CFNUMPED }}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
 		<div>
 			<div class="center">
 				<h2 class="center">
-					PEDIDO: {{ $model->CFNUMPED }} <span style="margin-left: 50px; font-size: 14px;">IMPORTACIONES MIRALDI S.A.C.</span>
+					PEDIDO ORIGINAL: {{ $model->CFNUMPED }} <span style="margin-left: 50px; font-size: 14px;">IMPORTACIONES MIRALDI S.A.C.</span>
 				</h2>
 			</div>
 		</div>
@@ -29,7 +29,7 @@
 	<div>
 		<div>
 			<strong class="label">{{ config('options.client_doc.'.$model->company->CTIPO_DOCUMENTO) }}:</strong><span class="data-header-1">{{ $model->company->CCODCLI }}</span>
-			<strong class="label-2">Usuario:</strong><span class="data-header">{{ $model->CFUSER }} {{ date('d/m/Y h:i a') }}</span>
+			<strong class="label-2">Usuario:</strong><span class="data-header">{{ $model->original->content->CFUSER }} {{ $model->original->updated_at->format('d/m/Y h:i a') }}</span>
 		</div>
 		<div>
 			<strong class="label">Señor(a):</strong><span class="data-header">{{ $model->CFNOMBRE }}</span>
@@ -66,7 +66,7 @@
 			<tbody>
 				@php $_code=$model->CFNUMPED.'|' @endphp
 				@php $i = 0 @endphp
-				@foreach($model->details->sortBy('DFCODIGO') as $key => $detail)
+				@foreach(collect($model->original->content->details)->sortBy('DFCODIGO') as $key => $detail)
 					@php
 						$_code = $_code."$detail->DFCODIGO $detail->DFCANTID|";
 					@endphp
@@ -75,8 +75,8 @@
 						<td class="border">{{ $detail->DFCODIGO }} {{ $detail->DFDESCRI }}</td>
 						<td class="border center">{{ number_format($detail->DFCANTID, 2, '.', '').' '.$detail->DFUNIDAD }}</td>
 						<td class="border center">{{ number_format($detail->DFPREC_ORI, 2, '.', '') }}</td>
-						<td class="border center">{{ intval($model->CFPORDESCL) }}% {{ intval($detail->DFPORDES) }}%</td>
-						@if($model->CFCODMON)
+						<td class="border center">{{ intval($model->original->content->CFPORDESCL) }}% {{ intval($detail->DFPORDES) }}%</td>
+						@if($model->original->content->CFCODMON)
 						<td class="border center">{{ number_format($detail->DFIMPMN, 2, '.', '') }}</td>
 						@else
 						<td class="border center">{{ number_format($detail->DFIMPUS, 2, '.', '') }}</td>
@@ -90,9 +90,9 @@
 		<table class="table-total">
 			<tbody>
 				<tr>
-					<td class="left">SUB TOTAL {{ config('options.table_sunat.moneda_symbol.'.$model->CFCODMON)." ".number_format(($model->CFIMPORTE - $model->CFIGV), 2, '.', '') }}</td>
-					<td class="left">IGV (18%) {{ config('options.table_sunat.moneda_symbol.'.$model->CFCODMON)." ".number_format($model->CFIGV, 2, '.', '') }}</td>
-					<td class="left">TOTAL {{ config('options.table_sunat.moneda_symbol.'.$model->CFCODMON)." ".number_format($model->CFIMPORTE, 2, '.', '') }}</td>
+					<td class="left">SUB TOTAL {{ config('options.table_sunat.moneda_symbol.'.$model->original->content->CFCODMON)." ".number_format(($model->original->content->CFIMPORTE - $model->original->content->CFIGV), 2, '.', '') }}</td>
+					<td class="left">IGV (18%) {{ config('options.table_sunat.moneda_symbol.'.$model->original->content->CFCODMON)." ".number_format($model->original->content->CFIGV, 2, '.', '') }}</td>
+					<td class="left">TOTAL {{ config('options.table_sunat.moneda_symbol.'.$model->original->content->CFCODMON)." ".number_format($model->original->content->CFIMPORTE, 2, '.', '') }}</td>
 				</tr>
 			</tbody>
 		</table>

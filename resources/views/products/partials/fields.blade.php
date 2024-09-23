@@ -50,7 +50,7 @@
 	</div>
 	<div class="col-sm-9">
 		<label for="ubicacion">Ubicación 01</label>
-		<input class="form-control form-control-sm text-uppercase" id="ubicacion" name="TCASILLERO" type="text" size="12" value="{{ (isset($model->lockers[0])) ? $model->lockers[0]->TCASILLERO : '' }}">
+		<input class="form-control form-control-sm text-uppercase" id="ubicacion" name="TCASILLERO" type="text" maxlength="12" value="{{ (isset($model->lockers[0])) ? $model->lockers[0]->TCASILLERO : '' }}">
 	</div>
 	@else
 	<div class="col-sm-10">

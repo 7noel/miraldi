@@ -9,6 +9,33 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <style>
+        #spinner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .form-container {
+            position: relative;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+        }
+        .spinner-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1001;
+        }
         .paint-canvas {
           border: 1px black solid;
           display: block;
@@ -123,14 +150,14 @@
     <div id="app">
         <nav class="{{ config('options.styles.navbar') }}">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand link" href="{{ url('/') }}">
                     <!-- <img src="/img/logo_makim_doc.jpg" alt="" height="50px"> -->
                     {{ config('app.name', 'Laravel') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                    @inject('menu','App\Http\Controllers\MenuController')
+                @inject('menu','App\Http\Controllers\MenuController')
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
 
                     <!-- Left Side Of Navbar -->
@@ -146,15 +173,14 @@
                                 <div class="dropdown-divider"></div>
                                 @endif
                                 @if(isset($link['route']))
-                                <a class="dropdown-item" href="{{ route($link['route']) }}">{{ $link['name'] }}</a>
+                                <a class="dropdown-item link" href="{{ route($link['route']) }}">{{ $link['name'] }}</a>
                                 @else
-                                <a class="dropdown-item" href="{{ $link['url'] }}">{{ $link['name'] }}</a>
+                                <a class="dropdown-item link" href="{{ $link['url'] }}">{{ $link['name'] }}</a>
                                 @endif
                             @endforeach
                             </div>
                         </li>
                     @endforeach
-
                 @endif
 
                     </ul>
@@ -163,22 +189,22 @@
                         <!-- Authentication Links -->
                         @guest
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                <a class="nav-link link" href="{{ route('login') }}">{{ __('Login') }}</a>
                             </li>
                             @if (Route::has('companies.register') and 1==0)
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('companies.register') }}">{{ __('Register') }}</a>
+                                    <a class="nav-link link" href="{{ route('companies.register') }}">{{ __('Register') }}</a>
                                 </li>
                             @endif
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('change_password') }}">Cambiar Contraseña</a>
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    <a class="dropdown-item link" href="{{ route('change_password') }}">Cambiar Contraseña</a>
+                                    <a class="dropdown-item link" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
@@ -196,11 +222,25 @@
         </nav>
 
         <main class="py-4">
+            <div class="overlay" id="overlay"></div>
+            <div id="spinner" class="text-center spinner-container">
+                <i class="fas fa-spinner fa-spin fa-3x"></i>
+                <p>Cargando...</p>
+            </div>
             @yield('content')
         </main>
     </div>
     <script>
 $(document).ready(function () {
+    $(".link").on('click', function (e) {
+        $('#overlay').show()
+        $('#spinner').show()
+    })
+    $("form").submit(function( event ) {
+        $('button[type=submit]').attr("disabled", true)
+        $('#overlay').show()
+        $('#spinner').show()
+    })
     $('#precio_base, #gastos_admin, #utilidad').change(function () {
         base = parseFloat($('#precio_base').val())
         admin = parseFloat($('#gastos_admin').val())
@@ -277,10 +317,15 @@ $(document).ready(function () {
         }
     })
 
-    n = $('#tableItems tr:last').find('.txtDscto2').val()
+    n = $('#discount_2').val()
     n = Math.round(parseFloat(n)*1000000)/1000000
     if (isNaN(n)) {n = 0}
+    $('#discount_2').val(n)
     window.descuento2 = n
+    $("#discount_2").change(function () {
+        n = $("#discount_2").val()
+        window.descuento2 = $("#discount_2").val()
+    })
     //n = $(myElement).parent().parent().find(id).val()
     n = $("#CFPORDESCL").val()
     n = Math.round(parseFloat(n)*1000000)/1000000
@@ -575,77 +620,13 @@ $(document).ready(function () {
         $(this).val(cadena)
     })
 
-    // $('#btnAddBranch').click(function(e){
-    //     addRowBranch()
-    // });
-
-    // $(document).on('focus','.txtUbigeo', function (e) {
-    //     $var = {}
-    //     $var.this = this;
-    //     if ( !$($var.this).data("autocomplete") ) {
-    //         e.preventDefault()
-    //         $($var.this).autocomplete({
-    //             source: "/api/ubigeos/autocompleteAjax",
-    //             minLength: 2,
-    //             select: function(event, ui){
-    //                 console.log(ui)
-    //                 var cod=ui.item.id
-    //                 $($var.this).parent().parent().find('.ubigeoId').val(cod)
-    //             }
-    //         });
-    //     }
-    // });
-    // $('#vin').change(function (e) {
-    //     vin = $('#vin').val().trim().toUpperCase()
-    //     $('#vin').val(vin) //3HGRM3830CG603778
-    //     $('#codigo').val(vin.substring(3, 7))
-    //     arr_years = {A:2010, B:2011, C:2012, D:2013, E:2014, F:2015, G:2016, H:2017, J:2018, K:2019, L:2020, M:2021, N:2022, P:2023, R:2024, S:2025, T:2026, V:2027, W:2028, X:2029, Y:2030, 1:2031, 2:2032, 3:2033, 4:2034, 5:2035, 6:2036, 7:2037, 8:2038, 9:2039}
-    //     year = arr_years[vin.substring(9, 10)]
-    //     $('#year').val(year)
-    // })
-    // $('#add_contact').change(function (e) {
-    //     if ($('#add_contact').is(':checked')) {
-    //         $('.contact').removeClass("d-none")
-    //         $('#contact_name').attr("required", "required")
-    //     } else {
-    //         $('.contact').addClass( "d-none")
-    //         $('#contact_name').removeAttr("required", "required")
-    //     }
-    // })
-    // if ($('#add_contact').is(':checked')) {
-    //     $('.contact').removeClass("d-none");
-    //     $('#contact_name').attr("required", "required");
-    // }
-
-    // $('#placa').change(function (e) {
-    //     getCar()
-    // })
-    // $('#txtplaca').change(function (e) {
-    //     checkCar()
-    // })
-    // $('#type_service').change(function (e) {
-    //     if ('PREVENTIVO' == $('#type_service').val()) {
-    //         $('#preventivo').parent().parent().removeClass("d-none")
-    //         $('#preventivo').attr("required", "required")
-    //     } else {
-    //         $('#preventivo').parent().parent().addClass( "d-none")
-    //         $('#preventivo').removeAttr("required", "required")
-    //     }
-    // })
-
-    // $(".send_cpe").submit(function(e) {
-    //     e.preventDefault()
-    //     var form = $(this)
-    //     //console.log(form.serializeArray()[0].value)
-    //     console.log(form.serialize())
-    //     var url = "/send_cpe?"+form.serialize();
-    //     console.log(url)
-    //     $('.dropdown-toggle').dropdown('hide')
-    //     $.get(url, function(data){
-    //         console.log(data)
-    //     });
-    // })
 })
+
+function quitar_spinner() {
+    $('#overlay').hide()
+    $('#spinner').hide()
+    $('button[type=submit]').attr("disabled", false)
+}
 
 function get_oc() {
     oc = $("#ocompra").val()
@@ -668,6 +649,7 @@ function get_oc() {
             }
 
         })
+        quitar_spinner()
     })
 }
 
@@ -867,7 +849,7 @@ function addRowProduct2() {
         $('#exampleModalx').modal('hide')
     }
     calcTotal()
-    window.descuento2 = d2
+    // window.descuento2 = d2
     clearModalProduct()
 
 }

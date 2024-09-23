@@ -9,6 +9,7 @@ use App\Seller;
 use App\Product;
 use App\Condition;
 use App\Company;
+use App\Original;
 
 class OrderController extends Controller
 {
@@ -30,7 +31,7 @@ class OrderController extends Controller
             $filter->company_id = '';
         }
 
-        $q = Order::with('seller', 'company');
+        $q = Order::with('seller', 'company', 'original');
         if (\Auth::user()->role_id == 2) {
             $q->where('CFVENDE', \Auth::user()->seller_code);
         }
@@ -69,7 +70,9 @@ class OrderController extends Controller
         } else {
             $sellers = ['' => 'Seleccionar'] + Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
         }
-        return view('partials.create', compact('conditions', 'sellers', 'cambio'));
+        $bloquea_original = false;
+        $graba_original = true;
+        return view('partials.create', compact('conditions', 'sellers', 'cambio', 'bloquea_original', 'graba_original'));
     }
 
     /**
@@ -89,6 +92,9 @@ class OrderController extends Controller
         $data = $this->prepareData($data);
         // dd($data);
         Order::create($data);
+        // Graba el pedido original
+        $this->saveOriginal($data);
+
         if (isset($data['details'])) {
             foreach ($data['details'] as $key => $detail) {
                 OrderDetail::create($detail);
@@ -135,7 +141,20 @@ class OrderController extends Controller
             $sellers = ['' => 'Seleccionar'] + Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
         }
         // $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
-        return view('partials.edit', compact('model', 'conditions', 'sellers'));
+
+        if ($model->CFCOTIZA == 'EMITIDO') {
+            $bloquea_original = false;
+            if (isset($model->original) and $model->original->read_only) { // esta readonly o bloqueado
+                $graba_original = false;
+            } else {
+                $graba_original = true;
+            }
+        } else {
+            $bloquea_original = true;
+            $graba_original = false;
+        }
+
+        return view('partials.edit', compact('model', 'conditions', 'sellers', 'bloquea_original', 'graba_original'));
     }
 
     /**
@@ -149,8 +168,19 @@ class OrderController extends Controller
     {
         $data = request()->all();
         $data['CFNUMPED'] = $id;
+        $status_before = $data['CFCOTIZA'];
         $data = $this->prepareData($data);
+        $data['CFCOTIZA'] = $status_before;
         Order::updateOrCreate(['CFNUMPED' => $id], $data);
+        // Graba el pedido original
+        if ($data['graba_original']) {
+            $this->saveOriginal($data);
+        }
+        if ($data['bloquea_original']) {
+            Original::where('CFNUMPED', $id)->update(['read_only'=>true]);
+        }
+
+
         $old_ids = OrderDetail::where('DFNUMPED', $id)->pluck('DFCODIGO')->toArray();
         $toDelete = array_diff($old_ids, $data['ids']);
         // dd($toDelete);
@@ -208,6 +238,12 @@ class OrderController extends Controller
     {
         $model = Order::findOrFail($id);
         $pdf = \PDF::loadView('pdfs.notes', compact('model'));
+        return $pdf->stream();
+    }
+    public function print_original($id)
+    {
+        $model = Order::findOrFail($id);
+        $pdf = \PDF::loadView('pdfs.original', compact('model'));
         return $pdf->stream();
     }
 
@@ -287,4 +323,15 @@ class OrderController extends Controller
         }
         return $data;
     }
+
+    public function saveOriginal($data)
+    {
+        $array['CFNUMPED'] = $data['CFNUMPED'];
+        $array['discount_2'] = $data['discount_2'];
+        $array['content'] = $data;
+
+        $where = ['CFNUMPED' => $data['CFNUMPED']];
+        return Original::updateOrCreate($where, $array);
+    }
+
 }

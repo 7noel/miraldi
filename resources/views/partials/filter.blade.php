@@ -21,7 +21,6 @@
 							</div>
 						</div>
 					</div>
-
 					{!! Form::close() !!}
 					@include( $views['table'] )
 					{!! $models->appends(\Request::only(['name']))->render() !!}
