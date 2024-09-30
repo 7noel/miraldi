@@ -63,7 +63,7 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $cambio = \DB::connection('starsoft2')->table('TIPO_CAMBIO_SUNAT')->orderBy('FECHA', 'desc')->first();
+        $cambio = \DB::connection('starsoft2')->table('TIPO_CAMBIO_SUNAT')->where('VENTA', '>', 0)->orderBy('FECHA', 'desc')->first();
         $conditions = Condition::all()->pluck('DES_FP', 'COD_FP')->toArray();
         if (\Auth::user()->role_id == 2) {
             $sellers = Seller::where('COD_VEN', \Auth::user()->seller_code)->pluck('DES_VEN', 'COD_VEN')->toArray();
