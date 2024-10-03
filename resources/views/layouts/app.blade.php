@@ -236,7 +236,7 @@ $(document).ready(function () {
         $('#overlay').show()
         $('#spinner').show()
     })
-    $("form").submit(function( event ) {
+    $(".form-loading").submit(function( event ) {
         $('button[type=submit]').attr("disabled", true)
         $('#overlay').show()
         $('#spinner').show()
