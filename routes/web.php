@@ -20,6 +20,9 @@ use App\Seller;
 Route::get('houses', function () {
     return view('welcome');
 });
+Route::get('demo', function () {
+    return view('demo');
+});
 Route::get('/', 'HomeController@index');
 // Route::get('/', function ()
 // {
