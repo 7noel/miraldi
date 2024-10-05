@@ -26,12 +26,12 @@
 	</div>
 	<div class="col-sm-2 form-group">
 		<label for="gastos_admin">Gastos Admin</label>
-		<input class="form-control form-control-sm" id="gastos_admin" name="POR_GASTOS_ADMINISTRATIVOS" type="number" value="{{ (isset($model->price)) ? round($model->price->POR_GASTOS_ADMINISTRATIVOS,2) : '30' }}">
+		<input class="form-control form-control-sm" id="gastos_admin" step="0.01" name="POR_GASTOS_ADMINISTRATIVOS" type="number" value="{{ (isset($model->price)) ? round($model->price->POR_GASTOS_ADMINISTRATIVOS,2) : '30' }}">
 		{{-- <span class="form-control form-control-sm form-control-plaintext" id="gastos_admin">{{ round($model->price->POR_GASTOS_ADMINISTRATIVOS) }}</span> --}}
 	</div>
 	<div class="col-sm-2 form-group">
 		<label for="utilidad">Utilidad</label>
-		<input class="form-control form-control-sm" id="utilidad" name="POR_UTILIDAD" type="number" value="{{ (isset($model->price)) ? round($model->price->POR_UTILIDAD, 2) : '18' }}">
+		<input class="form-control form-control-sm" id="utilidad" step="0.01" name="POR_UTILIDAD" type="number" value="{{ (isset($model->price)) ? round($model->price->POR_UTILIDAD, 2) : '18' }}">
 	</div>
 	<div class="col-sm-2 form-group">
 		<label for="codigox">Precio (sin igv)</label>
