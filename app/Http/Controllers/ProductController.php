@@ -90,7 +90,7 @@ class ProductController extends Controller
             $precio = round($base * (100 + $admin) * (100 + $utilidad) / 10000, 2);
             if ($p_l) {
                 // Actualizar Precio Lista
-                if ($precio != $p_l->PRE_ACT) {
+                if ($precio != $p_l->PRE_ACT or $p_l->POR_UTILIDAD != $utilidad) {
                     $p_l->PRE_ANT = $p_l->PRE_ACT;
                     $p_l->FLAG_IGVANT = $p_l->FLAG_IGVACT;
                     $p_l->FLAG_IGVACT = 0;
