@@ -622,6 +622,14 @@ $(document).ready(function () {
 
 })
 
+function PdfToPrint(id) {
+    url = `/pdf_to_print/${id}`
+    console.log(url)
+    $.get(url, function (data) {
+        console.log(data)
+    })
+}
+
 function quitar_spinner() {
     $('#overlay').hide()
     $('#spinner').hide()

@@ -36,6 +36,7 @@ Auth::routes();
 // Auth::routes(['verify' => true]);
 
 
+Route::get('pdf_to_print/{id}', ['as' => 'pickings.pdf_to_print', 'uses' => 'PickingController@pdf_to_print']);
 Route::get('listarProvincias/{departamento}', ['as' => 'ajaxprovincias', 'uses' => 'UbigeoController@ajaxProvincias']);
 Route::get('listarDistritos/{departamento}/{provincia}', ['as' => 'ajaxdistritos','uses' => 'UbigeoController@ajaxDistritos']);
 Route::get('api/companiesAutocomplete/', ['as' => 'companiesAutocomplete', 'uses' => 'CompanyController@ajaxAutocomplete']);

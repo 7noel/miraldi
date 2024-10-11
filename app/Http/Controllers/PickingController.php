@@ -138,32 +138,23 @@ class PickingController extends Controller
         return view('orders.picking');
     }
 
-    // public function get_picking($qr)
-    // {
-    //     $vals = explode('|', $qr);
-    //     $order_id = array_shift($vals);
-    //     $data['order'] = Order::findOrFail($order_id);
-    //     $p_ids=[];
-    //     foreach ($vals as $key => $val) {
-    //         $p_ids[] = explode(' ', $val)[0];
-    //     }
-    //     $data['products'] = Product::with('lockers')->whereIn('ACODIGO', $p_ids)->get();
-    //     return response()->json($data);
-    // }
-    // 
-    // public function prepareData($data)
-    // {
-    //     $last_ot = Order::orderBy('CFNUMPED','desc')->first();
-    //     $data['CFNUMPED'] = str_pad((intval($last_ot->CFNUMPED) + 1), 7, "0", STR_PAD_LEFT);
-    //     $data['CFPUNVEN'] = '01';
-    //     $data['CFESTADO'] = 'V';
-    //     $data['CFCOTIZA'] = 'EMITIDO';
-    //     $data['TIPO'] = 'PD';
-    //     $data['CFFECDOC'] = date('Y-d-m H:i:s');
-    //     $data['CFFECVEN'] = date('Y-d-m H:i:s');
-    //     $data['CFCODMON'] = 'MN';
-    //     $data['CFUSER'] = \Auth::user()->user_code;
+    public function pdf_to_print($id)
+    {
+        $url_pdf = route( 'pickings.print' , $id );
+        $ip_local = "192.168.1.101";
+        $port = 5000;
+        $printer = "80mm Series Printer";
+        $url = "http://$ip_local:$port/print-pdf?pdf_url=$url_pdf&printer_name=$printer";
+        $response = \Http::get($url);
 
-    //     return $data;
-    // }
+        if ($response->successful()) {
+            $data = $response->json(); // Obtener los datos en formato JSON
+            // Procesar los datos
+        } else {
+            // Manejar errores
+            $error = $response->status();
+        }
+
+    }
+
 }
