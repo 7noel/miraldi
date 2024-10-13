@@ -27,7 +27,7 @@
 								<input class="form-control form-control-sm" type="number" placeholder="CANTIDAD" id="cantidad" value="1">
 							</div>
 							<div class="form-group">
-								<input class="form-control form-control-sm" type="text" placeholder="CODIGO" id="codigo">
+								<input class="form-control form-control-sm" type="text" placeholder="CODIGO" id="codigo" autocomplete="off">
 							</div>
 							<div class="form-group">
 								<button type="submit" class="btn btn-primary btn-sm" id="btn-add-pk">{!! $icons['add'] !!} Agregar</button>
@@ -35,7 +35,7 @@
 							</div>
 						</form>
 
-						{!! Form::open(['route'=> 'pickings.store' , 'method'=>'POST', 'id'=>'form-picking-create']) !!}
+						{!! Form::open(['route'=> 'pickings.store' , 'method'=>'POST', 'id'=>'form-picking-create', 'autocomplete'=>'off']) !!}
 							<input type="hidden" id="CFNUMPED" name="CFNUMPED">
 							<input type="hidden" id="items" name="items" value="0">
 							<input type="hidden" id="pl" name="pl" value="0">

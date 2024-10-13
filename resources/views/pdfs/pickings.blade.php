@@ -6,7 +6,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
-	<link rel="stylesheet" href="./css/order_pdf.css">
+	<!-- <link rel="stylesheet" href="./css/order_pdf.css"> -->
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&family=Roboto:wght@100&display=swap');
+		@page {
+			margin: 0 30px;
+			font-family: 'Roboto Condensed', sans-serif;
+		}
+		body{
+			font-size: 12px;
+		}
+		.header{
+/*			font-family: 'Roboto', sans-serif;*/
+		}
+		.center{
+			text-align: center;
+		}
+		.border{
+			border: solid 1px black;
+		}
+	</style>
 </head>
 <body>
 	<script type="text/php">
@@ -20,7 +39,7 @@
 	<div class="header">
 		<div>
 			<div class="center">
-				<h3 class="center">
+				<h3 class="center" style="margin: 0;">
 					PICKING: {{ $model->id }}<br><span style="font-size: 12px;">IMPORTACIONES MIRALDI S.A.C.</span>
 				</h3>
 			</div>
@@ -44,7 +63,7 @@
 				<strong>Pedido: </strong><span>{{ $model->CFNUMPED }}</span>
 			</div>
 			<div>
-				<strong>Fecha y Hora: </strong><span>{{ $model->created_at->format('d/m/Y h:i: a') }}</span>
+				<strong>Fecha y Hora: </strong><span>{{ $model->created_at->format('d/m/Y h:i a') }}</span>
 			</div>
 			<div>
 				<strong>Cliente: </strong><span>{{ $model->order->CFNOMBRE }}</span>

@@ -7,18 +7,18 @@
 			<div class="card">
 				<h5 class="{{ config('options.styles.card_header') }}">Código de barras - Preparación de etiquetas</h5>
 				<div class="card-body">
-						<form action="#" id="form-oc">
-					<div class="form-group row">
-                        <label for="ocompra" class="col-sm-2 col-form-label">O.Compra</label>
-						<div class="col-sm-3">
-                            <input class="form-control form-control-sm" placeholder="Orden de compra" name="ocompra" type="text" value="" id="ocompra">
-                        </div>
-                        <div class="col-sm-2">
-                            <button type="submit" class="btn btn-sm btn-outline-secondary">{!! $icons['search'] !!} Buscar</button>
-                            <!-- <button type="submit" class="btn btn-outline-secondary" onclick="get_oc()">{!! $icons['search'] !!} Buscar</button> -->
-                        </div>
-                    </div>
-                        </form>
+					<form action="#" id="form-oc" autocomplete='off'>
+						<div class="form-group row">
+	                        <label for="ocompra" class="col-sm-2 col-form-label">O.Compra</label>
+							<div class="col-sm-3">
+	                            <input class="form-control form-control-sm" placeholder="Orden de compra" name="ocompra" type="text" value="" id="ocompra">
+	                        </div>
+	                        <div class="col-sm-2">
+	                            <button type="submit" class="btn btn-sm btn-outline-secondary">{!! $icons['search'] !!} Buscar</button>
+	                            <!-- <button type="submit" class="btn btn-outline-secondary" onclick="get_oc()">{!! $icons['search'] !!} Buscar</button> -->
+	                        </div>
+	                    </div>
+                    </form>
 					<div class="form-group row">
                         <label for="search" class="col-sm-2 col-form-label">Filtro</label>
 						<div class="col-sm-8">

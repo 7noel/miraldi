@@ -17,7 +17,11 @@
 			<td>{{ $model->order->CFNOMBRE }}</td>
 			<td class="text-center">{{ $model->created_at->format('d/m/Y') }}</td>
 			<td class="text-center" style="white-space: nowrap;">
+				@if(in_array(\Auth::user()->role_id, [3]))
+				<button type="button" onclick="PdfToPrint('{{ $model->id }}')" class="btn btn-sm btn-outline-success" title="Imprimir Picking">{!! $icons['printer'] !!}</button>
+				@else
 				<button type="button" onclick="printJS('{{ route( 'pickings.print' , $model->id ) }}')" class="btn btn-sm btn-outline-success" title="Imprimir Picking">{!! $icons['printer'] !!}</button>
+				@endif
 				<a href="{{ route( 'pickings.print' , $model->id ) }}" target="_blank" class="btn btn-sm btn-outline-danger" title="PDF Picking">{!! $icons['pdf'] !!}</a>
 				<a href="{{ route($routes['show'], $model) }}" class="btn btn-outline-secondary btn-sm" title="Ver Picking">{!! $icons['view'] !!}</a>
 				{{-- <a href="#" class="btn-delete btn btn-outline-danger btn-sm" title="Eliminar">{!! $icons['remove'] !!}</a> --}}

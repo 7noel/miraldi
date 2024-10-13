@@ -9,7 +9,7 @@
 				<div class="{{ config('options.styles.card_header') }}">CONSULTAR {{ strtoupper($labels['index']) }}
 				</div>
 				<div class="card-body">
-					{!! Form::model($filter, ['route'=>$routes['index'], 'method'=>'GET', 'class'=>'form-horizontal']) !!}
+					{!! Form::model($filter, ['route'=>$routes['index'], 'method'=>'GET', 'class'=>'form-horizontal', 'autocomplete'=>'off']) !!}
 					<div class="">
 						@include( $views['filter'] )
 						<div class="form-row mb-3">

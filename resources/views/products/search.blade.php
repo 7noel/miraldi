@@ -8,7 +8,7 @@
 				<h5 class="{{ config('options.styles.card_header') }}"> Buscar Producto
 				</h5>
 				<div class="card-body">
-					{!! Form::open(['route'=> ['products.get_product', 'ID'], 'method'=>'GET', 'class'=>'mb-5', 'id'=>"form-buscar-codigo"]) !!}
+					{!! Form::open(['route'=> ['products.get_product', 'ID'], 'method'=>'GET', 'class'=>'mb-5', 'id'=>"form-buscar-codigo", 'autocomplete'=>'off']) !!}
 						<div class="form-group row">
 							<label for="codigo" class="col-sm-1 col-form-label">Código</label>
 							<div class="col-sm-2">

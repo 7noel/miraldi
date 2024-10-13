@@ -149,10 +149,12 @@ class PickingController extends Controller
 
         if ($response->successful()) {
             $data = $response->json(); // Obtener los datos en formato JSON
+            return $data;
             // Procesar los datos
         } else {
             // Manejar errores
             $error = $response->status();
+            return $error;
         }
 
     }
