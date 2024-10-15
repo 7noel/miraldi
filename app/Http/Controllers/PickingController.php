@@ -124,7 +124,13 @@ class PickingController extends Controller
     {
         $model = Picking::findOrFail($id);
         $pdf = \PDF::loadView('pdfs.pickings', compact('model'))->setPaper([0,0,227,2000], 'portrait');
-        return $pdf->stream();
+        // return $pdf->stream();
+        return response()->stream(function () use ($pdf) {
+            echo $pdf->output();
+        }, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="picking.pdf"', // Cambia a 'attachment' si quieres forzar descarga
+        ]);
     }
     public function print_note($id)
     {
@@ -141,7 +147,7 @@ class PickingController extends Controller
     public function pdf_to_print($id)
     {
         $url_pdf = route( 'pickings.print' , $id );
-        $ip_local = "192.168.1.101";
+        $ip_local = "127.0.0.1";
         $port = 5000;
         $printer = "80mm Series Printer";
         $url = "http://$ip_local:$port/print-pdf?pdf_url=$url_pdf&printer_name=$printer";

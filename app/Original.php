@@ -10,7 +10,7 @@ class Original extends Model
     use HasFactory;
     protected $connection = "mysql";
 
-    protected $fillable = ['CFNUMPED', 'read_only', 'discount_2', 'content'];
+    protected $fillable = ['CFNUMPED', 'read_only', 'discount_2', 'activated_at', 'comments', 'content'];
     protected $casts = [
         'content' => 'object',
     ];

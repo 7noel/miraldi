@@ -91,7 +91,7 @@ class OrderController extends Controller
         $data['CFFECVEN'] = date('Y-d-m H:i:s');
         $data = $this->prepareData($data);
         // dd($data);
-        Order::create($data);
+        $model = Order::create($data);
         // Graba el pedido original
         $this->saveOriginal($data);
 
@@ -104,6 +104,7 @@ class OrderController extends Controller
             return redirect()->to($data['last_page']);
         }
         return redirect()->route('orders.index');
+        // return redirect()->route( 'orders.edit' , $model);
     }
 
     /**

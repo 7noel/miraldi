@@ -56,9 +56,12 @@
 		</div>
 	</div>
 	<div class="col-md-4 col-sm-6">
-		{!! Field::text('CFGLOSA', ['label' => 'Comentarios', 'class'=>'form-control-sm text-uppercase']) !!}
+		<div id="field_comments" class="form-group">
+			<label for="comments">Comentarios</label>
+			<input class="form-control form-control-sm" id="comments" name="comments" type="text" value="{{ (isset($model->original)) ? $model->original->comments : (isset($model) ? $model->CFGLOSA : '') }}">
+		</div>
 	</div>
 </div>
-
-@include('orders.partials.details')
-	
+@if(1==1 or isset($model))
+	@include('orders.partials.details')
+@endif

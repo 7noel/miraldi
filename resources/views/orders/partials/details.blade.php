@@ -18,8 +18,13 @@
 	<tbody id="tableItems">
 	@if(isset($model->details))
 	@foreach($model->details as $detail)
-		@php $categories=[]; @endphp
-		<tr>
+		@php
+		$class = "";
+		if($detail->DFPREC_ORI != $detail->product->price->PRE_ACT) {
+			$class = "table-danger";
+		}
+		@endphp
+		<tr class="{{ $class }}">
 			{!! Form::hidden("details[$i][DFSECUEN]", $detail->DFSECUEN, ['class'=>'detailId','data-detailId'=>'']) !!}
 			{!! Form::hidden("details[$i][DFUNIDAD]", $detail->DFUNIDAD, ['class'=>'unitId']) !!}
 			<td><span class='spanCodigo'>{{ $detail->DFCODIGO }}</span>{!! Form::hidden("details[$i][DFCODIGO]", $detail->DFCODIGO, ['class'=>'productId']); !!}</td>

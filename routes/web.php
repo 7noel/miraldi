@@ -37,6 +37,7 @@ Auth::routes();
 
 
 Route::get('pdf_to_print/{id}', ['as' => 'pickings.pdf_to_print', 'uses' => 'PickingController@pdf_to_print']);
+Route::get('picking/print/{id}', ['as' => 'pickings.print', 'uses' => 'PickingController@print']);
 Route::get('listarProvincias/{departamento}', ['as' => 'ajaxprovincias', 'uses' => 'UbigeoController@ajaxProvincias']);
 Route::get('listarDistritos/{departamento}/{provincia}', ['as' => 'ajaxdistritos','uses' => 'UbigeoController@ajaxDistritos']);
 Route::get('api/companiesAutocomplete/', ['as' => 'companiesAutocomplete', 'uses' => 'CompanyController@ajaxAutocomplete']);
@@ -62,7 +63,6 @@ Route::group(['middleware'=>['auth', 'permissions']], function(){
     Route::get('orders/print_original/{id}', ['as' => 'orders.print_original', 'uses' => 'OrderController@print_original']);
     Route::get('products_search', ['as' => 'products.search', 'uses' => 'ProductController@search']);
     Route::get('get_product/{id}', ['as' => 'products.get_product', 'uses' => 'ProductController@get_search']);
-    Route::get('picking/print/{id}', ['as' => 'pickings.print', 'uses' => 'PickingController@print']);
     Route::get('excel_codbars', ['as' => 'products.excel_codbars', 'uses' => 'ProductController@excel_codbars']);
     Route::post('excel_codbars_download', ['as' => 'products.excel_codbars_download', 'uses' => 'ProductController@excel_codbars_download']);
     Route::post('codbars_save', ['as' => 'products.codbars_save', 'uses' => 'ProductController@codbars_save']);

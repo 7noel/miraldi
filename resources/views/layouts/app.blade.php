@@ -1000,6 +1000,7 @@ function addPrPicking() {
 
 function get_picking() {
     qr = $("#picking_qr").val().trim()
+    qr = qr.replace(' ', ' ')
     vals = qr.split('|')
     orden_id = vals.shift()
     pl_total = 0
@@ -1013,7 +1014,7 @@ function get_picking() {
     })
     // console.log(prs)
     $.get(`/get_picking/${qr}`, function(data){
-        console.log(data.products[0].lockers)
+        console.log(data)
         $('#table-picking').empty()
         i = 0
         $.each(data.products, function (index, pr) {
