@@ -9,6 +9,7 @@ use App\Price;
 use App\Barcode;
 use App\Locker;
 use App\Exports\ProductsExport;
+use App\Fpdf\PriceList;
 
 class ProductController extends Controller
 {
@@ -217,9 +218,42 @@ class ProductController extends Controller
         return response()->json($result);
     }
 
+    public function price_list()
+    {
+        $pdf = new PriceList();
+        $pdf->_titulo=utf8_decode("LISTA DE PRECIOS MIRALDI");
+        $pdf->AddPage();
+        $pdf->SetFont('Arial','B',10);
+        // encabezado($fpdf, 'LISTA DE PRECIOS MIRALDI');
+        // $models = Product::where('AESTADO', 'V')->with('stock', 'price')->has('price')->has('stock')->get();
+        $models = \DB::connection('sqlsrv')->table('MAEART')
+            ->join('LISTA_PRECIOS', 'MAEART.ACODIGO', '=', 'LISTA_PRECIOS.COD_ARTI')
+            ->join('STKART', 'LISTA_PRECIOS.COD_ARTI', '=', 'STKART.STCODIGO')
+            ->where('MAEART.AESTADO', 'V')
+            // ->where('STKART.STSKDIS', '>', 0)
+            ->select('MAEART.ACODIGO', 'MAEART.ADESCRI', 'MAEART.AUNIDAD', 'LISTA_PRECIOS.PRE_ACT', 'STKART.STSKDIS', 'MAEART.APESO')
+            ->distinct() // para evitar duplicados
+            ->get();
+        // dd($models);
+        $pdf->PintaDetalle($models);
+        // PintaDetalle($fpdf, $models);
+        
+        $pdf->Output();
+        exit;
+        $pdf = \PDF::loadView('pdfs.price_list', compact('models'));
+        $options = [
+            'isHtml5ParserEnabled' => true,
+            'isRemoteEnabled' => true,
+            'defaultFont' => 'Arial',
+            'dpi' => 96, // Ajustar la resolución
+            'isPhpEnabled' => true // Si necesitas ejecutar PHP dentro del HTML
+        ];
+        $pdf->setOptions($options);
+        return $pdf->stream();
+    }
+
     public function update_prices2()
     {
-        set_time_limit(240);
         $fecha = request()->input('fecha');
         $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and (Fecha1 >= ? and Fecha2 >= ?)", [$fecha, $fecha]);
         // $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Datos3='' and Fecha1 < :f1 limit 2000", ['f1' => $fecha]);
