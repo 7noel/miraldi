@@ -238,18 +238,18 @@ class ProductController extends Controller
         $pdf->PintaDetalle($models);
         // PintaDetalle($fpdf, $models);
         
-        $pdf->Output();
-        exit;
-        $pdf = \PDF::loadView('pdfs.price_list', compact('models'));
-        $options = [
-            'isHtml5ParserEnabled' => true,
-            'isRemoteEnabled' => true,
-            'defaultFont' => 'Arial',
-            'dpi' => 96, // Ajustar la resolución
-            'isPhpEnabled' => true // Si necesitas ejecutar PHP dentro del HTML
-        ];
-        $pdf->setOptions($options);
-        return $pdf->stream();
+        $pdf->Output('I', 'lista_de_precios.pdf');
+        // exit;
+        // $pdf = \PDF::loadView('pdfs.price_list', compact('models'));
+        // $options = [
+        //     'isHtml5ParserEnabled' => true,
+        //     'isRemoteEnabled' => true,
+        //     'defaultFont' => 'Arial',
+        //     'dpi' => 96, // Ajustar la resolución
+        //     'isPhpEnabled' => true // Si necesitas ejecutar PHP dentro del HTML
+        // ];
+        // $pdf->setOptions($options);
+        // return $pdf->stream();
     }
 
     public function update_prices2()

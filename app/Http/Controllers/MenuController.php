@@ -59,7 +59,7 @@ class MenuController extends Controller
                 ['name' => 'Pedidos', 'route' => 'orders.index'],
                 ['name' => 'Clientes', 'route' => 'companies.index'],
                 ['name' => 'Transportistas', 'route' => 'shippers.index'],
-                ['name' => 'Lista de precios', 'route' => 'products.price_list'],
+                ['name' => 'Lista de precios', 'route' => 'price_list'],
             ],
         ];
         return $links;
