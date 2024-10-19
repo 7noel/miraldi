@@ -232,24 +232,11 @@ class ProductController extends Controller
             ->where('MAEART.AESTADO', 'V')
             // ->where('STKART.STSKDIS', '>', 0)
             ->select('MAEART.ACODIGO', 'MAEART.ADESCRI', 'MAEART.AUNIDAD', 'LISTA_PRECIOS.PRE_ACT', 'STKART.STSKDIS', 'MAEART.APESO')
-            ->distinct() // para evitar duplicados
+            ->distinct()
             ->get();
-        // dd($models);
         $pdf->PintaDetalle($models);
-        // PintaDetalle($fpdf, $models);
         
         $pdf->Output('I', 'lista_de_precios.pdf');
-        // exit;
-        // $pdf = \PDF::loadView('pdfs.price_list', compact('models'));
-        // $options = [
-        //     'isHtml5ParserEnabled' => true,
-        //     'isRemoteEnabled' => true,
-        //     'defaultFont' => 'Arial',
-        //     'dpi' => 96, // Ajustar la resolución
-        //     'isPhpEnabled' => true // Si necesitas ejecutar PHP dentro del HTML
-        // ];
-        // $pdf->setOptions($options);
-        // return $pdf->stream();
     }
 
     public function update_prices2()

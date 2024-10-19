@@ -35,22 +35,31 @@
 			<td class="text-right">{{ number_format($model->CFIMPORTE, 2, '.', '') }}</td>
 			<td class="text-center status"><span class="{{ $clase }}">{{ $model->CFCOTIZA }}</span></td>
 			<td class="text-center">
-				@if(isset($model->original) and !is_null($model->original->is_activated))
+				@if(isset($model->original) and $model->original->activated_at)
 					{!! $icons['check'] !!}
 				@else
-					{!! $icons['close'] !!}
 				@endif
 			</td>
 			<td class="text-center" style="white-space: nowrap;">
-				<a href="{{ route( 'orders.print_note' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-info btn-sm" title="PDF Nota">{!! $icons['pdf'] !!}</a>
+				<a href="{{ route( 'orders.print_note' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-danger btn-sm" title="PDF Nota">{!! $icons['pdf'] !!}</a>
 				<button type="button" onclick="printJS('{{ route( 'orders.print' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido Almacén">{!! $icons['printer'] !!}</button>
 				@if($model->original)
-				<a href="{{ route( 'orders.print_original' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-secondary btn-sm" title="PDF Nota Original">{!! $icons['pdf'] !!}</a>
+				<a href="{{ route( 'orders.print_original' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-info btn-sm" title="PDF Nota Original">{!! $icons['pdf'] !!}</a>
 				@else
-				<a href="#" class="btn btn-outline-secondary btn-sm" title="PDF Nota Original">{!! $icons['pdf'] !!}</a>
+				<a href="#" class="btn btn-outline-info btn-sm" title="PDF Nota Original">{!! $icons['pdf'] !!}</a>
 				@endif
 				<!-- Permite editar pedido en estado emitido a todos y en estado autorizado solo al administrador y al facturador -->
-				@if($model->CFCOTIZA=='EMITIDO' or ($model->CFCOTIZA=='AUTORIZADO' and in_array(\Auth::user()->role_id, [1, 4])))
+				<?php 
+				$is_activated = false;
+				if (isset($model->original)) {
+					if ($model->original->activated_at) {
+						$is_activated = true;
+					}
+				} else {
+					$is_activated = true;
+				}
+				 ?>
+				@if(($model->CFCOTIZA=='EMITIDO' and !$is_activated) or (($model->CFCOTIZA=='AUTORIZADO' or $is_activated) and in_array(\Auth::user()->role_id, [1, 4])))
 				<a href="{{ route( 'orders.edit' , $model) }}" class="btn btn-outline-primary btn-sm" title="Editar">{!! $icons['edit'] !!}</a>
 				{{--<a href="#" class="btn-anular btn btn-outline-danger btn-sm" title="Eliminar">{!! $icons['remove'] !!}</a>--}}
 				@else

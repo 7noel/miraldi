@@ -100,11 +100,13 @@ class OrderController extends Controller
                 OrderDetail::create($detail);
             }
         }
+
+        return redirect()->route( 'orders.edit' , $model);
+        
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
         }
         return redirect()->route('orders.index');
-        // return redirect()->route( 'orders.edit' , $model);
     }
 
     /**
@@ -145,7 +147,7 @@ class OrderController extends Controller
 
         if ($model->CFCOTIZA == 'EMITIDO') {
             $bloquea_original = false;
-            if (isset($model->original) and $model->original->read_only) { // esta readonly o bloqueado
+            if (isset($model->original) and ($model->original->read_only or $model->original->activated_at)) { // esta readonly o bloqueado
                 $graba_original = false;
             } else {
                 $graba_original = true;
@@ -199,6 +201,11 @@ class OrderController extends Controller
                 }
             }
         }
+        // Si la peticion es ajax
+        if (request()->ajax()) {
+            $message = "Los datos se guardaron correctamente";
+            return response()->json(['id' => $id, 'message' => $message]);
+        }
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
         }
@@ -248,16 +255,81 @@ class OrderController extends Controller
         return $pdf->stream();
     }
 
+    public function activar_pedido($id)
+    {
+        $model = Original::where('CFNUMPED', $id)->first();
+        $model->activated_at = date('Y-d-m H:i:s');
+        $model->read_only = '1';
+        $model->save();
+        return redirect()->route( 'orders.show' , $id);
+    }
+
+    public function por_comprar()
+    {
+        $fechaLimite = date('Y-d-m 00:00:00', strtotime('-15 days'));
+        $models = \DB::connection('sqlsrv')->table('PEDDET')
+            ->join('MAEART', 'PEDDET.DFCODIGO', '=', 'MAEART.ACODIGO')
+            ->join('PEDCAB', 'PEDCAB.CFNUMPED', '=', 'PEDDET.DFNUMPED')
+            ->join('STKART', 'PEDDET.DFCODIGO', '=', 'STKART.STCODIGO')
+            ->where('PEDCAB.CFFECDOC', '>=', $fechaLimite)
+            ->where('PEDCAB.CFCOTIZA', 'AUTORIZADO')
+            ->select('MAEART.ACODIGO', 'MAEART.ADESCRI', 'MAEART.AUNIDAD', 'STKART.STSKDIS',
+                \DB::raw('STRING_AGG(PEDCAB.CFNUMPED, \', \') as numeros_pedidos'),
+                \DB::raw('SUM(PEDDET.DFCANTID) as total_cantidad'),
+                \DB::raw('SUM(PEDDET.DFCANTID) - STKART.STSKDIS as diferencia'))
+            ->distinct()
+            ->groupBy('MAEART.ACODIGO', 'MAEART.ADESCRI', 'MAEART.AUNIDAD', 'STKART.STSKDIS')
+            ->havingRaw('SUM(PEDDET.DFCANTID) - STKART.STSKDIS > 0') // Filtrar registros con diferencia mayor a cero
+            ->orderBy('diferencia', 'desc')
+            ->get();
+        return view('products.por_comprar', compact('models'));
+    }
+
     public function get_picking($qr)
     {
+        // Define la fecha límite
+        $fechaLimite = date('Y-d-m 00:00:00', strtotime('-15 days'));
+
+        // Extrae el order_id y los códigos de producto
         $vals = explode('|', $qr);
-        $order_id = array_shift($vals);
-        $data['order'] = Order::findOrFail(str_pad($order_id, 7, "0", STR_PAD_LEFT));
-        $p_ids=[];
-        foreach ($vals as $key => $val) {
-            $p_ids[] = explode(' ', $val)[0];
+        $order_id = str_pad(array_shift($vals), 7, "0", STR_PAD_LEFT);
+        $data['order'] = Order::findOrFail($order_id);
+
+        // Obtiene los códigos de producto
+        $p_ids = collect($vals)->map(function ($val) {
+            return explode(' ', $val)[0];
+        });
+
+        // Carga productos relacionados
+        $data['products'] = Product::with('lockers', 'stock')->whereIn('ACODIGO', $p_ids)->get();
+
+        // Inicializa resultados con 0
+        $resultados = array_fill_keys($p_ids->toArray(), 0);
+
+        // Realiza una sola consulta para todos los códigos de productos
+        $pickings = \DB::table('pickings')
+            ->where(function ($query) use ($p_ids) {
+                foreach ($p_ids as $codigoProducto) {
+                    $query->orWhereRaw("JSON_CONTAINS(details, JSON_OBJECT('codigo', ?))", [$codigoProducto]);
+                }
+            })
+            ->where('is_invoiced', 0)
+            ->where('created_at', '>=', $fechaLimite)
+            ->get();
+
+        // Sumar pl para cada código
+        foreach ($pickings as $picking) {
+            $detalles = json_decode($picking->details);
+
+            foreach ($detalles as $item) {
+                if (isset($resultados[$item->codigo])) { // Solo sumar si el código existe en resultados
+                    $resultados[$item->codigo] += $item->pl; // Acumula el valor de pl
+                }
+            }
         }
-        $data['products'] = Product::with('lockers','stock')->whereIn('ACODIGO', $p_ids)->get();
+
+        $data['in_pickings'] = $resultados;
+
         return response()->json($data);
     }
     public function prepareData($data)

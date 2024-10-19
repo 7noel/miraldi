@@ -622,6 +622,22 @@ $(document).ready(function () {
 
 })
 
+function activarPedido(pedido) {
+    var userConfirmed = confirm("¿Estás seguro de que deseas activar este Pedido?");
+    
+    if (userConfirmed) {
+        console.log(pedido)
+        // El usuario hizo clic en "Aceptar"0000629
+        // alert("Pedido Activado")
+        // $("#btnActivarPedido").attr('disabled', 'disabled')
+        window.location.href = `/activar_pedido/${pedido.toString().padStart(7, '0')}`
+        // Aquí puedes ejecutar el código para eliminar el elemento
+    } else {
+        // El usuario hizo clic en "Cancelar"
+        alert("Activación cancelada")
+    }
+}
+
 function PdfToPrint(id) {
     url = `/pdf_to_print/${id}`
     console.log(url)
@@ -780,6 +796,22 @@ function editModalProduct() {
 }
 
 function addRowProduct2() {
+    form = $(".form-loading")
+    var actionUrl = form.attr('action')
+    var formData = form.serialize()
+    $.ajax({
+        url: actionUrl, // Cambia esto por la URL de tu API
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            // Manejar la respuesta exitosa
+            console.log('Datos guardados con éxito: ' + response)
+        },
+        error: function(xhr, status, error) {
+            // Manejar el error
+            console.log('Error al guardar los datos: ' + error)
+        }
+    })
     //obteniendo los valores de los inputs
     desc = $('#txtProducto').val()
     codigo = $('#txtCodigo').text()
@@ -805,7 +837,6 @@ function addRowProduct2() {
     }
     d1 = window.descuento1
     d2 = parseFloat($('#txtDscto2').val())
-    console.log(d2)
     t = $('#txtTotal').val()
     if (typeof window.el === 'undefined') { // Si no existe la variable window.el (producto a editar) se agrega una fila
         items = $('#items').val()
@@ -1027,7 +1058,7 @@ function get_picking() {
                     <td class="text-center">${prs[pr.ACODIGO]}</td>
                     <td class="text-center">0</td>
                     <td class="text-center">${peso}</td>
-                    <td class="text-center">${ (typeof pr.stock.STSKDIS === 'undefined') ? 0 : parseInt(0+pr.stock.STSKDIS) }</td>
+                    <td class="text-center">${ (typeof pr.stock.STSKDIS === 'undefined') ? 0 : (parseInt(0+pr.stock.STSKDIS) - data.in_pickings[pr.ACODIGO]) }</td>
                     <td class="text-center">${ubicacion}</td>
                     <input type="hidden" class="codigo" name="details[${i}][codigo]" value="${pr.ACODIGO}">
                     <input type="hidden" class="codigo" name="details[${i}][codigo2]" value="${pr.ACODIGO2}">

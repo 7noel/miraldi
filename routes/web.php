@@ -45,6 +45,9 @@ Route::get('api/shippersAutocomplete/', ['as' => 'shippersAutocomplete', 'uses' 
 Route::get('api/products/autocompleteAjax', ['as' => 'productsAutocomplete','uses' => 'ProductController@ajaxAutocomplete']);
 Route::get('get_picking/{qr}', ['as' => 'get_picking', 'uses' => 'OrderController@get_picking']);
 Route::get('get_oc/{id}', ['as' => 'products.get_oc', 'uses' => 'ProductController@get_oc']);
+Route::get('activar_pedido/{id}', ['as' => 'orders.activar', 'uses' => 'OrderController@activar_pedido']);
+Route::get('por_comprar', ['as' => 'por_comprar', 'uses' => 'OrderController@por_comprar']);
+Route::get('disponible/{codigo}', ['as' => 'disponible', 'uses' => 'PickingController@disponible']);
 
 Route::group(['middleware'=>['auth']], function(){
     Route::get('change_password', ['as' => 'change_password', 'uses' => 'UserController@changePassword']);

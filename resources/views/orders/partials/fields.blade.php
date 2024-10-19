@@ -16,10 +16,34 @@
 	{!! Form::hidden('CFTIPCAM', null) !!}
 @endif
 
+@if(isset($model))
+	@if(isset($model->original))
+		@if($model->original->activated_at)
+			<!-- si está activado -->
+			<button type="button" class="btn btn-primary btn-sm" title="Activar Pedido" disabled>{!! $icons['check'] !!} Activar</button>
+		@else
+			<!-- si no está activado -->
+			<button type="button" onclick="activarPedido({{ $model->CFNUMPED }})" class="btn btn-primary btn-sm" title="Pedido Activo" id="btnActivarPedido">{!! $icons['check'] !!} Activar</button>
+		@endif
+	@else
+		<button type="button" class="btn btn-primary btn-sm" title="Activar Pedido" disabled>{!! $icons['check'] !!} Activarx</button>
+	@endif
+	<button type="button" onclick="printJS('{{ route( 'orders.print' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido Almacén">{!! $icons['printer'] !!} Almacén</button>
+	<a href="{{ route( 'orders.print_note' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-danger btn-sm" title="PDF Pedidos">{!! $icons['pdf'] !!} Pedido</a>
+	@if($model->original)
+	<a href="{{ route( 'orders.print_original' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-secondary btn-sm" title="PDF Nota Original">{!! $icons['pdf'] !!} Original</a>
+	@else
+	<a href="#" class="btn btn-outline-info btn-sm" title="PDF Nota Original">{!! $icons['pdf'] !!} Original</a>
+	@endif
+	<a href="{{ route('orders.create') }}" class="btn btn-outline-primary btn-sm">{!! $icons['add'] !!} Nuevo</a>
+	<a href="{{ route('orders.index') }}" class="btn btn-outline-secondary btn-sm">{!! $icons['list'] !!} Listado</a>
+	<br><br>
+@endif
+
 <div class="form-row">
 	<div class="col-md-1 col-sm-2">
 		{!! Form::label('sn', 'PD') !!}
-		{!! Form::text('CFNUMPED', null,['class'=>'form-control-sm form-control-plaintext', 'readonly']) !!}
+		{!! Form::text('CFNUMPED', null,['class'=>'form-control-sm form-control-plaintext', 'readonly', 'id'=>'CFNUMPED']) !!}
 	</div>
 	<div class="col-sm-4">
 		@if(isset($client->id))
@@ -63,6 +87,6 @@
 		</div>
 	</div>
 </div>
-@if(1==1 or isset($model))
+@if(isset($model))
 	@include('orders.partials.details')
 @endif

@@ -1,5 +1,7 @@
 @php $i=0; @endphp
+@if(request()->route()->getName() == 'orders.edit')
 <a href="#" id="btnAddProduct" class="btn btn-outline-info btn-sm mb-3" data-toggle="modal" data-target="#exampleModalx" title="Agregar Producto">{!! $icons['add'] !!} Agregar</a>
+@endif
 <div class="table-responsive">
 <table class="table table-sm table-hover">
 	<thead>
@@ -12,7 +14,9 @@
 			<th class="text-center">Dscto2(%)</th>
 			<th class="text-center withTax">V.Total</th>
 			<th class="text-center withoutTax">P.Total</th>
+			@if(request()->route()->getName() == 'orders.edit')
 			<th class="text-center text-center">Acciones</th>
+			@endif
 		</tr>
 	</thead>
 	<tbody id="tableItems">
@@ -31,14 +35,16 @@
 			<td><span class='spanProduct'>{{ $detail->DFDESCRI }}</span>{!! Form::hidden("details[$i][DFDESCRI]", $detail->DFDESCRI, ['class'=>'txtProduct']); !!}</td>
 			<td class="text-center"><span class='spanCantidad'>{{ $detail->DFCANTID + 0 }} {{ $detail->DFUNIDAD }}</span>{!! Form::hidden("details[$i][DFCANTID]", $detail->DFCANTID + 0, ['class'=>'txtCantidad']) !!}</td>
 			<td class="withTax text-right"><span class='spanPrecio'>{{ number_format(round($detail->DFPREC_ORI*1.18, 2), 2, '.', '') }}</span>{!! Form::hidden("details[$i][price]", $detail->DFPREC_ORI*1.18, ['class'=>'txtPrecio']) !!}</td>
-			<td class="withoutTax text-right"><span class='spanValue'>{{ $detail->DFPREC_ORI + 0 }}</span>{!! Form::hidden("details[$i][DFPREC_ORI]", $detail->DFPREC_ORI + 0, ['class'=>'txtValue']) !!}</td>
+			<td class="withoutTax text-right"><span class='spanValue'>{{ number_format($detail->DFPREC_ORI + 0, 2) }}</span>{!! Form::hidden("details[$i][DFPREC_ORI]", $detail->DFPREC_ORI + 0, ['class'=>'txtValue']) !!}</td>
 			<td class="text-center"><span class='spanDscto2'>{{ $detail->DFPORDES + 0 }}</span>{!! Form::hidden("details[$i][DFPORDES]", $detail->DFPORDES + 0, ['class'=>'txtDscto2']) !!}</td>
-			<td class="withTax text-right"> <span class='txtTotal'>{{ number_format($detail->DFIMPMN/1.18, 2, '.', '') + 0 }}</span> </td>
-			<td class="withoutTax text-right"> <span class='txtPriceItem'>{{ number_format($detail->DFIMPMN, 2, '.', '') + 0 }}</span> </td>
+			<td class="withTax text-right"> <span class='txtTotal'>{{ number_format((($detail->DFIMPMN/1.18) + 0), 2, '.', '') }}</span> </td>
+			<td class="withoutTax text-right"> <span class='txtPriceItem'>{{ number_format($detail->DFIMPMN + 0, 2) }}</span> </td>
+			@if(request()->route()->getName() == 'orders.edit')
 			<td class="text-center" style="white-space: nowrap;">
 				<a href="#" class="btn btn-outline-primary btn-sm btn-edit-item" title="Editar">{!! $icons['edit'] !!}</a>
 				<a href="#" class="btn btn-outline-danger btn-sm btn-delete-item" title="Eliminar">{!! $icons['remove'] !!}</a>
 			</td>
+			@endif
 		</tr>
 		@php $i++; @endphp
 	@endforeach

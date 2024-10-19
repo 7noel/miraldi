@@ -32,6 +32,17 @@ class PickingController extends Controller
      */
     public function create()
     {
+        $pickingsToUpdate = \DB::connection('sqlsrv')->table('PEDCAB')
+            ->where(function($query) {
+                $query->where('CFCOTIZA', '=', 'ATENDIDO')
+                      ->orWhere('CFCOTIZA', '=', 'PARCIAL');
+            })
+            ->pluck('CFNUMPED');
+
+        \DB::table('pickings')
+            ->whereIn('CFNUMPED', $pickingsToUpdate) // Actualiza solo los registros que coincidan
+            ->update(['is_invoiced' => '1']);
+
         return view('pickings.create');
     }
 
@@ -162,6 +173,57 @@ class PickingController extends Controller
             $error = $response->status();
             return $error;
         }
+
+    }
+
+    public function disponible($codigoProducto)
+    {
+$codigoProducto = '50100010'; // Código del producto
+
+// Realiza una consulta para obtener todos los pickings que contengan el producto
+$pickings = \DB::table('pickings')
+    ->whereRaw("JSON_CONTAINS(details, JSON_OBJECT('codigo', ?))", [$codigoProducto])
+    ->where('is_invoiced', 0)
+    ->get();
+
+// Extrae los CFNUMPED de los pickings para hacer una sola consulta a PEDCAB
+$cfNumPeds = $pickings->pluck('CFNUMPED')->unique();
+
+// Obtiene los pedidos relacionados en una sola consulta
+$pedidos = \DB::connection('sqlsrv')->table('PEDCAB')
+    ->whereIn('CFNUMPED', $cfNumPeds)
+    ->get()
+    ->keyBy('CFNUMPED'); // Agrupa por CFNUMPED para fácil acceso
+
+// Inicializa un array para almacenar los registros del producto
+$resultados = [];
+
+// Recorre los pickings y extrae los detalles del producto
+foreach ($pickings as $picking) {
+    $detalles = json_decode($picking->details);
+
+    foreach ($detalles as $item) {
+        if ($item->codigo === $codigoProducto) {
+            // Obtiene el pedido relacionado desde el array de pedidos
+            $pedido = $pedidos->get($picking->CFNUMPED);
+
+            // Agrega la información al resultado
+            $resultados[] = [
+                'picking_id' => $picking->id,
+                'codcliente' => $pedido->CFCODCLI,
+                'cliente' => $pedido->CFNOMBRE,
+                'codigo' => $item->codigo,
+                'nombre' => $item->name,
+                'pl' => $item->pl,
+                // Agrega otros campos que desees devolver
+            ];
+        }
+    }
+}
+
+// Retorna los resultados como JSON
+return response()->json($resultados);
+
 
     }
 

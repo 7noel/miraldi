@@ -21,6 +21,7 @@ class CreatePickingsTable extends Migration
             $table->decimal('items', 12, 2);
             $table->decimal('pl', 12, 2);
             $table->decimal('es', 12, 2);
+            $table->boolean('is_invoiced');
             $table->timestamps();
         });
     }

@@ -53,6 +53,7 @@ class MenuController extends Controller
                 ['name' => 'Picking', 'route' => 'pickings.index'],
                 ['name' => 'Productos', 'route' => 'products.index'],
                 ['name' => 'Código de barras', 'route' => 'products.excel_codbars'],
+                ['name' => 'Pendientes', 'route' => 'por_comprar'],
             ],
             'Ventas'=>[
                 //['name' => 'Cotizaciones', 'route' => 'quotes.index'],
