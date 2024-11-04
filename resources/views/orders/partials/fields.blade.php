@@ -15,7 +15,7 @@
 @else
 	{!! Form::hidden('CFTIPCAM', null) !!}
 @endif
-<?php dd($model->original) ?>
+
 @if(isset($model))
 	@if(isset($model->original))
 		@if($model->original->activated_at)
