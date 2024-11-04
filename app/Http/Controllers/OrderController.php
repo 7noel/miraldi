@@ -90,7 +90,6 @@ class OrderController extends Controller
         $data['CFFECDOC'] = date('Y-d-m H:i:s');
         $data['CFFECVEN'] = date('Y-d-m H:i:s');
         $data = $this->prepareData($data);
-        // dd($data);
         $model = Order::create($data);
         // Graba el pedido original
         $this->saveOriginal($data);
@@ -101,7 +100,7 @@ class OrderController extends Controller
             }
         }
 
-        return redirect()->route( 'orders.edit' , $model);
+        return redirect()->route( 'orders.edit' , $data['CFNUMPED']);
         
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
