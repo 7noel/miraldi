@@ -117,7 +117,7 @@ class ProductController extends Controller
             $agregar = ['TCODALM'=>'01', 'TCODART'=>$model->ACODIGO, 'TCASILLERO'=>trim($data['TCASILLERO'])];
             if (is_null($ubi)) { // No existe ubicacion
                 if (trim($data['TCASILLERO']) != '') {
-                    dd("No existe ubicacion");
+                    //dd("No existe ubicacion");
                     $ubi = Locker::updateOrCreate($where, $agregar);
                 }
             } else { // Si existe ubicacion
@@ -127,7 +127,6 @@ class ProductController extends Controller
                     // $ubi = Locker::where('TCODALM', '01')->where('TCODART', $model->ACODIGO)->update(['TCASILLERO'=> trim($data['TCASILLERO'])]);
                 }
             }
-            
         }
 
         $model->save();

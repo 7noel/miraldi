@@ -15,17 +15,18 @@
 @else
 	{!! Form::hidden('CFTIPCAM', null) !!}
 @endif
-
+<?php dd($model->original) ?>
 @if(isset($model))
 	@if(isset($model->original))
 		@if($model->original->activated_at)
 			<!-- si está activado -->
-			<button type="button" class="btn btn-primary btn-sm" title="Activar Pedido" disabled>{!! $icons['check'] !!} Activar</button>
+			<button type="button" class="btn btn-primary btn-sm" title="Pedido Activo" disabled>{!! $icons['check'] !!} Activar</button>
 		@else
 			<!-- si no está activado -->
-			<button type="button" onclick="activarPedido({{ $model->CFNUMPED }})" class="btn btn-primary btn-sm" title="Pedido Activo" id="btnActivarPedido">{!! $icons['check'] !!} Activar</button>
+			<button type="button" onclick="activarPedido({{ $model->CFNUMPED }})" class="btn btn-primary btn-sm" title="Activar Pedido" id="btnActivarPedido">{!! $icons['check'] !!} Activar</button>
 		@endif
 	@else
+		<!-- No se puede activar pedido porque no existe un resgistro en la tabla "original" en mysql -->
 		<button type="button" class="btn btn-primary btn-sm" title="Activar Pedido" disabled>{!! $icons['check'] !!} Activarx</button>
 	@endif
 	<button type="button" onclick="printJS('{{ route( 'orders.print' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido Almacén">{!! $icons['printer'] !!} Almacén</button>
