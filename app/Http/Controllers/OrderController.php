@@ -205,6 +205,9 @@ class OrderController extends Controller
             $message = "Los datos se guardaron correctamente";
             return response()->json(['id' => $id, 'message' => $message]);
         }
+        
+        return redirect()->route( 'orders.show' , $id);
+
         if (isset($data['last_page']) && $data['last_page'] != '') {
             return redirect()->to($data['last_page']);
         }
