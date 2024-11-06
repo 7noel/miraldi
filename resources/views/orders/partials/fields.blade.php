@@ -23,7 +23,7 @@
 			<button type="button" class="btn btn-primary btn-sm" title="Pedido Activo" disabled>{!! $icons['check'] !!} Activar</button>
 		@else
 			<!-- si no está activado -->
-			<button type="button" onclick="activarPedido({{ $model->CFNUMPED }})" class="btn btn-primary btn-sm" title="Activar Pedido" id="btnActivarPedido">{!! $icons['check'] !!} Activar</button>
+			<button type="button" onclick="activarPedido('{{ $model->CFNUMPED }}')" class="btn btn-primary btn-sm" title="Activar Pedido" id="btnActivarPedido">{!! $icons['check'] !!} Activar</button>
 		@endif
 	@else
 		<!-- No se puede activar pedido porque no existe un resgistro en la tabla "original" en mysql -->

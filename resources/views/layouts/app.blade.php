@@ -623,7 +623,7 @@ $(document).ready(function () {
 })
 
 function activarPedido(pedido) {
-    var userConfirmed = confirm("¿Estás seguro de que deseas activar este Pedido?");
+    var userConfirmed = confirm(`¿Estás seguro de que deseas activar el Pedido ${pedido}?`);
     
     if (userConfirmed) {
         console.log(pedido)
@@ -796,22 +796,6 @@ function editModalProduct() {
 }
 
 function addRowProduct2() {
-    form = $(".form-loading")
-    var actionUrl = form.attr('action')
-    var formData = form.serialize()
-    $.ajax({
-        url: actionUrl, // Cambia esto por la URL de tu API
-        type: 'POST',
-        data: formData,
-        success: function(response) {
-            // Manejar la respuesta exitosa
-            console.log('Datos guardados con éxito: ' + response)
-        },
-        error: function(xhr, status, error) {
-            // Manejar el error
-            console.log('Error al guardar los datos: ' + error)
-        }
-    })
     //obteniendo los valores de los inputs
     desc = $('#txtProducto').val()
     codigo = $('#txtCodigo').text()
@@ -890,6 +874,24 @@ function addRowProduct2() {
     calcTotal()
     // window.descuento2 = d2
     clearModalProduct()
+
+    // Grabando en la base de datos
+    form = $(".form-loading")
+    var actionUrl = form.attr('action')
+    var formData = form.serialize()
+    $.ajax({
+        url: actionUrl, // Cambia esto por la URL de tu API
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            // Manejar la respuesta exitosa
+            console.log('Datos guardados con éxito: ' + response)
+        },
+        error: function(xhr, status, error) {
+            // Manejar el error
+            console.log('Error al guardar los datos: ' + error)
+        }
+    })
 
 }
 
