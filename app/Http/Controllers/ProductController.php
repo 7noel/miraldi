@@ -293,7 +293,7 @@ class ProductController extends Controller
         }
         return "Se actualizaron $count_updates registros y se crearon $count_creates registros";
     }
-    
+
     public function movimientos($codigo)
     {
         $fechaLimite = date('Y-m-d 00:00:00', strtotime('-15 days'));
@@ -316,7 +316,7 @@ class ProductController extends Controller
             $resultados['in_picking'] = round($in_picking->total_quantity, 2);
         }
         // Consulta para obtener movimientos de productos (facturas y picking)
-        $resultados['movimientos'] = PickingDetail::where('codigo', $codigo)->with('picking','order')->orderBy('created_at', 'desc')->get();
+        $resultados['movimientos'] = PickingDetail::where('codigo', $codigo)->with('picking', 'order', 'user')->orderBy('created_at', 'desc')->get();
 
         // Devolver los resultados al cliente (por ejemplo, en formato JSON)
         return response()->json($resultados);

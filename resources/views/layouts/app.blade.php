@@ -1152,6 +1152,7 @@ function verMovimientos(e, codigo) {
                         <td class="text-center">-</td>
                         <td class="text-center">-</td>
                         <td>${Obj.order.CFNOMBRE}</td>
+                        <td>${Obj.user.name}</td>
                     </tr>`
             } else {
                 $tr = `<tr>
@@ -1162,6 +1163,7 @@ function verMovimientos(e, codigo) {
                         <td class="text-center">${Obj.invoice}</td>
                         <td class="text-center">${Obj.invoiced_at.split(' ')[0]}</td>
                         <td>${Obj.order.CFNOMBRE}</td>
+                        <td>${Obj.user.name}</td>
                     </tr>`
             }
             $('#table-movimientos').append($tr)

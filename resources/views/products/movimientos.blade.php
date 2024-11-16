@@ -19,6 +19,7 @@
 							<th class="text-center">Cantidad</th>
 							<th class="text-center">Factura</th>
 							<th class="text-center">F_Factura</th>
+							<th>Usuario</th>
 							<th>Cliente</th>
 						</tr>
 					</thead>
@@ -30,6 +31,7 @@
 							<td>cantidad</td>
 							<td>factura</td>
 							<td>fecha2</td>
+							<td>usuario</td>
 							<td>cliente</td>
 						</tr>
 					</tbody>
