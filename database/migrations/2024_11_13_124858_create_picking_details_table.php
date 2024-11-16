@@ -25,7 +25,7 @@ class CreatePickingDetailsTable extends Migration
             $table->decimal('quantity_invoiced', 15, 2); // Cantidad facturada
             $table->decimal('quantity_pending_billing', 15, 2); // Cantidad pendiente de facturación
             $table->string('invoice'); // Serie y Numero de Factura
-            $table->dateTime('is_invoiced')->nullable();; // Fecha de la factura
+            $table->dateTime('invoiced_at')->nullable();; // Fecha de la factura
             $table->bigInteger('user_id'); // Relación con el usuario
             $table->timestamps();
             
