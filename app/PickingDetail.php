@@ -9,7 +9,7 @@ class PickingDetail extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['picking_id', 'CFNUMPED', 'codigo', 'codigo2', 'name', 'quantity', 'quantity_ordered', 'quantity_invoiced', 'quantity_pending_billing', 'invoiced_at', 'invoice', 'user_id'];
+    protected $fillable = ['picking_id', 'CFNUMPED', 'codigo', 'codigo2', 'name', 'quantity', 'quantity_ordered', 'quantity_invoiced', 'quantity_pending_billing', 'invoiced_at', 'invoice', 'user_id', 'created_at', 'updated_at'];
     public $timestamps = false;
 
     public function picking()
