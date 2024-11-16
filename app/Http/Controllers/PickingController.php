@@ -46,8 +46,8 @@ class PickingController extends Controller
                              ->on('f.CFNUMSER', '=', 'df.DFNUMSER')
                              ->on('f.CFNUMDOC', '=', 'df.DFNUMDOC');
                     })
-                    ->where('f.CFTD', '!=', 'NC')  // Filtro por número de pedido
-                    ->where('f.CFESTADO', 'V')  // Filtro por número de pedido
+                    ->where('f.CFTD', '!=', 'NC')  // Filtro para evitar notas de credito
+                    ->where('f.CFESTADO', 'V')  // Filtro para evitar documentos anulados
                     ->where('f.CFNROPED', '=', $detail->CFNUMPED)  // Filtro por número de pedido
                     ->where('df.DFCODIGO', '=', $detail->codigo)  // Filtro por código de producto
                     ->select('f.*','df.DFCANTID')  // Seleccionar todos los campos de la cabecera
@@ -203,7 +203,7 @@ class PickingController extends Controller
 
     public function actulizarDetalles()
     {
-        // dd("actulizarDetalles");
+        dd("No se ejecuta actulizarDetalles");
         $models = Picking::whereNotNull('detalles')->get();
         foreach ($models as $model) {
             // dd($model);

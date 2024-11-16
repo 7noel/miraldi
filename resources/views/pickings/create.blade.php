@@ -10,8 +10,8 @@
 				<div class="card-body">
 					<form action="#" class="qr" id="form-picking-qr">
 						<div class="form-group">
-							<!-- <input class="form-control form-control-sm" id="picking_qr" placeholder="Leer código QR" autofocus> -->
-							<textarea class="form-control" id="picking_qr">0000005|50100010 2.000000|50100050 2.000000</textarea>
+							<input class="form-control form-control-sm" id="picking_qr" placeholder="Leer código QR" autofocus>
+							<!-- <textarea class="form-control" id="picking_qr">0000005|50100010 2.000000|50100050 2.000000</textarea> -->
 						</div>
 						<div class="form-group">
 							<button type="submit" id="btn-pk" class="btn btn-outline-info btn-sm" title="picking">{!! $icons['add'] !!} Agregar Productos</button>
