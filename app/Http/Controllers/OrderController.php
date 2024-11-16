@@ -10,6 +10,7 @@ use App\Product;
 use App\Condition;
 use App\Company;
 use App\Original;
+use App\PickingDetail;
 
 class OrderController extends Controller
 {
@@ -290,7 +291,7 @@ class OrderController extends Controller
     public function get_picking($qr)
     {
         // Define la fecha límite
-        $fechaLimite = date('Y-d-m 00:00:00', strtotime('-15 days'));
+        $fechaLimite = date('Y-m-d 00:00:00', strtotime('-15 days'));
 
         // Extrae el order_id y los códigos de producto
         $vals = explode('|', $qr);
@@ -307,7 +308,7 @@ class OrderController extends Controller
 
         // Inicializa resultados con 0
         $resultados = array_fill_keys($p_ids->toArray(), 0);
-
+/*
         // Realiza una sola consulta para todos los códigos de productos
         $pickings = \DB::table('pickings')
             ->where(function ($query) use ($p_ids) {
@@ -328,6 +329,23 @@ class OrderController extends Controller
                     $resultados[$item->codigo] += $item->pl; // Acumula el valor de pl
                 }
             }
+        }
+*/
+        // Obteniendo los productos en pickings
+        // Filtrar registros que coincidan con los códigos de producto y cuyo campo invoiced_at sea null
+        $picking_details = PickingDetail::whereIn('codigo', $p_ids)
+                                   ->whereNull('invoiced_at')
+                                   ->where('created_at', '>=', $fechaLimite)
+                                   ->groupBy('codigo')
+                                   ->selectRaw('codigo, SUM(quantity) as total_quantity')
+                                   ->get();
+        
+        // Inicializar un array con todos los códigos de producto a 0
+        // $resultados = array_fill_keys($p_ids->toArray(), 0);
+        
+        // Actualizar los valores en $resultados con las sumas obtenidas
+        foreach ($picking_details as $detail) {
+            $resultados[$detail->codigo] = $detail->total_quantity;
         }
 
         $data['in_pickings'] = $resultados;

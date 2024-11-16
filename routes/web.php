@@ -36,6 +36,7 @@ Auth::routes();
 // Auth::routes(['verify' => true]);
 
 
+Route::get('actulizarDetalles', ['as' => 'actulizarDetalles', 'uses' => 'PickingController@actulizarDetalles']);
 Route::get('pdf_to_print/{id}', ['as' => 'pickings.pdf_to_print', 'uses' => 'PickingController@pdf_to_print']);
 Route::get('picking/print/{id}', ['as' => 'pickings.print', 'uses' => 'PickingController@print']);
 Route::get('listarProvincias/{departamento}', ['as' => 'ajaxprovincias', 'uses' => 'UbigeoController@ajaxProvincias']);
@@ -47,7 +48,8 @@ Route::get('get_picking/{qr}', ['as' => 'get_picking', 'uses' => 'OrderControlle
 Route::get('get_oc/{id}', ['as' => 'products.get_oc', 'uses' => 'ProductController@get_oc']);
 Route::get('activar_pedido/{id}', ['as' => 'orders.activar', 'uses' => 'OrderController@activar_pedido']);
 Route::get('por_comprar', ['as' => 'por_comprar', 'uses' => 'OrderController@por_comprar']);
-Route::get('disponible/{codigo}', ['as' => 'disponible', 'uses' => 'PickingController@disponible']);
+Route::get('movimientos/{codigo}', ['as' => 'movimientos', 'uses' => 'ProductController@movimientos']);
+Route::get('apiGetProductos/{term}', ['as' => 'apiGetProductos', 'uses' => 'ProductController@apiGetProductos']);
 
 Route::group(['middleware'=>['auth']], function(){
     Route::get('change_password', ['as' => 'change_password', 'uses' => 'UserController@changePassword']);

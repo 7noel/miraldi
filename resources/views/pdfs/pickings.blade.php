@@ -53,7 +53,7 @@
 		@endphp
 		@foreach($details as $key => $detail)
 			@php
-				$_code = $_code."$detail->codigo $detail->es|";
+				$_code = $_code."$detail->codigo $detail->quantity|";
 			@endphp
 		@endforeach
 		@php $_code = substr($_code, 0, -1) @endphp

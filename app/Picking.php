@@ -9,9 +9,9 @@ class Picking extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['CFNUMPED', 'details', 'user_id', 'items', 'pl', 'es'];
+    protected $fillable = ['CFNUMPED', 'user_id', 'items', 'pl', 'es'];
     protected $casts = [
-        'inventory' => 'json',
+        'detalles' => 'object',
     ];
 
     public function scopeName($query, $name){
@@ -29,5 +29,10 @@ class Picking extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(PickingDetail::class);
     }
 }

@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Picking;
+use App\PickingDetail;
 use App\Product;
+use App\Stock;
 
 class PickingController extends Controller
 {
@@ -32,16 +34,34 @@ class PickingController extends Controller
      */
     public function create()
     {
-        $pickingsToUpdate = \DB::connection('sqlsrv')->table('PEDCAB')
-            ->where(function($query) {
-                $query->where('CFCOTIZA', '=', 'ATENDIDO')
-                      ->orWhere('CFCOTIZA', '=', 'PARCIAL');
-            })
-            ->pluck('CFNUMPED');
+        $currentMinute = date('i');  // 'i' devuelve los minutos actuales
 
-        \DB::table('pickings')
-            ->whereIn('CFNUMPED', $pickingsToUpdate) // Actualiza solo los registros que coincidan
-            ->update(['is_invoiced' => '1']);
+        // Verificar si estamos dentro de los primeros 10 minutos de la hora
+        if ($currentMinute >= 0 && $currentMinute <= 9) {
+            $p_details = PickingDetail::whereNull('invoiced_at')->get();
+            foreach ($p_details as $detail) {
+                $factura = \DB::connection('sqlsrv')->table('FACCAB as f')
+                    ->join('FACDET as df', function($join) {
+                        $join->on('f.CFTD', '=', 'df.DFTD')
+                             ->on('f.CFNUMSER', '=', 'df.DFNUMSER')
+                             ->on('f.CFNUMDOC', '=', 'df.DFNUMDOC');
+                    })
+                    ->where('f.CFTD', '!=', 'NC')  // Filtro por número de pedido
+                    ->where('f.CFESTADO', 'V')  // Filtro por número de pedido
+                    ->where('f.CFNROPED', '=', $detail->CFNUMPED)  // Filtro por número de pedido
+                    ->where('df.DFCODIGO', '=', $detail->codigo)  // Filtro por código de producto
+                    ->select('f.*','df.DFCANTID')  // Seleccionar todos los campos de la cabecera
+                    ->first();
+
+                //Actualizando picking
+                if ($factura) {
+                    $detail->quantity_invoiced = $factura->DFCANTID;
+                    $detail->invoiced_at = $factura->CFFECDOC;
+                    $detail->invoice = $factura->CFNUMSER."-".$factura->CFNUMDOC;
+                    $detail->save();
+                }
+            }
+        }
 
         return view('pickings.create');
     }
@@ -56,11 +76,21 @@ class PickingController extends Controller
     {
         $data = request()->all();
         $data['CFNUMPED'] = str_pad($data['CFNUMPED'], 7, "0", STR_PAD_LEFT);
-        $data['details'] = json_encode($data['details']);
+        // $data['details'] = json_encode($data['details']);
         $data['user_id'] = \Auth::user()->id;
-        // dd($data);
-        $model = Picking::create($data);
-        // dd($model);
+
+        $model = Picking::updateOrCreate(['id'=>0], $data);
+
+        if (isset($data['details'])) {
+            foreach ($data['details'] as $key => $detail) {
+                $detail['user_id'] = $data['user_id'];
+                $detail['CFNUMPED'] = $data['CFNUMPED'];
+                $detail['quantity'] = $detail['es'];
+                $detail['quantity_ordered'] = $detail['pl'];
+                $detalle = PickingDetail::updateOrCreate(['picking_id' => $model->id, 'codigo' => $detail['codigo']], $detail);
+            }
+        }
+
         return redirect()->route('pickings.show', $model->id);
     }
 
@@ -99,12 +129,7 @@ class PickingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data = request()->all();
-        Order::updateOrCreate(['CFNUMPED' => $id], $data);
-        if (isset($data['last_page']) && $data['last_page'] != '') {
-            return redirect()->to($data['last_page']);
-        }
-        return redirect()->route('orders.index');
+        return true;
     }
 
     /**
@@ -176,55 +201,25 @@ class PickingController extends Controller
 
     }
 
-    public function disponible($codigoProducto)
+    public function actulizarDetalles()
     {
-$codigoProducto = '50100010'; // Código del producto
-
-// Realiza una consulta para obtener todos los pickings que contengan el producto
-$pickings = \DB::table('pickings')
-    ->whereRaw("JSON_CONTAINS(details, JSON_OBJECT('codigo', ?))", [$codigoProducto])
-    ->where('is_invoiced', 0)
-    ->get();
-
-// Extrae los CFNUMPED de los pickings para hacer una sola consulta a PEDCAB
-$cfNumPeds = $pickings->pluck('CFNUMPED')->unique();
-
-// Obtiene los pedidos relacionados en una sola consulta
-$pedidos = \DB::connection('sqlsrv')->table('PEDCAB')
-    ->whereIn('CFNUMPED', $cfNumPeds)
-    ->get()
-    ->keyBy('CFNUMPED'); // Agrupa por CFNUMPED para fácil acceso
-
-// Inicializa un array para almacenar los registros del producto
-$resultados = [];
-
-// Recorre los pickings y extrae los detalles del producto
-foreach ($pickings as $picking) {
-    $detalles = json_decode($picking->details);
-
-    foreach ($detalles as $item) {
-        if ($item->codigo === $codigoProducto) {
-            // Obtiene el pedido relacionado desde el array de pedidos
-            $pedido = $pedidos->get($picking->CFNUMPED);
-
-            // Agrega la información al resultado
-            $resultados[] = [
-                'picking_id' => $picking->id,
-                'codcliente' => $pedido->CFCODCLI,
-                'cliente' => $pedido->CFNOMBRE,
-                'codigo' => $item->codigo,
-                'nombre' => $item->name,
-                'pl' => $item->pl,
-                // Agrega otros campos que desees devolver
-            ];
+        // dd("actulizarDetalles");
+        $models = Picking::whereNotNull('detalles')->get();
+        foreach ($models as $model) {
+            // dd($model);
+            foreach ($model->detalles as $detalle) {
+                $data['CFNUMPED'] = $model->CFNUMPED;
+                $data['user_id'] = $model->user_id;
+                $data['codigo2'] = $detalle->codigo2;
+                $data['name'] = $detalle->name;
+                $data['quantity'] = $detalle->es;
+                $data['quantity_ordered'] = $detalle->pl;
+                $data['created_at'] = $model->created_at;
+                $data['updated_at'] = $model->updated_at;
+                PickingDetail::updateOrCreate(['picking_id'=>$model->id, 'codigo'=>$detalle->codigo], $data);
+            }
         }
-    }
-}
-
-// Retorna los resultados como JSON
-return response()->json($resultados);
-
-
+        dd("Se actualizaron los detalles de los pickings");
     }
 
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\PickingDetail;
 use App\Product;
 use App\Stock;
 use App\Price;
@@ -20,8 +21,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $models = Product::all();
-        return view('products.index',compact('models'));
+        // $models = Product::all();
+        return view('products.index');
     }
 
     /**
@@ -165,6 +166,12 @@ class ProductController extends Controller
         return response()->json($result);
     }
 
+    public function apiGetProductos($term)
+    {
+        $models =  Product::with('stock', 'price')->where('ACODIGO','like',"%$term%")->orwhere('ACODIGO2','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->orderBy('ACODIGO')->get();
+        return response()->json($models);
+    }
+
     public function search()
     {
         return view('products.search');
@@ -240,6 +247,7 @@ class ProductController extends Controller
 
     public function update_prices2()
     {
+        dd("Actualizacion de precios deshabilitada");
         $fecha = request()->input('fecha');
         $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and (Fecha1 >= ? and Fecha2 >= ?)", [$fecha, $fecha]);
         // $prices = \DB::connection('mysql_old')->select("select CodInterno, ValorCompra, GastosAdmin, Utilidad, ValorVenta from stocks where Estado!=0 and Datos3='' and Fecha1 < :f1 limit 2000", ['f1' => $fecha]);
@@ -285,4 +293,34 @@ class ProductController extends Controller
         }
         return "Se actualizaron $count_updates registros y se crearon $count_creates registros";
     }
+    
+    public function movimientos($codigo)
+    {
+        $fechaLimite = date('Y-m-d 00:00:00', strtotime('-15 days'));
+        $resultados['in_picking'] = 0;
+        $resultados['stock'] = 0;
+        $in_picking = PickingDetail::where('codigo', $codigo)
+                                   ->whereNull('invoiced_at')
+                                   ->where('created_at', '>=', $fechaLimite)
+                                   ->groupBy('codigo')
+                                   ->selectRaw('codigo, SUM(quantity) as total_quantity')
+                                   ->first();
+
+        $stock = Stock::where('STALMA', 1)->where('STCODIGO', $codigo)->first();
+        $product = Product::where('ACODIGO', $codigo)->first();
+        $resultados['product'] = $product;
+        if (!is_null($stock)) {
+            $resultados['stock'] = round($stock->STSKDIS, 2);
+        }
+        if (!is_null($in_picking)) {
+            $resultados['in_picking'] = round($in_picking->total_quantity, 2);
+        }
+        // Consulta para obtener movimientos de productos (facturas y picking)
+        $resultados['movimientos'] = PickingDetail::where('codigo', $codigo)->with('picking','order')->orderBy('created_at', 'desc')->get();
+
+        // Devolver los resultados al cliente (por ejemplo, en formato JSON)
+        return response()->json($resultados);
+
+    }
+
 }

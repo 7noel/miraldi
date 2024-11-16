@@ -19,4 +19,9 @@ class Stock extends Model
     {
         return $this->hasOne(Price::class, 'COD_ARTI', 'STCODIGO');
     }
+
+    public function product()
+    {
+        return $this->hasOne(Product::class, 'ACODIGO', 'STCODIGO');
+    }
 }

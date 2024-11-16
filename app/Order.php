@@ -44,4 +44,9 @@ class Order extends Model
     {
         return $this->hasOne(Original::class, 'CFNUMPED', 'CFNUMPED');
     }
+
+    public function pickings()
+    {
+        return $this->hasMany(Picking::class, 'CFNUMPED', 'CFNUMPED');
+    }
 }

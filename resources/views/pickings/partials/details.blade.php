@@ -17,8 +17,8 @@
 			<td>{{ $detail->codigo }}</td>
 			<td>{{ isset($detail->codigo2) ? $detail->codigo2 : '' }}</td>
 			<td>{{ $detail->name }}</td>
-			<td>{{ $detail->pl }}</td>
-			<td>{{ $detail->es }}</td>
+			<td>{{ $detail->quantity }}</td>
+			<td>{{ $detail->quantity_ordered }}</td>
 		</tr>
 		@php $i++; @endphp
 	@endforeach

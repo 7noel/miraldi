@@ -80,6 +80,8 @@
 	</div>
 </div>
 
+@include('products.movimientos')
+
 @endsection
 
 @section('scripts')

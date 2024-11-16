@@ -9,6 +9,22 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <style>
+        a.mi-enlace {
+            color: #0000EE;
+            text-decoration: none;
+        }
+
+        a.mi-enlace:visited {
+            color: #0000EE;
+        }
+
+        a.mi-enlace:hover {
+            color: #0000EE;
+        }
+
+        a.mi-enlace:active {
+            color: #0000EE;
+        }
         #spinner {
             display: none;
             position: absolute;
@@ -232,6 +248,40 @@
     </div>
     <script>
 $(document).ready(function () {
+    $('#inputBusqueda').on('input', function() {
+        // Obtener el valor del input y eliminar los espacios en blanco al inicio y final
+        var valor = $(this).val().trim();
+
+        // Comprobar si el valor tiene exactamente 4 caracteres
+        if (valor.length >= 4) {
+            // Realizar la petición GET si tiene 4 caracteres
+            $.get(`/apiGetProductos/${valor}`, function(data) {
+                // Aquí puedes manejar la respuesta de la API
+                console.log(data);
+
+                $('#table-products').empty()
+                $.each(data, function (index, Obj) {
+                    presentacion = ((Obj.APESO>1) ? round(Obj.APESO) : 1)
+                    precio = ((Obj.price == null) ? 0 : Number(Obj.price.PRE_ACT).toFixed(2))
+                    stock_disponible = (Obj.stock == null) ? 0 : (parseInt(0+Obj.stock.STSKDIS));
+                    $tr = `<tr>
+                                <td class="text-center text-codigo">${Obj.ACODIGO}</td>
+                                <td class="text-center text-codigo">${Obj.ACODIGO2}</td>
+                                <td class="text-description">${Obj.ADESCRI}</td>
+                                <td class="text-center no-almacen">${Obj.ACODMON} ${precio}</td>
+                                <td class="text-center text-unidad">${Obj.AUNIDAD}</td>
+                                <td class="text-center text-presentacion">${presentacion}</td>
+                                <td class="text-center" style="white-space: nowrap;">
+                                    <a href="#" onclick="verMovimientos(event, '${Obj.ACODIGO}')" class="btn btn-outline-info btn-sm" title="Historial"><i class="fas fa-history"></i></a>
+                                    <a href="/products/${Obj.ACODIGO}" class="btn btn-outline-secondary btn-sm" title="Ver"><i class="fas fa-eye"></i></a>
+                                    <a href="/products/${Obj.ACODIGO}/edit" class="btn btn-outline-primary btn-sm" title="Editar"><i class="fas fa-pencil-alt"></i></a>
+                                </td>
+                            </tr>`
+                    $('#table-products').append($tr)
+                })
+            });
+        }
+    });
     $(".link").on('click', function (e) {
         $('#overlay').show()
         $('#spinner').show()
@@ -954,8 +1004,8 @@ function addPrPicking() {
     // Recorre los tr
     var contador = 0
     $("#table-picking tr").each(function(){
-        contador = contador +1
-        let codigo = $(this).children().eq(0)
+        contador = contador + 1
+        let codigo = $(this).children().eq(0).find('a')
         let codigo2 = $(this).children().eq(1) // codigo de fabricante
         es_total = parseInt($("#es").val())
         es = parseInt($(this).children().eq(4).text())
@@ -1046,24 +1096,26 @@ function get_picking() {
         // console.log(arr[0])
     })
     // console.log(prs)
-    $.get(`/get_picking/${qr}`, function(data){
-        console.log(data)
+    $.get(`/get_picking/${qr}`, function(data) {
+        // console.log(data)
         $('#table-picking').empty()
         i = 0
         $.each(data.products, function (index, pr) {
             peso = ((pr.APESO > 1) ? parseInt(pr.APESO) : 1)
             ubicacion = pr.lockers.map(function(locker){return locker.TCASILLERO}).join(';')
+            stock_disponible = (typeof pr.stock.STSKDIS === 'undefined') ? 0 : (parseInt(0+pr.stock.STSKDIS) - data.in_pickings[pr.ACODIGO]);
             tr=`<tr>
-                    <td>${pr.ACODIGO}</td>
+                    <td><a href="#" class="mi-enlace" onclick="verMovimientos(event, '${pr.ACODIGO}')" data-toggle="modal" data-target="#myModal">${pr.ACODIGO}</a></td>
                     <td>${pr.ACODIGO2}</td>
                     <td>${pr.ADESCRI}</td>
                     <td class="text-center">${prs[pr.ACODIGO]}</td>
                     <td class="text-center">0</td>
                     <td class="text-center">${peso}</td>
-                    <td class="text-center">${ (typeof pr.stock.STSKDIS === 'undefined') ? 0 : (parseInt(0+pr.stock.STSKDIS) - data.in_pickings[pr.ACODIGO]) }</td>
+                    <td class="text-center">${stock_disponible}</td>
                     <td class="text-center">${ubicacion}</td>
+
                     <input type="hidden" class="codigo" name="details[${i}][codigo]" value="${pr.ACODIGO}">
-                    <input type="hidden" class="codigo" name="details[${i}][codigo2]" value="${pr.ACODIGO2}">
+                    <input type="hidden" class="codigo2" name="details[${i}][codigo2]" value="${pr.ACODIGO2}">
                     <input type="hidden" class="name" name="details[${i}][name]" value="${pr.ADESCRI}">
                     <input type="hidden" class="pl" name="details[${i}][pl]" value="${prs[pr.ACODIGO]}">
                     <input type="hidden" class="es" name="details[${i}][es]" value="0">
@@ -1077,6 +1129,44 @@ function get_picking() {
     $('.qr').addClass('d-none')
     $('.picking').removeClass('d-none')
     $('#codigo').focus()
+}
+
+function verMovimientos(e, codigo) {
+    e.preventDefault()
+
+    page = `/movimientos/${codigo}`
+    $.get(page, function(data){
+        console.log(data)
+        $('#exampleModal').modal('show')
+        $('#table-movimientos').empty()
+        $('#codigo_descripcion').text(`Producto: ${codigo} - ${data.product.ADESCRI}`)
+        $('#stock').text(`Stock: ${0+data.stock}`)
+        $('#stock_disponible').text(`Stock sin Embalar: ${data.stock - data.in_picking}`)
+        $.each(data.movimientos, function (index, Obj) {
+            if (Obj.invoiced_at == null) {
+                $tr = `<tr>
+                        <td class="text-center">${Obj.CFNUMPED}</td>
+                        <td class="text-center">${Obj.picking_id}</td>
+                        <td class="text-center">${Obj.created_at.split('T')[0]}</td>
+                        <td class="text-center">${Obj.quantity}</td>
+                        <td class="text-center">-</td>
+                        <td class="text-center">-</td>
+                        <td>${Obj.order.CFNOMBRE}</td>
+                    </tr>`
+            } else {
+                $tr = `<tr>
+                        <td class="text-center">${Obj.CFNUMPED}</td>
+                        <td class="text-center">${Obj.picking_id}</td>
+                        <td class="text-center">${Obj.created_at.split('T')[0]}</td>
+                        <td class="text-center">${Obj.quantity_invoiced}</td>
+                        <td class="text-center">${Obj.invoice}</td>
+                        <td class="text-center">${Obj.invoiced_at.split(' ')[0]}</td>
+                        <td>${Obj.order.CFNOMBRE}</td>
+                    </tr>`
+            }
+            $('#table-movimientos').append($tr)
+        })
+    })
 }
 
 function calcTotal () {
