@@ -23,7 +23,7 @@
 					            <th class="text-center no-almacen">Precio</th>
 					            <th class="text-center">Unidad</th>
 					            <th class="text-center">PRES</th>
-					            <th>Acciones</th>
+					            <th class="text-center">Acciones</th>
 					        </tr>
 					    </thead>
 					    <tbody id="table-products">
