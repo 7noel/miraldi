@@ -20,4 +20,9 @@ class PickingDetail extends Model
     {
         return $this->belongsTo(Order::class,'CFNUMPED','CFNUMPED');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
