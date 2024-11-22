@@ -40,9 +40,15 @@
 			<div>
 				<strong class="label_2">Dirección:</strong><span class="data-header" style="width: 68%">{{ $model->company->CDIRCLI }}</span>
 			</div>
+			@if($model->company->ubigeo)
 			<div>
 				<strong class="label_2">Lugar:</strong><strong class="data-header" style="width: 68%">{{ $model->company->ubigeo->distrito . ' - ' . $model->company->ubigeo->provincia . ' - ' . $model->company->ubigeo->departamento }}</strong>
 			</div>
+			@else
+			<div>
+				<strong class="label_2">Lugar:</strong><strong class="data-header" style="width: 68%">{{ $model->company->CPROV . ' - ' . $model->company->CDEPT }}</strong>
+			</div>
+			@endif
 			<div>
 				<strong class="label_2">Condiciones:</strong><span class="data-header">{{ $model->condition->DES_FP }}</span>
 			</div>
