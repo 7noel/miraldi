@@ -26,17 +26,24 @@
 					$is_activated = true;
 				}
 
-				$clase = '';
 				if ($model->CFCOTIZA=='AUTORIZADO') {
 					$clase = 'table-primary';
+					$estado = 'badge badge-primary';
 				} elseif ($model->CFCOTIZA=='ATENDIDO') {
 					$clase = 'table-success';
+					$estado = 'badge badge-success';
 				} elseif ($model->CFCOTIZA=='ANULADO') {
 					$clase = 'table-danger';
+					$estado = 'badge badge-danger';
 				} elseif ($model->CFCOTIZA=='RECHAZADO') {
 					$clase = 'table-warning';
+					$estado = 'badge badge-warning';
 				} elseif ($is_activated) {
 					$clase = 'table-info';
+					$estado = 'badge badge-info';
+				} else {
+					$clase = 'table-light';
+					$estado = 'badge badge-secondary';
 				}
 			@endphp
 		<tr data-id="{{ $model->id }}" data-tipo="OT" class="{{ $clase }}">
@@ -46,7 +53,7 @@
 			<td>{{ $model->seller->DES_VEN }}</td>
 			<td class="text-center">{{ $model->CFCODMON }}</td>
 			<td class="text-right">{{ number_format($model->CFIMPORTE, 2, '.', '') }}</td>
-			<td class="text-center status"><span class="badge">{{ $model->CFCOTIZA }}</span></td>
+			<td class="text-center status"><span class="{{ $estado }}">{{ $model->CFCOTIZA }}</span></td>
 			<td class="text-center">
 				@if(isset($model->original) and $model->original->activated_at)
 					{!! $icons['check'] !!}
