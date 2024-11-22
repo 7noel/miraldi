@@ -21,4 +21,9 @@ class Company extends Model
         }
     }
 
+    public function ubigeo()
+    {
+        return $this->belongsTo(Ubigeo::class,'UBIGEO','code');
+    }
+
 }

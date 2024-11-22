@@ -261,7 +261,7 @@ class OrderController extends Controller
     public function activar_pedido($id)
     {
         $model = Original::where('CFNUMPED', $id)->first();
-        $model->activated_at = date('Y-d-m H:i:s');
+        $model->activated_at = date('Y-m-d H:i:s');
         $model->read_only = '1';
         $model->save();
         return redirect()->route( 'orders.show' , $id);

@@ -35,10 +35,13 @@
 				<strong class="label_2">Usuario:</strong><span class="data-header">Usuariox {{ date('d/m/Y h:i a') }}</span>
 			</div>
 			<div>
-				<strong class="label_2">Señor(a):</strong><span class="data-header" style="width: 68%">{{ $model->CFNOMBRE }}</span>
+				<strong class="label_2">Señor(a):</strong><strong class="data-header" style="width: 68%">{{ $model->CFNOMBRE }}</strong>
 			</div>
 			<div>
-				<strong class="label_2">Dirección:</strong><span class="data-header" style="width: 68%">{{ $model->company->CDIRCLI . '-' . $model->company->CPROV . '-' . $model->company->CDEPT }}</span>
+				<strong class="label_2">Dirección:</strong><span class="data-header" style="width: 68%">{{ $model->company->CDIRCLI }}</span>
+			</div>
+			<div>
+				<strong class="label_2">Lugar:</strong><strong class="data-header" style="width: 68%">{{ $model->company->ubigeo->distrito . ' - ' . $model->company->ubigeo->provincia . ' - ' . $model->company->ubigeo->departamento }}</strong>
 			</div>
 			<div>
 				<strong class="label_2">Condiciones:</strong><span class="data-header">{{ $model->condition->DES_FP }}</span>
@@ -52,7 +55,7 @@
 			</div>
 			@endif
 			<div>
-				<strong class="label_2">Observaciones</strong><span class="data-header" style="width: 68%">{{ $model->CFGLOSA }}</span>
+				<strong class="label_2">Observaciones</strong><strong class="data-header" style="width: 68%">{{ $model->CFGLOSA }}</strong>
 			</div>
 		</div>
 		<div style="width:20%; display: inline-block;">
@@ -66,26 +69,32 @@
 				<img src="data:image/png;base64, {!! base64_encode(QrCode::size(150)->generate($_code)) !!} ">
 		</div>
 	</div>
-	<br>
+	<br><br><br>
 	<div class="container-items">
 		<table class="table-items">
 			<thead>
 				<tr>
-					<th class="th1 border center">ITEM</th>
-					<th class="th1 border center">CORREC.</th>
-					<th class="th3 border center">CANT.</th>
-					<th class="th2 border center">DESCRIPCIÓN</th>
-					<th class="th4 border center">BULTO</th>
+					<th class="border center">#</th>
+					<th class="border center">CORREC.</th>
+					<th class="border center">CANT.</th>
+					<th class="border center">UBI.</th>
+					<th class="border center">DESCRIPCIÓN</th>
+					<th class="border center">BULTO</th>
 				</tr>
 			</thead>
 			<tbody>
-				@php $i = 0 @endphp
+				@php
+					$i = 0;
+					$model->details->load(['product.lockers']);
+				@endphp
 				@foreach($model->details->sortBy('DFCODIGO') as $key => $detail)
+					<?php $ubicacion = (isset($detail->product->lockers[0])) ? $detail->product->lockers[0]->TCASILLERO : '' ; ?>
 					<tr>
 						<td class="border center">{{ ++$i }}</td>
 						<td class="border center"></td>
 						<td class="border center">{{ number_format($detail->DFCANTID, 2, '.', '').' '.$detail->DFUNIDAD }}</td>
-						<td class="border">{{ $detail->DFCODIGO }} {{ $detail->DFDESCRI }}</td>
+						<td class="border center">{{ $ubicacion }}</td>
+						<td class="border" style="padding: 4px 0;">{{ $detail->DFCODIGO }} {{ $detail->DFDESCRI }}</td>
 						<td class="border center"></td>
 					</tr>
 				@endforeach

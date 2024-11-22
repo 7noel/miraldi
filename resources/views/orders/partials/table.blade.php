@@ -15,25 +15,38 @@
 	</thead>
 	<tbody>
 		@foreach($models as $model)
-		@php
-		if ($model->CFCOTIZA=='AUTORIZADO') {
-			$clase = 'badge badge-primary';
-		} elseif ($model->CFCOTIZA=='ATENDIDO') {
-			$clase = 'badge badge-success';
-		} elseif ($model->CFCOTIZA=='ANUL') {
-			$clase = 'badge badge-danger';
-		} else {
-			$clase = 'badge badge-info';
-		}
-		@endphp
-		<tr data-id="{{ $model->id }}" data-tipo="OT">
+			@php
+				// Permite editar pedido en estado emitido a todos y en estado autorizado solo al administrador y al facturador
+				$is_activated = false;
+				if (isset($model->original)) {
+					if ($model->original->activated_at) {
+						$is_activated = true;
+					}
+				} else {
+					$is_activated = true;
+				}
+
+				$clase = '';
+				if ($model->CFCOTIZA=='AUTORIZADO') {
+					$clase = 'table-primary';
+				} elseif ($model->CFCOTIZA=='ATENDIDO') {
+					$clase = 'table-success';
+				} elseif ($model->CFCOTIZA=='ANULADO') {
+					$clase = 'table-danger';
+				} elseif ($model->CFCOTIZA=='RECHAZADO') {
+					$clase = 'table-warning';
+				} elseif ($is_activated) {
+					$clase = 'table-info';
+				}
+			@endphp
+		<tr data-id="{{ $model->id }}" data-tipo="OT" class="{{ $clase }}">
 			<td>{{ $model->CFNUMPED }}</td>
 			<td class="text-center">{{ date('d/m/Y', strtotime($model->CFFECDOC)) }}</td>
 			<td>{{ $model->CFNOMBRE }} </td>
 			<td>{{ $model->seller->DES_VEN }}</td>
 			<td class="text-center">{{ $model->CFCODMON }}</td>
 			<td class="text-right">{{ number_format($model->CFIMPORTE, 2, '.', '') }}</td>
-			<td class="text-center status"><span class="{{ $clase }}">{{ $model->CFCOTIZA }}</span></td>
+			<td class="text-center status"><span class="badge">{{ $model->CFCOTIZA }}</span></td>
 			<td class="text-center">
 				@if(isset($model->original) and $model->original->activated_at)
 					{!! $icons['check'] !!}
@@ -48,16 +61,7 @@
 				@else
 				<a href="#" class="btn btn-outline-info btn-sm" title="PDF Nota Original">{!! $icons['pdf'] !!}</a>
 				@endif
-				<!-- Permite editar pedido en estado emitido a todos y en estado autorizado solo al administrador y al facturador -->
 				<?php 
-				$is_activated = false;
-				if (isset($model->original)) {
-					if ($model->original->activated_at) {
-						$is_activated = true;
-					}
-				} else {
-					$is_activated = true;
-				}
 				 ?>
 				@if(($model->CFCOTIZA=='EMITIDO' and !$is_activated) or (($model->CFCOTIZA=='AUTORIZADO' or $is_activated) and in_array(\Auth::user()->role_id, [1, 4])))
 				<a href="{{ route( 'orders.edit' , $model) }}" class="btn btn-outline-primary btn-sm" title="Editar">{!! $icons['edit'] !!}</a>
