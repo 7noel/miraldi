@@ -61,8 +61,6 @@
 				@else
 				<a href="#" class="btn btn-outline-info btn-sm" title="PDF Nota Original">{!! $icons['pdf'] !!}</a>
 				@endif
-				<?php 
-				 ?>
 				@if(($model->CFCOTIZA=='EMITIDO' and !$is_activated) or (($model->CFCOTIZA=='AUTORIZADO' or $is_activated) and in_array(\Auth::user()->role_id, [1, 4])))
 				<a href="{{ route( 'orders.edit' , $model) }}" class="btn btn-outline-primary btn-sm" title="Editar">{!! $icons['edit'] !!}</a>
 				{{--<a href="#" class="btn-anular btn btn-outline-danger btn-sm" title="Eliminar">{!! $icons['remove'] !!}</a>--}}
