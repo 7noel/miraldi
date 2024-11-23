@@ -42,7 +42,7 @@
 					$clase = 'table-info';
 					$estado = 'badge badge-info';
 				} else {
-					$clase = 'table-light';
+					$clase = '';
 					$estado = 'badge badge-secondary';
 				}
 			@endphp
