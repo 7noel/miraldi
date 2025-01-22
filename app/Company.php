@@ -26,4 +26,17 @@ class Company extends Model
         return $this->belongsTo(Ubigeo::class,'UBIGEO','code');
     }
 
+    public function setCNOMCLIAttribute($value)
+    {
+        $this->attributes['CNOMCLI'] = substr($value, 0, 100); // Truncar a 100 caracteres
+    }
+    public function setCDIRCLIAttribute($value)
+    {
+        $this->attributes['CDIRCLI'] = substr($value, 0, 100); // Truncar a 100 caracteres
+    }
+    public function setDIRENTAttribute($value)
+    {
+        $this->attributes['DIRENT'] = substr($value, 0, 100); // Truncar a 100 caracteres
+    }
+
 }

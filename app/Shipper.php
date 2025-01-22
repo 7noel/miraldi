@@ -21,4 +21,20 @@ class Shipper extends Model
         }
     }
 
+    public function setTRARAZEMPAttribute($value)
+    {
+        $this->attributes['TRARAZEMP'] = substr($value, 0, 50); // Truncar a 50 caracteres
+    }
+    public function setTRANOMBREAttribute($value)
+    {
+        $this->attributes['TRANOMBRE'] = substr($value, 0, 50); // Truncar a 50 caracteres
+    }
+    public function setTRADIRAttribute($value)
+    {
+        $this->attributes['TRADIR'] = substr($value, 0, 100); // Truncar a 100 caracteres
+    }
+    public function setTRADIREMPAttribute($value)
+    {
+        $this->attributes['TRADIREMP'] = substr($value, 0, 100); // Truncar a 100 caracteres
+    }
 }

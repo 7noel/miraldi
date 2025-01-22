@@ -6,7 +6,7 @@
 		{!! Field::text('CCODCLI', ['label' => 'Número doc', 'class'=>'form-control-sm text-uppercase', 'id'=>'doc', 'required']) !!}
 	</div>
 	<div class="col-sm-4">
-		{!! Field::text('CNOMCLI', ['label' => 'Razón Social', 'class'=>'form-control-sm text-uppercase', 'id'=>'company_name', 'required']) !!}
+		{!! Field::text('CNOMCLI', ['label' => 'Razón Social', 'class'=>'form-control-sm text-uppercase', 'id'=>'company_name', 'maxlength'=>'100', 'required']) !!}
 	</div>
 	<div class="col-sm-2">
 		{!! Field::text('CAPELLIDO_PATERNO', ['label' => 'Ap Paterno', 'class'=>'form-control-sm text-uppercase', 'id'=>'paternal_surname', 'required']) !!}
@@ -27,7 +27,7 @@
 		{!! Field::select('UBIGEO', $ubigeo['distrito'], $ubigeo['value']['distrito'], ['empty'=>'Seleccionar', 'label'=>'Distrito', 'class'=>'form-control-sm', 'id'=>'ubigeo_code', 'required']) !!}
 	</div>
 	<div class="col-sm-4">
-		{!! Field::text('CDIRCLI', ['label' => 'Dirección', 'class'=>'form-control-sm text-uppercase', 'id'=>'address', 'required']) !!}
+		{!! Field::text('CDIRCLI', ['label' => 'Dirección', 'class'=>'form-control-sm text-uppercase', 'id'=>'address', 'maxlength'=>'100', 'required']) !!}
 	</div>
 	<div class="col-sm-2">
 		{!! Field::text('CTELEFO', ['label' => 'Celular', 'class'=>'form-control-sm', 'required']) !!}

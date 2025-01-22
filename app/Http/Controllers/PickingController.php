@@ -56,6 +56,7 @@ class PickingController extends Controller
                 //Actualizando picking
                 if ($factura) {
                     $detail->quantity_invoiced = $factura->DFCANTID;
+                    $detail->quantity_pending_billing = $detail->quantity - $detail->quantity_invoiced;
                     $detail->invoiced_at = $factura->CFFECDOC;
                     $detail->invoice = $factura->CFNUMSER."-".$factura->CFNUMDOC;
                     $detail->save();
