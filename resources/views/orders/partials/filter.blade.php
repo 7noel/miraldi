@@ -12,4 +12,8 @@
 		{!! Form::hidden('company_id', null, ['id'=>'company_id']) !!}
 		{!! Field::text('txtCompany', ['label'=>'Cliente','class'=>'form-control-sm']) !!}
 	</div>
+	<div class="col-sm-2">
+		<br>
+		{!! Form::checkboxes('por_aprobar', ['1'=>'Solo Pedidos por Aprobar'], ['class'=>'form-control-sm']) !!}
+	</div>
 </div>

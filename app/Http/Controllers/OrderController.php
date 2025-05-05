@@ -27,25 +27,41 @@ class OrderController extends Controller
             $filter->seller_id = '';
             $filter->company_id = '';
             $filter->txtCompany = '';
+            $filter->por_abrobar = '';
         }
-        if (isset($filter->txtCompany) && trim($filter->txtCompany) == '') {
-            $filter->company_id = '';
-        }
+        if (isset($filter->por_aprobar)) {
+            // 1. Obtener todos los CFNUMPED con estado EMITIDO desde SQL Server (puede ser Eloquent o query builder)
+            $emitidos = \DB::connection('sqlsrv')
+                ->table('PEDCAB')
+                ->where('CFCOTIZA', 'EMITIDO')
+                ->pluck('CFNUMPED');
 
-        $q = Order::with('seller', 'company', 'original');
-        if (\Auth::user()->role_id == 2) {
-            $q->where('CFVENDE', \Auth::user()->seller_code);
-        }
-        if ($filter->sn > 0) {
-            $models = $q->where('CFNUMPED', str_pad($filter->sn, 7, "0", STR_PAD_LEFT))->orderBy('CFNUMPED', 'desc')->paginate();
+            // 2. Filtrar con los que tienen activated_at no null en la tabla originals (conexión por defecto)
+            $filtrados = Original::whereNotNull('activated_at')
+                ->whereIn('CFNUMPED', $emitidos)
+                ->pluck('CFNUMPED');
+            $models = Order::with('seller', 'company', 'original')->whereIn('CFNUMPED', $filtrados)->paginate(100);
         } else {
-            if(isset($filter->seller_id) && $filter->seller_id != '') {
-                $q->where('CFVENDE', $filter->seller_id);
+            if (isset($filter->txtCompany) && trim($filter->txtCompany) == '') {
+                $filter->company_id = '';
             }
-            if(isset($filter->company_id) && $filter->company_id != '') {
-                $q->where('CFCODCLI', $filter->company_id);
+
+            $q = Order::with('seller', 'company', 'original');
+            if (\Auth::user()->role_id == 2) {
+                $q->where('CFVENDE', \Auth::user()->seller_code);
             }
-            $models = $q->orderBy('CFNUMPED', 'desc')->paginate();
+            if ($filter->sn > 0) {
+                $models = $q->where('CFNUMPED', str_pad($filter->sn, 7, "0", STR_PAD_LEFT))->orderBy('CFNUMPED', 'desc')->paginate(100);
+            } else {
+                if(isset($filter->seller_id) && $filter->seller_id != '') {
+                    $q->where('CFVENDE', $filter->seller_id);
+                }
+                if(isset($filter->company_id) && $filter->company_id != '') {
+                    $q->where('CFCODCLI', $filter->company_id);
+                }
+                $models = $q->orderBy('CFNUMPED', 'desc')->paginate(100);
+            }
+
         }
         if (\Auth::user()->role_id == 2) {
             $sellers = Seller::where('COD_VEN', \Auth::user()->seller_code)->pluck('DES_VEN', 'COD_VEN')->toArray();

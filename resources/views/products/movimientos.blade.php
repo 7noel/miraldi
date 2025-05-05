@@ -2,10 +2,15 @@
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-xl">
 		<div class="modal-content">
-			<div class="modal-body table-responsive">
+			<div class="modal-header">
 				<div class="text-center">
 					<h5 class="font-weight-bold">Ultimos Movimientos</h5>
 				</div>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body table-responsive">
 				<div class="font-weight-bold" id="codigo_descripcion"></div>
 				<div class="font-weight-bold" id="stock"></div>
 				<div class="font-weight-bold" id="stock_disponible"></div>

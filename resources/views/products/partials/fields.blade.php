@@ -1,3 +1,5 @@
+<a href="{{ route('products.index') }}" class="btn btn-sm btn-outline-primary">Litado de Productos</a>
+<br><br>
 <div class="form-row">
 	<div class="col-sm-2 form-group">
 		<label for="codigox">Codigo</label>

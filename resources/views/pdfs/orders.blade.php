@@ -114,14 +114,32 @@
 		<table class="table-total">
 			<tbody>
 				<tr>
-					<td class="center">________________________</td>
-					<td class="center">________________________</td>
-					<td class="center">________________________</td>
+					<td class="center"></td>
+					<td class="center">PREPARADO POR:</td>
+					<td class="center">COMPLETADO POR:</td>
+					<td class="center">VERIFICADO POR:</td>
+					<td class="center">EMBALADO POR:</td>
 				</tr>
 				<tr>
-					<td class="center">EMBALADO POR:</td>
-					<td class="center">VERIFICADO POR:</td>
-					<td class="center">V° B° ALMACEN:</td>
+					<td class="center"><small><br><br><br>Firma:</small></td>
+					<td class="center"><br><br><br>__________________</td>
+					<td class="center"><br><br><br>__________________</td>
+					<td class="center"><br><br><br>__________________</td>
+					<td class="center"><br><br><br>__________________</td>
+				</tr>
+				<tr>
+					<td class="center"><small>Fecha y hora:</small></td>
+					<td class="center">__________________</td>
+					<td class="center">__________________</td>
+					<td class="center">__________________</td>
+					<td class="center">__________________</td>
+				</tr>
+				<tr>
+					<td class="center"><small>Nombre:</small></td>
+					<td class="center">__________________</td>
+					<td class="center">__________________</td>
+					<td class="center">__________________</td>
+					<td class="center">__________________</td>
 				</tr>
 			</tbody>
 		</table>
