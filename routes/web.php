@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Response;
 use App\Product;
 use App\Stock;
 use App\Price;
@@ -51,6 +53,43 @@ Route::get('por_comprar', ['as' => 'por_comprar', 'uses' => 'OrderController@por
 Route::get('movimientos/{codigo}', ['as' => 'movimientos', 'uses' => 'ProductController@movimientos']);
 Route::get('apiGetProductos/{term}', ['as' => 'apiGetProductos', 'uses' => 'ProductController@apiGetProductos']);
 
+Route::get('ver-pdf', function () {
+    $ruta = request('ruta');
+
+    // Si no hay ruta, error
+    if (!$ruta) {
+        abort(400, 'Ruta no especificada');
+    }
+
+    // 🔹 Obtener el nombre del archivo a partir de la ruta (sin punto final)
+    $fileName = pathinfo(rtrim($ruta, '.'), PATHINFO_BASENAME) . '.pdf';
+
+    // URL local al servicio Flask
+    $urlFlask = 'http://127.0.0.1:5000/pdf-local?ruta=' . urlencode($ruta);
+
+    try {
+        $response = Http::timeout(60)->get($urlFlask);
+
+        if ($response->failed()) {
+            abort(404, 'Archivo no encontrado o error en servidor local');
+        }
+
+        // Entregar el PDF directamente al navegador
+        return Response::make($response->body(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . $fileName . '"',
+            'Access-Control-Allow-Origin' => '*',
+            'X-Frame-Options' => 'ALLOWALL',              // 👈 permite embeber
+            'Content-Security-Policy' => "frame-ancestors *", // 👈 permite iframes
+            'Cross-Origin-Resource-Policy' => 'cross-origin',
+        ]);
+
+    } catch (Exception $e) {
+        abort(500, 'Error al obtener el PDF: ' . $e->getMessage());
+    }
+})->name('ver-pdf');
+
+
 Route::group(['middleware'=>['auth']], function(){
     Route::get('change_password', ['as' => 'change_password', 'uses' => 'UserController@changePassword']);
     Route::post('update_password', ['as'=>'update_password', 'uses'=>'UserController@updatePassword']);
@@ -76,4 +115,5 @@ Route::group(['middleware'=>['auth', 'permissions']], function(){
         return view('products.update_prices');
     });
     Route::post('update_prices2', ['as' => 'products.update_prices2', 'uses' => 'ProductController@update_prices2']);
+    Route::get('get_invoices_by_order/{id}', ['as' => 'orders.get_invoices', 'uses' => 'OrderController@get_invoices']);
 });

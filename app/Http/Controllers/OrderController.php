@@ -443,4 +443,40 @@ class OrderController extends Controller
         return Original::updateOrCreate($where, $array);
     }
 
+    public function get_invoices($id)
+    {
+        // $id = número de pedido (CFNUMPED)
+        // conexión a SQL Server (configurada en .env con DB_CONNECTION=sqlsrv)
+        $facturas = \DB::connection('sqlsrv')
+            ->table('FACCAB as f')
+            ->join('COMPROBANTE_CAB as c', function ($join) {
+                $join->on(\DB::raw("
+                    CASE f.CFTD
+                        WHEN 'FT' THEN '01'
+                        WHEN 'BV' THEN '03'
+                        WHEN 'NC' THEN '07'
+                        WHEN 'ND' THEN '08'
+                    END
+                "), '=', 'c.TIPODOC_COMPROBANTE')
+                ->on('f.CFNUMSER', '=', 'c.CFNUMSER')
+                ->on(\DB::raw('RIGHT(c.CFNUMDOC, 7)'), '=', 'f.CFNUMDOC');
+            })
+            ->select(
+                'f.CFTD as tipo',
+                'f.CFNUMSER as serie',
+                'f.CFNUMDOC as numero',
+                'f.CFFECDOC as fecha',
+                'f.CFNOMBRE as cliente',
+                'f.CFCODCLI as ruc',
+                'c.IMPORTE_TOTAL_VENTA as importe',
+                'c.MONEDA as moneda',
+                'c.ESTADO_COMPROBANTE as estado',
+                'c.RUTA_COMPROBANTE as ruta'
+            )
+            ->where('f.CFNROPED', $id)
+            ->get();
+
+        return view('orders.invoices', compact('facturas', 'id'));
+    }
+
 }

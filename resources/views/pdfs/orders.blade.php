@@ -58,7 +58,10 @@
 			</div>
 			@if(isset($model->shipper->TRANOMBRE))
 			<div>
-				<strong class="label_2">Agencia:</strong><span class="data-header">{{$model->shipper->TRANOMBRE}}</span>
+				<strong class="label_2">Agencia:</strong><span class="data-header">{{ $model->shipper->TRANOMBRE }}</span>
+			</div>
+			<div>
+				<strong class="label_2">Dirección Agencia:</strong><span class="data-header">{{ $model->shipper->TRADIREMP }}</span>
 			</div>
 			@endif
 			<div>
