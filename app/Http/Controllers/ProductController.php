@@ -495,17 +495,20 @@ class ProductController extends Controller
         }
 
         // === CONSULTA SQL OPTIMIZADA ===
-        $sql = "
-        ;WITH ProductosVendidos AS (
-            SELECT D.DFCODIGO
+         $sql = "
+        ;WITH VentasRango AS (
+            SELECT 
+                D.DFCODIGO,
+                SUM(D.DFCANTID) AS Cant_Ven
             FROM FACDET D WITH (NOLOCK)
             INNER JOIN FACCAB F WITH (NOLOCK)
                 ON F.CFTD = D.DFTD 
                 AND F.CFNUMSER = D.DFNUMSER 
                 AND F.CFNUMDOC = D.DFNUMDOC
-            WHERE F.CFTD IN ('FT','BV')
-              AND F.CFFECDOC BETWEEN ? AND ?
-              AND D.DFCODIGO IS NOT NULL
+            WHERE 
+                F.CFTD IN ('FT','BV')
+                AND F.CFFECDOC BETWEEN ? AND ?
+                AND D.DFCODIGO IS NOT NULL
             GROUP BY D.DFCODIGO
         )
         SELECT 
@@ -513,25 +516,31 @@ class ProductController extends Controller
             A.ADESCRI AS Descripcion,
             A.AUNIDAD AS Unidad,
 
-            -- Ventas totales y promedio mensual
-            SUM(D.DFCANTID) AS Cant_Ven,
-            CAST(SUM(D.DFCANTID) / NULLIF(? , 0) * 30 AS DECIMAL(18,2)) AS Prom_Mes,
+            ISNULL(V.Cant_Ven, 0) AS Cant_Ven,
+            CAST(ISNULL(V.Cant_Ven, 0) / NULLIF(? , 0) * 30 AS DECIMAL(18,2)) AS Prom_Mes,
 
-            -- Stocks
             ISNULL(S01.STSKDIS, 0) AS Stock_01,
             ISNULL(S03.STSKDIS, 0) AS Stock_03,
 
-            -- Moneda: si no hay compra nacional pero hay importación, usar ME
+            -- Moneda
             CASE 
-                WHEN C.CCCODMON IS NULL AND IMP.CDESPROVE IS NOT NULL THEN 'ME'
+                WHEN (C.CCFECDOC IS NULL OR IMP.FEMISION > C.CCFECDOC) THEN 'ME'
                 ELSE C.CCCODMON 
             END AS Moneda,
 
-            -- Datos de compra
-            C.DCPREC_COM AS Costo,
-            C.DCCANTID AS Cant_Comp,
+            -- Costo (usa el de importación si es más reciente)
+            CASE 
+                WHEN (C.CCFECDOC IS NULL OR IMP.FEMISION > C.CCFECDOC) THEN IMP.NPREUNITA
+                ELSE C.DCPREC_COM
+            END AS Costo,
 
-            -- Fecha: mostrar la más reciente entre compra nacional e importación
+            -- Cantidad (usa la de importación si es más reciente)
+            CASE 
+                WHEN (C.CCFECDOC IS NULL OR IMP.FEMISION > C.CCFECDOC) THEN IMP.NCANTIDAD
+                ELSE C.DCCANTID
+            END AS Cant_Comp,
+
+            -- Fecha más reciente (entre compra nacional e importación)
             CASE 
                 WHEN C.CCFECDOC IS NULL AND IMP.FEMISION IS NULL THEN NULL
                 WHEN C.CCFECDOC IS NULL THEN IMP.FEMISION
@@ -540,7 +549,7 @@ class ProductController extends Controller
                 ELSE C.CCFECDOC
             END AS Fec_Compra,
 
-            -- Proveedor: depende de cuál fue la más reciente
+            -- Proveedor (según la fecha más reciente)
             CASE 
                 WHEN C.CCFECDOC IS NULL AND IMP.FEMISION IS NULL THEN NULL
                 WHEN C.CCFECDOC IS NULL THEN IMP.CDESPROVE
@@ -549,21 +558,18 @@ class ProductController extends Controller
                 ELSE P.PRVCNOMBRE
             END AS Proveedor,
 
-            -- Flag para resaltar en Blade
+            -- Marca si la última compra fue importación
             CASE 
-                WHEN C.CCCODPRO IS NULL AND IMP.CDESPROVE IS NOT NULL THEN 1
+                WHEN (IMP.FEMISION IS NOT NULL AND (C.CCFECDOC IS NULL OR IMP.FEMISION > C.CCFECDOC)) THEN 1
                 ELSE 0
             END AS EsImportacion
 
-        FROM ProductosVendidos V
+        FROM VentasRango V
         INNER JOIN MAEART A WITH (NOLOCK) ON A.ACODIGO = V.DFCODIGO
-        LEFT JOIN FACDET D WITH (NOLOCK) ON A.ACODIGO = D.DFCODIGO
-        LEFT JOIN FACCAB F WITH (NOLOCK) 
-            ON F.CFTD = D.DFTD AND F.CFNUMSER = D.DFNUMSER AND F.CFNUMDOC = D.DFNUMDOC
         LEFT JOIN STKART S01 WITH (NOLOCK) ON S01.STCODIGO = A.ACODIGO AND S01.STALMA = '01'
         LEFT JOIN STKART S03 WITH (NOLOCK) ON S03.STCODIGO = A.ACODIGO AND S03.STALMA = '03'
 
-        -- Última compra nacional (solo últimos 18 meses)
+        -- Última compra nacional
         OUTER APPLY (
             SELECT TOP 1 
                 CD.DCPREC_COM, CD.DCCANTID, CB.CCFECDOC, CB.CCCODPRO, CB.CCCODMON
@@ -577,10 +583,13 @@ class ProductController extends Controller
 
         LEFT JOIN MAEPROV P WITH (NOLOCK) ON P.PRVCCODIGO = C.CCCODPRO
 
-        -- Última importación (solo últimos 18 meses)
+        -- Última importación (usando campos reales NCANTIDAD / NPREUNITA)
         OUTER APPLY (
             SELECT TOP 1 
-                I.FEMISION, I.CDESPROVE
+                I.FEMISION,
+                I.CDESPROVE,
+                D2.NCANTIDAD,
+                D2.NPREUNITA
             FROM IMPORD D2 WITH (NOLOCK)
             INNER JOIN IMPORC I WITH (NOLOCK) ON I.CNUMERO = D2.CNUMERO
             WHERE D2.CCODARTIC = A.ACODIGO
@@ -588,20 +597,14 @@ class ProductController extends Controller
             ORDER BY I.FEMISION DESC
         ) AS IMP
 
-        GROUP BY 
-            A.ACODIGO, A.ADESCRI, A.AUNIDAD,
-            S01.STSKDIS, S03.STSKDIS,
-            C.CCCODMON, C.DCPREC_COM, C.DCCANTID, 
-            C.CCFECDOC, C.CCCODPRO, P.PRVCNOMBRE, 
-            IMP.CDESPROVE, IMP.FEMISION
-        ORDER BY Cant_Ven DESC;
+        ORDER BY V.Cant_Ven DESC;
         ";
 
         // === EJECUTAR CONSULTA ===
         $data = \DB::connection('sqlsrv')->select($sql, [
-            $fechaInicio,   // 1° parámetro: fecha inicio con formato Y-d-m
-            $fechaFin,      // 2° parámetro: fecha fin con formato Y-d-m
-            $dias           // 3° parámetro: número de días para promedio
+            $fechaInicio,  // para CTE (rango desde)
+            $fechaFin,     // para CTE (rango hasta)
+            $dias          // para cálculo de promedio
         ]);
 
         // === RETORNAR VISTA ===
