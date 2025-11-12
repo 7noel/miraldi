@@ -28,6 +28,7 @@ class OrderController extends Controller
             $filter->company_id = '';
             $filter->txtCompany = '';
             $filter->por_abrobar = '';
+            $filter->status = '';
         }
         if (isset($filter->por_aprobar)) {
             // 1. Obtener todos los CFNUMPED con estado EMITIDO desde SQL Server (puede ser Eloquent o query builder)
@@ -58,6 +59,9 @@ class OrderController extends Controller
                 }
                 if(isset($filter->company_id) && $filter->company_id != '') {
                     $q->where('CFCODCLI', $filter->company_id);
+                }
+                if(isset($filter->status) && $filter->status != '') {
+                    $q->where('CFCOTIZA', $filter->status);
                 }
                 $models = $q->orderBy('CFNUMPED', 'desc')->paginate(100);
             }
@@ -283,24 +287,69 @@ class OrderController extends Controller
         return redirect()->route( 'orders.show' , $id);
     }
 
+    // public function por_comprar()
+    // {
+    //     $fechaLimite = date('Y-d-m 00:00:00', strtotime('-15 days'));
+    //     $models = \DB::connection('sqlsrv')->table('PEDDET')
+    //         ->join('MAEART', 'PEDDET.DFCODIGO', '=', 'MAEART.ACODIGO')
+    //         ->join('PEDCAB', 'PEDCAB.CFNUMPED', '=', 'PEDDET.DFNUMPED')
+    //         ->join('STKART', 'PEDDET.DFCODIGO', '=', 'STKART.STCODIGO')
+    //         ->where('PEDCAB.CFFECDOC', '>=', $fechaLimite)
+    //         ->where('PEDCAB.CFCOTIZA', 'AUTORIZADO')
+    //         ->select('MAEART.ACODIGO', 'MAEART.ADESCRI', 'MAEART.AUNIDAD', 'STKART.STSKDIS',
+    //             \DB::raw('STRING_AGG(PEDCAB.CFNUMPED, \', \') as numeros_pedidos'),
+    //             \DB::raw('SUM(PEDDET.DFCANTID) as total_cantidad'),
+    //             \DB::raw('SUM(PEDDET.DFCANTID) - STKART.STSKDIS as diferencia'))
+    //         ->distinct()
+    //         ->groupBy('MAEART.ACODIGO', 'MAEART.ADESCRI', 'MAEART.AUNIDAD', 'STKART.STSKDIS')
+    //         ->havingRaw('SUM(PEDDET.DFCANTID) - STKART.STSKDIS > 0') // Filtrar registros con diferencia mayor a cero
+    //         ->orderBy('diferencia', 'desc')
+    //         ->get();
+    //     return view('products.por_comprar', compact('models'));
+    // }
+
     public function por_comprar()
     {
         $fechaLimite = date('Y-d-m 00:00:00', strtotime('-15 days'));
+
         $models = \DB::connection('sqlsrv')->table('PEDDET')
             ->join('MAEART', 'PEDDET.DFCODIGO', '=', 'MAEART.ACODIGO')
             ->join('PEDCAB', 'PEDCAB.CFNUMPED', '=', 'PEDDET.DFNUMPED')
-            ->join('STKART', 'PEDDET.DFCODIGO', '=', 'STKART.STCODIGO')
+            ->join('STKART as stk01', function ($join) {
+                $join->on('PEDDET.DFCODIGO', '=', 'stk01.STCODIGO')
+                     ->where('stk01.STALMA', '=', '01');
+            })
+            ->leftJoin('STKART as stk03', function ($join) {
+                $join->on('PEDDET.DFCODIGO', '=', 'stk03.STCODIGO')
+                     ->where('stk03.STALMA', '=', '03');
+            })
             ->where('PEDCAB.CFFECDOC', '>=', $fechaLimite)
             ->where('PEDCAB.CFCOTIZA', 'AUTORIZADO')
-            ->select('MAEART.ACODIGO', 'MAEART.ADESCRI', 'MAEART.AUNIDAD', 'STKART.STSKDIS',
+            ->select(
+                'MAEART.ACODIGO',
+                'MAEART.ADESCRI',
+                'MAEART.AUNIDAD',
+                \DB::raw('ISNULL(stk01.STSKDIS, 0) as stock_01'),
+                \DB::raw('ISNULL(stk03.STSKDIS, 0) as stock_03'),
                 \DB::raw('STRING_AGG(PEDCAB.CFNUMPED, \', \') as numeros_pedidos'),
                 \DB::raw('SUM(PEDDET.DFCANTID) as total_cantidad'),
-                \DB::raw('SUM(PEDDET.DFCANTID) - STKART.STSKDIS as diferencia'))
-            ->distinct()
-            ->groupBy('MAEART.ACODIGO', 'MAEART.ADESCRI', 'MAEART.AUNIDAD', 'STKART.STSKDIS')
-            ->havingRaw('SUM(PEDDET.DFCANTID) - STKART.STSKDIS > 0') // Filtrar registros con diferencia mayor a cero
+                // ✅ nuevo cálculo del faltante total (considerando ambos almacenes)
+                \DB::raw('CASE 
+                            WHEN SUM(PEDDET.DFCANTID) - (ISNULL(stk01.STSKDIS, 0) + ISNULL(stk03.STSKDIS, 0)) > 0 
+                            THEN SUM(PEDDET.DFCANTID) - (ISNULL(stk01.STSKDIS, 0) + ISNULL(stk03.STSKDIS, 0))
+                            ELSE 0 END as diferencia')
+            )
+            ->groupBy(
+                'MAEART.ACODIGO',
+                'MAEART.ADESCRI',
+                'MAEART.AUNIDAD',
+                'stk01.STSKDIS',
+                'stk03.STSKDIS'
+            )
+            ->havingRaw('SUM(PEDDET.DFCANTID) - ISNULL(stk01.STSKDIS, 0) > 0')
             ->orderBy('diferencia', 'desc')
             ->get();
+
         return view('products.por_comprar', compact('models'));
     }
 

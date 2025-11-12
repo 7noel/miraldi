@@ -1,5 +1,14 @@
 <?php 
 return array(
+	'order_status' => [
+		'' => 'TODOS',
+		'EMITIDO' => 'EMITIDO',
+		'PARCIAL' => 'PARCIAL',
+		'ATENDIDO' => 'ATENDIDO',
+		'AUTORIZADO' => 'AUTORIZADO',
+		'ANULADO' => 'ANULADO',
+		'RECHAZADO' => 'RECHAZADO',
+	],
 	'document_types' => [
 		'01' => 'FACTURA ELECTRÓNICA',
 		'03' => 'BOLETA ELECTRÓNICA',
@@ -80,7 +89,6 @@ return array(
 	'mov' => ['Salida', 'Entrada'],
 	'proof_status' => ['PEND' => 'PEND', 'ERROR' => 'ERROR', 'SUNAT' => 'SUNAT', 'PANUL' => 'PANUL', 'ANUL' => 'ANUL'],
 	'quote_status' => ['PEND' => 'PEND', 'APROB' => 'APROB', 'ANUL' => 'ANUL', 'CERR' => 'CERR'],
-	'order_status' => ['ENPRG' => 'ENPRG', 'COMP' => 'COMP', 'ANUL' => 'ANUL', 'CERR' => 'CERR'],
 	'appointment_status' => ['PEND' => 'PEND', 'EFECT' => 'EFECT', 'ANUL' => 'ANUL'],
 	'tax' => ['igv' => 18],
 	'table_sunat' => [

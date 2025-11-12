@@ -264,6 +264,17 @@ $(document).ready(function () {
                     presentacion = ((Obj.APESO>1) ? round(Obj.APESO) : 1)
                     precio = ((Obj.price == null) ? 0 : Number(Obj.price.PRE_ACT).toFixed(2))
                     stock_disponible = (Obj.stock == null) ? 0 : (parseInt(0+Obj.stock.STSKDIS));
+                    // 🆕 Obtener ubicaciones (TCASILLERO)
+                    let ubicaciones = '';
+                    if (Obj.lockers && Obj.lockers.length > 0) {
+                        ubicaciones = Obj.lockers
+                            .map(l => l.TCASILLERO ? l.TCASILLERO.trim() : '')
+                            .filter(u => u !== '')
+                            .join(', ');
+                    } else {
+                        ubicaciones = '-';
+                    }
+
                     $tr = `<tr>
                                 <td class="text-center text-codigo">${Obj.ACODIGO}</td>
                                 <td class="text-center text-codigo">${Obj.ACODIGO2}</td>
@@ -271,6 +282,7 @@ $(document).ready(function () {
                                 <td class="text-center no-almacen">${Obj.ACODMON} ${precio}</td>
                                 <td class="text-center text-unidad">${Obj.AUNIDAD}</td>
                                 <td class="text-center text-presentacion">${presentacion}</td>
+                                <td class="text-center">${ubicaciones}</td>
                                 <td class="text-center" style="white-space: nowrap;">
                                     <a href="#" onclick="verMovimientos(event, '${Obj.ACODIGO}')" class="btn btn-outline-info btn-sm" title="Historial"><i class="fas fa-history"></i></a>
                                     <a href="/products/${Obj.ACODIGO}" class="btn btn-outline-secondary btn-sm" title="Ver"><i class="fas fa-eye"></i></a>

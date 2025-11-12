@@ -18,7 +18,7 @@ class Permissions {
 		$names = [
 			2 => ['orders', 'companies', 'shippers', 'orders.print', 'orders.print_note', 'price_list'], // permisos para vendedor
 			3 => ['pickings', 'products', 'products.get_product', 'pickings.print'], // permisos para almacen
-			4 => ['orders', 'companies', 'shippers', 'products', 'price_list'], // permisos para facturador
+			4 => ['orders', 'companies', 'shippers', 'products', 'price_list', 'rotacion'], // permisos para facturador
 		];
 
 		if (\Auth::user()->role_id == 1) { // si es rol administrador ingresa a la ruta

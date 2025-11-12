@@ -52,6 +52,7 @@ Route::get('activar_pedido/{id}', ['as' => 'orders.activar', 'uses' => 'OrderCon
 Route::get('por_comprar', ['as' => 'por_comprar', 'uses' => 'OrderController@por_comprar']);
 Route::get('movimientos/{codigo}', ['as' => 'movimientos', 'uses' => 'ProductController@movimientos']);
 Route::get('apiGetProductos/{term}', ['as' => 'apiGetProductos', 'uses' => 'ProductController@apiGetProductos']);
+Route::get('compras/detalle', ['as' => 'compras.detalle', 'uses' => 'ProductController@detalleCompras']);
 
 Route::get('ver-pdf', function () {
     $ruta = request('ruta');
@@ -116,4 +117,5 @@ Route::group(['middleware'=>['auth', 'permissions']], function(){
     });
     Route::post('update_prices2', ['as' => 'products.update_prices2', 'uses' => 'ProductController@update_prices2']);
     Route::get('get_invoices_by_order/{id}', ['as' => 'orders.get_invoices', 'uses' => 'OrderController@get_invoices']);
+    Route::get('rotacion', ['as' => 'rotacion', 'uses' => 'ProductController@rotacion']);
 });

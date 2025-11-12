@@ -168,7 +168,7 @@ class ProductController extends Controller
 
     public function apiGetProductos($term)
     {
-        $models =  Product::with('stock', 'price')->where('ACODIGO','like',"%$term%")->orwhere('ACODIGO2','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->orderBy('ACODIGO')->get();
+        $models =  Product::with('stock', 'price', 'lockers')->where('ACODIGO','like',"%$term%")->orwhere('ACODIGO2','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->orderBy('ACODIGO')->get();
         return response()->json($models);
     }
 
@@ -321,6 +321,360 @@ class ProductController extends Controller
         // Devolver los resultados al cliente (por ejemplo, en formato JSON)
         return response()->json($resultados);
 
+    }
+
+    // public function rotacion(Request $request)
+    // {
+    //     // === RANGO DE FECHAS ===
+    //     $fechaInicio = $request->input('desde')
+    //         ? date('Y-d-m 00:00:00', strtotime($request->input('desde')))
+    //         : date('Y-d-m 00:00:00', strtotime('-90 days'));
+
+    //     $fechaFin = $request->input('hasta')
+    //         ? date('Y-d-m 23:59:59', strtotime($request->input('hasta')))
+    //         : date('Y-d-m 23:59:59');
+
+    //     // === FORMATO PARA HTML INPUTS (Y-m-d) ===
+    //     $fechaInicioInput = $request->input('desde')
+    //         ? date('Y-m-d', strtotime($request->input('desde')))
+    //         : date('Y-m-d', strtotime('-90 days'));
+
+    //     $fechaFinInput = $request->input('hasta')
+    //         ? date('Y-m-d', strtotime($request->input('hasta')))
+    //         : date('Y-m-d');
+
+    //     // === FORMATO CORRECTO SOLO PARA CALCULAR DÍAS (Y-m-d) ===
+    //     $fechaInicioCalculo = $request->input('desde')
+    //         ? date('Y-m-d', strtotime($request->input('desde')))
+    //         : date('Y-m-d', strtotime('-90 days'));
+
+    //     $fechaFinCalculo = $request->input('hasta')
+    //         ? date('Y-m-d', strtotime($request->input('hasta')))
+    //         : date('Y-m-d');
+
+    //     // === CALCULAR CANTIDAD DE DÍAS PARA PROMEDIO ===
+    //     $dias = (int) round((strtotime($fechaFinCalculo) - strtotime($fechaInicioCalculo)) / 86400);
+    //     if ($dias <= 0) {
+    //         $dias = 1;
+    //     }
+
+    //     // === CONSULTA SQL OPTIMIZADA ===
+    //     $sql = "
+    //         SELECT 
+    //             A.ACODIGO AS Codigo,
+    //             A.ADESCRI AS Descripcion,
+    //             A.AUNIDAD AS Unidad,
+    //             SUM(D.DFCANTID) AS Cant_Ven,
+    //             CAST(SUM(D.DFCANTID) / NULLIF(? , 0) * 30 AS DECIMAL(18,2)) AS Prom_Mes,
+    //             ISNULL(S01.STSKDIS, 0) AS Stock_01,
+    //             ISNULL(S03.STSKDIS, 0) AS Stock_03,
+
+    //             -- Moneda: si no hay compra nacional pero sí importación, usar 'ME'
+    //             CASE 
+    //                 WHEN C.CCCODMON IS NULL AND IMP.CDESPROVE IS NOT NULL THEN 'ME'
+    //                 ELSE C.CCCODMON 
+    //             END AS Moneda,
+
+    //             -- Costo, cantidad, fecha y proveedor según fuente disponible
+    //             C.DCPREC_COM AS Costo,
+    //             C.DCCANTID AS Cant_Comp,
+
+    //             CASE 
+    //                 WHEN C.CCFECDOC IS NOT NULL THEN C.CCFECDOC
+    //                 ELSE IMP.FEMISION
+    //             END AS Fec_Compra,
+
+    //             ISNULL(
+    //                 CASE 
+    //                     WHEN C.CCCODPRO IS NOT NULL THEN P.PRVCNOMBRE
+    //                     ELSE IMP.CDESPROVE
+    //                 END, 
+    //                 C.CCCODPRO
+    //             ) AS Proveedor,
+
+    //             CASE 
+    //                 WHEN C.CCCODPRO IS NULL AND IMP.CDESPROVE IS NOT NULL THEN 1
+    //                 ELSE 0
+    //             END AS EsImportacion
+
+    //         FROM (
+    //             SELECT DISTINCT D.DFCODIGO
+    //             FROM FACDET D
+    //             INNER JOIN FACCAB F ON F.CFTD = D.DFTD 
+    //                 AND F.CFNUMSER = D.DFNUMSER 
+    //                 AND F.CFNUMDOC = D.DFNUMDOC
+    //             WHERE F.CFTD IN ('FT','BV')
+    //               AND F.CFFECDOC BETWEEN ? AND ?
+    //               AND D.DFCODIGO IS NOT NULL
+    //         ) AS V
+
+    //         INNER JOIN MAEART A ON A.ACODIGO = V.DFCODIGO
+    //         LEFT JOIN FACDET D ON A.ACODIGO = D.DFCODIGO
+    //         LEFT JOIN FACCAB F ON F.CFTD = D.DFTD 
+    //             AND F.CFNUMSER = D.DFNUMSER 
+    //             AND F.CFNUMDOC = D.DFNUMDOC
+    //         LEFT JOIN STKART S01 ON S01.STCODIGO = A.ACODIGO AND S01.STALMA = '01'
+    //         LEFT JOIN STKART S03 ON S03.STCODIGO = A.ACODIGO AND S03.STALMA = '03'
+
+    //         -- Última compra nacional
+    //         OUTER APPLY (
+    //             SELECT TOP 1 
+    //                 CD.DCPREC_COM, CD.DCCANTID, CB.CCFECDOC, CB.CCCODPRO, CB.CCCODMON
+    //             FROM COMDET CD
+    //             INNER JOIN COMCAB CB ON CB.ID_COMCAB = CD.ID_COMCAB
+    //             WHERE CD.DCCODIGO = A.ACODIGO 
+    //               AND CB.CCFECDOC IS NOT NULL
+    //             ORDER BY CB.CCFECDOC DESC
+    //         ) AS C
+
+    //         LEFT JOIN MAEPROV P ON P.PRVCCODIGO = C.CCCODPRO
+
+    //         -- Última importación (si existe)
+    //         OUTER APPLY (
+    //             SELECT TOP 1 
+    //                 I.FEMISION, I.CDESPROVE
+    //             FROM IMPORD D2
+    //             INNER JOIN IMPORC I ON I.CNUMERO = D2.CNUMERO
+    //             WHERE D2.CCODARTIC = A.ACODIGO
+    //             ORDER BY I.FEMISION DESC
+    //         ) AS IMP
+
+    //         GROUP BY 
+    //             A.ACODIGO, A.ADESCRI, A.AUNIDAD,
+    //             S01.STSKDIS, S03.STSKDIS,
+    //             C.CCCODMON, C.DCPREC_COM, C.DCCANTID, 
+    //             C.CCFECDOC, C.CCCODPRO, P.PRVCNOMBRE, 
+    //             IMP.CDESPROVE, IMP.FEMISION
+    //         ORDER BY Cant_Ven DESC;
+    //     ";
+
+    //     // === EJECUTAR CONSULTA ===
+    //     $data = \DB::connection('sqlsrv')->select($sql, [
+    //         $dias,          // 1° parámetro: número de días para promedio
+    //         $fechaInicio,   // 2° parámetro: fecha inicio con formato Y-d-m
+    //         $fechaFin       // 3° parámetro: fecha fin con formato Y-d-m
+    //     ]);
+
+    //     // === RETORNAR VISTA ===
+    //     return view('products.rotacion', compact('data', 'fechaInicioInput', 'fechaFinInput', 'fechaInicio', 'fechaFin', 'dias'));
+    // }
+
+    public function rotacion(Request $request)
+    {
+        // === RANGO DE FECHAS ===
+        $fechaInicio = $request->input('desde')
+            ? date('Y-d-m 00:00:00', strtotime($request->input('desde')))
+            : date('Y-d-m 00:00:00', strtotime('-90 days'));
+
+        $fechaFin = $request->input('hasta')
+            ? date('Y-d-m 23:59:59', strtotime($request->input('hasta')))
+            : date('Y-d-m 23:59:59');
+
+        // === FORMATO PARA HTML INPUTS (Y-m-d) ===
+        $fechaInicioInput = $request->input('desde')
+            ? date('Y-m-d', strtotime($request->input('desde')))
+            : date('Y-m-d', strtotime('-90 days'));
+
+        $fechaFinInput = $request->input('hasta')
+            ? date('Y-m-d', strtotime($request->input('hasta')))
+            : date('Y-m-d');
+
+        // === FORMATO CORRECTO SOLO PARA CALCULAR DÍAS (Y-m-d) ===
+        $fechaInicioCalculo = $request->input('desde')
+            ? date('Y-m-d', strtotime($request->input('desde')))
+            : date('Y-m-d', strtotime('-90 days'));
+
+        $fechaFinCalculo = $request->input('hasta')
+            ? date('Y-m-d', strtotime($request->input('hasta')))
+            : date('Y-m-d');
+
+        // === CALCULAR CANTIDAD DE DÍAS PARA PROMEDIO ===
+        $dias = (int) round((strtotime($fechaFinCalculo) - strtotime($fechaInicioCalculo)) / 86400);
+        if ($dias <= 0) {
+            $dias = 1;
+        }
+
+        // === CONSULTA SQL OPTIMIZADA ===
+        $sql = "
+        ;WITH ProductosVendidos AS (
+            SELECT D.DFCODIGO
+            FROM FACDET D WITH (NOLOCK)
+            INNER JOIN FACCAB F WITH (NOLOCK)
+                ON F.CFTD = D.DFTD 
+                AND F.CFNUMSER = D.DFNUMSER 
+                AND F.CFNUMDOC = D.DFNUMDOC
+            WHERE F.CFTD IN ('FT','BV')
+              AND F.CFFECDOC BETWEEN ? AND ?
+              AND D.DFCODIGO IS NOT NULL
+            GROUP BY D.DFCODIGO
+        )
+        SELECT 
+            A.ACODIGO AS Codigo,
+            A.ADESCRI AS Descripcion,
+            A.AUNIDAD AS Unidad,
+
+            -- Ventas totales y promedio mensual
+            SUM(D.DFCANTID) AS Cant_Ven,
+            CAST(SUM(D.DFCANTID) / NULLIF(? , 0) * 30 AS DECIMAL(18,2)) AS Prom_Mes,
+
+            -- Stocks
+            ISNULL(S01.STSKDIS, 0) AS Stock_01,
+            ISNULL(S03.STSKDIS, 0) AS Stock_03,
+
+            -- Moneda: si no hay compra nacional pero hay importación, usar ME
+            CASE 
+                WHEN C.CCCODMON IS NULL AND IMP.CDESPROVE IS NOT NULL THEN 'ME'
+                ELSE C.CCCODMON 
+            END AS Moneda,
+
+            -- Datos de compra
+            C.DCPREC_COM AS Costo,
+            C.DCCANTID AS Cant_Comp,
+
+            -- Fecha: prioriza compra nacional, si no hay toma la de importación
+            CASE 
+                WHEN C.CCFECDOC IS NOT NULL THEN C.CCFECDOC
+                ELSE IMP.FEMISION
+            END AS Fec_Compra,
+
+            -- Proveedor: prioriza nacional, si no hay toma el de importación
+            ISNULL(
+                CASE 
+                    WHEN C.CCCODPRO IS NOT NULL THEN P.PRVCNOMBRE
+                    ELSE IMP.CDESPROVE
+                END, 
+                C.CCCODPRO
+            ) AS Proveedor,
+
+            -- Flag para resaltar en Blade
+            CASE 
+                WHEN C.CCCODPRO IS NULL AND IMP.CDESPROVE IS NOT NULL THEN 1
+                ELSE 0
+            END AS EsImportacion
+
+        FROM ProductosVendidos V
+        INNER JOIN MAEART A WITH (NOLOCK) ON A.ACODIGO = V.DFCODIGO
+        LEFT JOIN FACDET D WITH (NOLOCK) ON A.ACODIGO = D.DFCODIGO
+        LEFT JOIN FACCAB F WITH (NOLOCK) 
+            ON F.CFTD = D.DFTD AND F.CFNUMSER = D.DFNUMSER AND F.CFNUMDOC = D.DFNUMDOC
+        LEFT JOIN STKART S01 WITH (NOLOCK) ON S01.STCODIGO = A.ACODIGO AND S01.STALMA = '01'
+        LEFT JOIN STKART S03 WITH (NOLOCK) ON S03.STCODIGO = A.ACODIGO AND S03.STALMA = '03'
+
+        -- Última compra nacional (solo últimos 18 meses)
+        OUTER APPLY (
+            SELECT TOP 1 
+                CD.DCPREC_COM, CD.DCCANTID, CB.CCFECDOC, CB.CCCODPRO, CB.CCCODMON
+            FROM COMDET CD WITH (NOLOCK)
+            INNER JOIN COMCAB CB WITH (NOLOCK) ON CB.ID_COMCAB = CD.ID_COMCAB
+            WHERE CD.DCCODIGO = A.ACODIGO
+              AND CB.CCFECDOC >= DATEADD(MONTH, -18, GETDATE())
+              AND CB.CCFECDOC IS NOT NULL
+            ORDER BY CB.CCFECDOC DESC
+        ) AS C
+
+        LEFT JOIN MAEPROV P WITH (NOLOCK) ON P.PRVCCODIGO = C.CCCODPRO
+
+        -- Última importación (solo últimos 18 meses)
+        OUTER APPLY (
+            SELECT TOP 1 
+                I.FEMISION, I.CDESPROVE
+            FROM IMPORD D2 WITH (NOLOCK)
+            INNER JOIN IMPORC I WITH (NOLOCK) ON I.CNUMERO = D2.CNUMERO
+            WHERE D2.CCODARTIC = A.ACODIGO
+              AND I.FEMISION >= DATEADD(MONTH, -18, GETDATE())
+            ORDER BY I.FEMISION DESC
+        ) AS IMP
+
+        GROUP BY 
+            A.ACODIGO, A.ADESCRI, A.AUNIDAD,
+            S01.STSKDIS, S03.STSKDIS,
+            C.CCCODMON, C.DCPREC_COM, C.DCCANTID, 
+            C.CCFECDOC, C.CCCODPRO, P.PRVCNOMBRE, 
+            IMP.CDESPROVE, IMP.FEMISION
+        ORDER BY Cant_Ven DESC;
+        ";
+
+        // === EJECUTAR CONSULTA ===
+        $data = \DB::connection('sqlsrv')->select($sql, [
+            $fechaInicio,   // 2° parámetro: fecha inicio con formato Y-d-m
+            $fechaFin,      // 3° parámetro: fecha fin con formato Y-d-m
+            $dias           // 1° parámetro: número de días para promedio
+        ]);
+
+        // === RETORNAR VISTA ===
+        return view('products.rotacion', compact('data', 'fechaInicioInput', 'fechaFinInput', 'fechaInicio', 'fechaFin', 'dias'));
+    }
+
+    // public function detalleCompras(Request $request)
+    // {
+    //     $codigo = $request->get('codigo');
+
+    //     $compras = \DB::connection('sqlsrv')->select("
+    //         SELECT TOP 20 
+    //             CB.CCFECDOC AS Fecha,
+    //             CASE 
+    //                 WHEN CB.CCTD = 'FT' THEN CONCAT(CB.CCNUMSER, '-', CB.CCNUMDOC)
+    //                 ELSE NULL
+    //             END AS Factura,
+    //             CD.DCCANTID AS Cantidad,
+    //             CD.DCPREC_COM AS P_Unit,
+    //             (CD.DCCANTID * CD.DCPREC_COM) AS P_Total,
+    //             CB.CCCODMON AS Mnd,
+    //             P.PRVCNOMBRE AS Proveedor
+    //         FROM COMDET CD
+    //         INNER JOIN COMCAB CB ON CB.ID_COMCAB = CD.ID_COMCAB
+    //         LEFT JOIN MAEPROV P ON P.PRVCCODIGO = CB.CCCODPRO
+    //         WHERE CD.DCCODIGO = ?
+    //         ORDER BY CB.CCFECDOC DESC
+    //     ", [$codigo]);
+
+    //     return view('products.partials.compras_detalle', compact('compras'));
+    // }
+
+    public function detalleCompras(Request $request)
+    {
+        $codigo = $request->get('codigo');
+
+        $sql = "
+            SELECT TOP 20 
+                CB.CCFECDOC AS Fecha,
+                CASE 
+                    WHEN CB.CCTD = 'FT' THEN CONCAT(CB.CCNUMSER, '-', CB.CCNUMDOC)
+                    ELSE NULL
+                END AS Factura,
+                CD.DCCANTID AS Cantidad,
+                CD.DCPREC_COM AS P_Unit,
+                (CD.DCCANTID * CD.DCPREC_COM) AS P_Total,
+                CB.CCCODMON AS Mnd,
+                P.PRVCNOMBRE AS Proveedor,
+                'NACIONAL' AS Tipo
+            FROM COMDET CD
+            INNER JOIN COMCAB CB ON CB.ID_COMCAB = CD.ID_COMCAB
+            LEFT JOIN MAEPROV P ON P.PRVCCODIGO = CB.CCCODPRO
+            WHERE CD.DCCODIGO = ?
+
+            UNION ALL
+
+            SELECT 
+                I.FEMISION AS Fecha,
+                I.CNUMERO AS Factura,
+                D.NCANTIDAD AS Cantidad,
+                D.NPREUNITA AS P_Unit,
+                D.NTOTVENT AS P_Total,
+                'ME' AS Mnd,                 -- 🔹 siempre ME para importaciones
+                C.CDESPROVE AS Proveedor,
+                'IMPORTACIÓN' AS Tipo
+            FROM IMPORD D
+            INNER JOIN IMPORC C ON C.CNUMERO = D.CNUMERO
+            INNER JOIN IMPORC I ON I.CNUMERO = D.CNUMERO
+            WHERE D.CCODARTIC = ?
+
+            ORDER BY Fecha DESC
+        ";
+
+        $compras = \DB::connection('sqlsrv')->select($sql, [$codigo, $codigo]);
+
+        return view('products.partials.compras_detalle', compact('compras'));
     }
 
 }
