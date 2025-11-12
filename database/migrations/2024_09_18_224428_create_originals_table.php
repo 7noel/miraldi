@@ -15,7 +15,7 @@ class CreateOriginalsTable extends Migration
     {
         Schema::create('originals', function (Blueprint $table) {
             $table->id();
-            $table->string('CFNUMPED');
+            $table->string('CFNUMPED')->unique();
             $table->boolean('read_only');
             $table->string('discount_2');
             $table->json('content')->nullable();

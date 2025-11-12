@@ -464,7 +464,7 @@ class ProductController extends Controller
         // === RANGO DE FECHAS ===
         $fechaInicio = $request->input('desde')
             ? date('Y-d-m 00:00:00', strtotime($request->input('desde')))
-            : date('Y-d-m 00:00:00', strtotime('-90 days'));
+            : date('Y-d-m 00:00:00', strtotime('-89 days'));
 
         $fechaFin = $request->input('hasta')
             ? date('Y-d-m 23:59:59', strtotime($request->input('hasta')))
@@ -473,7 +473,7 @@ class ProductController extends Controller
         // === FORMATO PARA HTML INPUTS (Y-m-d) ===
         $fechaInicioInput = $request->input('desde')
             ? date('Y-m-d', strtotime($request->input('desde')))
-            : date('Y-m-d', strtotime('-90 days'));
+            : date('Y-m-d', strtotime('-89 days'));
 
         $fechaFinInput = $request->input('hasta')
             ? date('Y-m-d', strtotime($request->input('hasta')))
@@ -482,14 +482,14 @@ class ProductController extends Controller
         // === FORMATO CORRECTO SOLO PARA CALCULAR DÍAS (Y-m-d) ===
         $fechaInicioCalculo = $request->input('desde')
             ? date('Y-m-d', strtotime($request->input('desde')))
-            : date('Y-m-d', strtotime('-90 days'));
+            : date('Y-m-d', strtotime('-89 days'));
 
         $fechaFinCalculo = $request->input('hasta')
             ? date('Y-m-d', strtotime($request->input('hasta')))
             : date('Y-m-d');
 
         // === CALCULAR CANTIDAD DE DÍAS PARA PROMEDIO ===
-        $dias = (int) round((strtotime($fechaFinCalculo) - strtotime($fechaInicioCalculo)) / 86400);
+        $dias = (int) round((strtotime($fechaFinCalculo) - strtotime($fechaInicioCalculo)) / 86400) + 1;
         if ($dias <= 0) {
             $dias = 1;
         }
@@ -531,20 +531,23 @@ class ProductController extends Controller
             C.DCPREC_COM AS Costo,
             C.DCCANTID AS Cant_Comp,
 
-            -- Fecha: prioriza compra nacional, si no hay toma la de importación
+            -- Fecha: mostrar la más reciente entre compra nacional e importación
             CASE 
-                WHEN C.CCFECDOC IS NOT NULL THEN C.CCFECDOC
-                ELSE IMP.FEMISION
+                WHEN C.CCFECDOC IS NULL AND IMP.FEMISION IS NULL THEN NULL
+                WHEN C.CCFECDOC IS NULL THEN IMP.FEMISION
+                WHEN IMP.FEMISION IS NULL THEN C.CCFECDOC
+                WHEN IMP.FEMISION > C.CCFECDOC THEN IMP.FEMISION
+                ELSE C.CCFECDOC
             END AS Fec_Compra,
 
-            -- Proveedor: prioriza nacional, si no hay toma el de importación
-            ISNULL(
-                CASE 
-                    WHEN C.CCCODPRO IS NOT NULL THEN P.PRVCNOMBRE
-                    ELSE IMP.CDESPROVE
-                END, 
-                C.CCCODPRO
-            ) AS Proveedor,
+            -- Proveedor: depende de cuál fue la más reciente
+            CASE 
+                WHEN C.CCFECDOC IS NULL AND IMP.FEMISION IS NULL THEN NULL
+                WHEN C.CCFECDOC IS NULL THEN IMP.CDESPROVE
+                WHEN IMP.FEMISION IS NULL THEN P.PRVCNOMBRE
+                WHEN IMP.FEMISION > C.CCFECDOC THEN IMP.CDESPROVE
+                ELSE P.PRVCNOMBRE
+            END AS Proveedor,
 
             -- Flag para resaltar en Blade
             CASE 
@@ -567,7 +570,7 @@ class ProductController extends Controller
             FROM COMDET CD WITH (NOLOCK)
             INNER JOIN COMCAB CB WITH (NOLOCK) ON CB.ID_COMCAB = CD.ID_COMCAB
             WHERE CD.DCCODIGO = A.ACODIGO
-              AND CB.CCFECDOC >= DATEADD(MONTH, -18, GETDATE())
+              AND CB.CCFECDOC >= DATEADD(MONTH, -36, GETDATE())
               AND CB.CCFECDOC IS NOT NULL
             ORDER BY CB.CCFECDOC DESC
         ) AS C
@@ -581,7 +584,7 @@ class ProductController extends Controller
             FROM IMPORD D2 WITH (NOLOCK)
             INNER JOIN IMPORC I WITH (NOLOCK) ON I.CNUMERO = D2.CNUMERO
             WHERE D2.CCODARTIC = A.ACODIGO
-              AND I.FEMISION >= DATEADD(MONTH, -18, GETDATE())
+              AND I.FEMISION >= DATEADD(MONTH, -36, GETDATE())
             ORDER BY I.FEMISION DESC
         ) AS IMP
 
@@ -596,9 +599,9 @@ class ProductController extends Controller
 
         // === EJECUTAR CONSULTA ===
         $data = \DB::connection('sqlsrv')->select($sql, [
-            $fechaInicio,   // 2° parámetro: fecha inicio con formato Y-d-m
-            $fechaFin,      // 3° parámetro: fecha fin con formato Y-d-m
-            $dias           // 1° parámetro: número de días para promedio
+            $fechaInicio,   // 1° parámetro: fecha inicio con formato Y-d-m
+            $fechaFin,      // 2° parámetro: fecha fin con formato Y-d-m
+            $dias           // 3° parámetro: número de días para promedio
         ]);
 
         // === RETORNAR VISTA ===

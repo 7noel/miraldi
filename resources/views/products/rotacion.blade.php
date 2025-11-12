@@ -26,7 +26,7 @@
                         <label class="mr-2 text-muted">Hasta:</label>
                         <input type="date" name="hasta" value="{{ $fechaFinInput }}" 
                                class="form-control form-control-sm mr-3" style="width:160px;">
-                        <button class="btn btn-primary btn-sm mr-2">
+                        <button class="btn btn-outline-primary btn-sm mr-3">
                             <i class="fa fa-search"></i> Consultar
                         </button>
                     </form>
