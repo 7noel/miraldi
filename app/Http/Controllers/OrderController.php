@@ -369,7 +369,7 @@ class OrderController extends Controller
         });
 
         // Carga productos relacionados
-        $data['products'] = Product::with('lockers', 'stock')->whereIn('ACODIGO', $p_ids)->get();
+        $data['products'] = Product::with('lockers', 'stocks')->whereIn('ACODIGO', $p_ids)->get();
 
         // Inicializa resultados con 0
         $resultados = array_fill_keys($p_ids->toArray(), 0);

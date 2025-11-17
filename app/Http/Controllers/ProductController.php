@@ -66,7 +66,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $model = Product::with('stock', 'price')->where('ACODIGO', $id)->first();
+        $model = Product::with('stocks', 'price')->where('ACODIGO', $id)->first();
         return view('partials.edit', compact('model'));
     }
 
@@ -151,10 +151,10 @@ class ProductController extends Controller
     {
         
         $term = request()->get('term');
-        $models =  Product::with('stock', 'price')->has('price')->has('stock')->where('ACODIGO','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->get();
+        $models =  Product::with('stocks', 'price')->has('price')->has('stocks')->where('ACODIGO','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->get();
         $result=[];
         foreach ($models as $model) {
-            if (!is_null($model->stock) and !is_null($model->price) ) {
+            if (!is_null($model->stocks) and !is_null($model->price) ) {
             //if (!is_null($model->stock) and !is_null($model->price) and $model->stock->STSKDIS > 0) {
                 $result[]=[
                     'value' => $model->ADESCRI,
@@ -168,7 +168,7 @@ class ProductController extends Controller
 
     public function apiGetProductos($term)
     {
-        $models =  Product::with('stock', 'price', 'lockers')->where('ACODIGO','like',"%$term%")->orwhere('ACODIGO2','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->orderBy('ACODIGO')->get();
+        $models =  Product::with('stocks', 'price', 'lockers')->where('ACODIGO','like',"%$term%")->orwhere('ACODIGO2','like',"%$term%")->orWhere('ADESCRI','like',"%$term%")->orderBy('ACODIGO')->get();
         return response()->json($models);
     }
 
@@ -681,6 +681,41 @@ class ProductController extends Controller
         $compras = \DB::connection('sqlsrv')->select($sql, [$codigo, $codigo]);
 
         return view('products.partials.compras_detalle', compact('compras'));
+    }
+
+    public function stockVenta($codigo)
+    {
+        // Fecha límite = últimos 15 días
+        $fechaLimite = date('Y-d-m 00:00:00', strtotime('-15 days'));
+
+        $row = \DB::connection('sqlsrv')->table('PEDDET')
+            ->join('PEDCAB', 'PEDCAB.CFNUMPED', '=', 'PEDDET.DFNUMPED')
+            ->leftJoin('STKART as stk01', function ($join) use ($codigo) {
+                $join->on('PEDDET.DFCODIGO', '=', 'stk01.STCODIGO')
+                     ->where('stk01.STALMA', '=', '01');
+            })
+            ->where('PEDDET.DFCODIGO', $codigo)
+            ->where('PEDCAB.CFFECDOC', '>=', $fechaLimite)
+            ->where('PEDCAB.CFCOTIZA', 'AUTORIZADO')
+            ->select(
+                \DB::raw('ISNULL(stk01.STSKDIS, 0) as stock_01'),
+                \DB::raw('SUM(PEDDET.DFCANTID) as demanda')
+            )
+            ->groupBy('stk01.STSKDIS')
+            ->first();
+
+        // Si no hay registros, asignar valores iniciales
+        $stock01  = $row->stock_01  ?? 0;
+        $demanda  = $row->demanda   ?? 0;
+
+        // stock_venta no puede ser menor a 0
+        $stockVenta = max($stock01 - $demanda, 0);
+
+        return response()->json([
+            'stock_01'     => $stock01,
+            'demanda'      => $demanda,
+            'stock_venta'  => $stockVenta,
+        ]);
     }
 
 }

@@ -70,8 +70,10 @@
 					<label for="txtProducto">Producto</label>
 					<small id="txtCodigo"></small>
 					<input type="text" class="form-control form-control-sm" id="txtProducto">
-					<span class="badge badge-light" id="alert-items"></span>
-					<span class="badge badge-info" id="alert-stock"></span>
+					<span class="badge badge-light" id="alert-items" title="Cantidad de items en el pedido"></span>
+					<span class="badge badge-info" id="alert-stock-venta" title="Stock Disponible para Venta en el almacén de SJM"></span>
+					<span class="badge badge-info" id="alert-stock" title="Stock del Sistema en San Juan de Miraflores"></span>
+					<span class="badge badge-info" id="alert-stock_03" title="Stock del Sistema en Punta Hermosa"></span>
 					<input type="hidden" id="txtProduct">
 					<input type="hidden" id="unitId">
 				</div>

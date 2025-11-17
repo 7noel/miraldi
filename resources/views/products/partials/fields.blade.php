@@ -45,10 +45,13 @@
 	<div class="col-sm-2">
 		{!! Field::text('ACODIGO2', ['label' => 'Código Fabricante', 'class'=>'form-control-sm text-uppercase']) !!}
 	</div>
-	@if(isset($model->stock))
+	@php
+	    $stock01 = $model->stocks->firstWhere('STALMA', '01');
+	@endphp
+	@if($stock01)
 	<div class="col-sm-1 form-group">
-		<label for="codigox">Stock 01</label>
-		<span class="form-control form-control-sm form-control-plaintext" id="codigox">{{ (isset($model->stock)) ? round($model->stock->STSKDIS, 2) : 0 }}</span>
+		<label for="codigox">Stock SJM</label>
+		<span class="form-control form-control-sm form-control-plaintext" id="codigox">{{ (isset($stock01)) ? round($stock01->STSKDIS, 2) : 0 }}</span>
 	</div>
 	<div class="col-sm-9">
 		<label for="ubicacion">Ubicación 01</label>

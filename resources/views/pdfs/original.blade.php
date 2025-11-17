@@ -64,9 +64,13 @@
 				</tr>
 			</thead>
 			<tbody>
-				@php $_code=$model->CFNUMPED.'|' @endphp
-				@php $i = 0 @endphp
-				@foreach(collect($model->original->content->details)->sortBy('DFCODIGO') as $key => $detail)
+				@php
+					$_code=$model->CFNUMPED.'|';
+					$i = 0;
+					$details = data_get($model->original->content, 'details', []);
+				@endphp
+
+				@foreach(collect($details)->sortBy('DFCODIGO') as $key => $detail)
 					@php
 						$_code = $_code."$detail->DFCODIGO $detail->DFCANTID|";
 					@endphp

@@ -573,18 +573,50 @@ $(document).ready(function () {
                 $('#txtPrecio').val((($p.price.PRE_ACT*118)/100).toFixed(6))
                 $('#txtDscto2').val(window.descuento2)
                 $('#txtCantidad').val(1)
-                stk = 0
-                if ($p.stock.hasOwnProperty('STSKDIS') && $p.stock.STSKDIS != null) {
-                    stk = ($p.stock.STSKDIS*1).toFixed(0)
+                stock01 = 0;
+                stock03 = 0;
+
+                if ($p.stocks && $p.stocks.length > 0) {
+                    $p.stocks.forEach(s => {
+                        if (s.STALMA == "01") stock01 = parseFloat(s.STSKDIS*1) || 0;
+                        if (s.STALMA == "03") stock03 = parseFloat(s.STSKDIS*1) || 0;
+                    });
                 }
-                $('#alert-stock').text(`Stock: ${stk} ${$p.AUNIDAD}`)
-                if (stk > 0) {
-                    $('#alert-stock').addClass(`badge-info`)
-                    $('#alert-stock').removeClass(`badge-danger`)
+                // if ($p.stock.hasOwnProperty('STSKDIS') && $p.stock.STSKDIS != null) {
+                //     stk = ($p.stock.STSKDIS*1).toFixed(0)
+                // }
+                // $('#alert-stock').text(`Stock: ${stk} ${$p.AUNIDAD}`)
+                // if (stk > 0) {
+                //     $('#alert-stock').addClass(`badge-info`)
+                //     $('#alert-stock').removeClass(`badge-danger`)
+                // } else {
+                //     $('#alert-stock').removeClass(`badge-info`)
+                //     $('#alert-stock').addClass(`badge-danger`)
+                // }
+                $('#alert-stock').text(`Stk SJM: ${stock01} ${$p.AUNIDAD}`)
+                $('#alert-stock_03').text(`Stk PH: ${stock03} ${$p.AUNIDAD}`)
+
+                if (stock01 > 0) {
+                    $('#alert-stock').removeClass('badge-danger').addClass('badge-info')
                 } else {
-                    $('#alert-stock').removeClass(`badge-info`)
-                    $('#alert-stock').addClass(`badge-danger`)
+                    $('#alert-stock').removeClass('badge-info').addClass('badge-danger')
                 }
+
+                if (stock03 > 0) {
+                    $('#alert-stock_03').removeClass('badge-danger').addClass('badge-info')
+                } else {
+                    $('#alert-stock_03').removeClass('badge-info').addClass('badge-danger')
+                }
+
+                $.get(`/stock-venta/${$p.ACODIGO}`, function(res) {
+                    $('#alert-stock-venta').text(`Stk Venta: ${res.stock_venta} ${$p.AUNIDAD}`);
+
+                    // Si quieres poner color:
+                    $('#alert-stock-venta')
+                        .removeClass('badge-danger badge-warning badge-info')
+                        .addClass(res.stock_venta > 0 ? 'badge-info' : 'badge-danger');
+                });
+
                 setTimeout(function() { // El retardo es necesario para los moviles
                     $('#txtCantidad').focus()
                     $('#txtCantidad').select()
@@ -809,9 +841,11 @@ function clearModalProduct() {
     $('#txtTotal').val("0.00")
     $('#label-cantidad').text('')
 
+    $('#alert-stock-venta').text("")
     $('#alert-stock').addClass("badge-info")
     $('#alert-stock').removeClass("badge-danger")
     $('#alert-stock').text("")
+    $('#alert-stock_03').text("")
     items = $('#items').val()
     max = 50
     $('#alert-items').text(`Items registrados: ${items}`)
@@ -1115,7 +1149,11 @@ function get_picking() {
         $.each(data.products, function (index, pr) {
             peso = ((pr.APESO > 1) ? parseInt(pr.APESO) : 1)
             ubicacion = pr.lockers.map(function(locker){return locker.TCASILLERO}).join(';')
-            stock_disponible = (typeof pr.stock.STSKDIS === 'undefined') ? 0 : (parseInt(0+pr.stock.STSKDIS) - data.in_pickings[pr.ACODIGO]);
+            s01 = pr.stocks.find(s => s.STALMA == "01");
+            s03 = pr.stocks.find(s => s.STALMA == "03");
+            stk01 = s01 ? parseInt(0+s01.STSKDIS) : 0;
+            stk03 = s03 ? parseInt(0+s03.STSKDIS) : 0;
+            stock_disponible = (typeof stk01 === 'undefined') ? 0 : (stk01 - data.in_pickings[pr.ACODIGO]);
             tr=`<tr>
                     <td><a href="#" class="mi-enlace" onclick="verMovimientos(event, '${pr.ACODIGO}')" data-toggle="modal" data-target="#myModal">${pr.ACODIGO}</a></td>
                     <td>${pr.ACODIGO2}</td>

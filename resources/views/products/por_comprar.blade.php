@@ -11,8 +11,8 @@
 					<p>Muestra los productos que no tengan stock suficiente para atender los pedidos de los últimos 15 días que están en estado 'AUTORIZADO'.</p>
 					{{-- 🔹 Leyenda de colores --}}
 					<div class="mb-3">
-						<span class="badge badge-danger p-2">&nbsp;&nbsp;</span> <small class="mr-3">Sin stock (en ambos almacenes)</small>
-						<span class="badge badge-warning p-2">&nbsp;&nbsp;</span> <small>Por trasladar (stock disponible en almacén de Punta Hermosa)</small>
+						<span class="badge badge-danger p-2" style="width:35px; height:25px">&nbsp;&nbsp;</span> <small class="mr-3">Sin stock (en ambos almacenes)</small>
+						<span class="badge badge-warning p-2" style="width:35px; height:25px">&nbsp;&nbsp;</span> <small>Por trasladar (stock disponible en almacén de Punta Hermosa)</small>
 					</div>
 					<table class="table table-sm table-hover">
 						<thead class="">

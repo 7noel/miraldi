@@ -14,9 +14,9 @@ class Product extends Model
     protected $keyType = 'string';
     public $timestamps = false;
 
-    public function stock()
+    public function stocks()
     {
-        return $this->hasOne(Stock::class, 'STCODIGO', 'ACODIGO');
+        return $this->hasMany(Stock::class, 'STCODIGO', 'ACODIGO');
     }
 
     public function price()

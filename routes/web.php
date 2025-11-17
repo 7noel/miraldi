@@ -52,6 +52,7 @@ Route::get('activar_pedido/{id}', ['as' => 'orders.activar', 'uses' => 'OrderCon
 Route::get('por_comprar', ['as' => 'por_comprar', 'uses' => 'OrderController@por_comprar']);
 Route::get('movimientos/{codigo}', ['as' => 'movimientos', 'uses' => 'ProductController@movimientos']);
 Route::get('apiGetProductos/{term}', ['as' => 'apiGetProductos', 'uses' => 'ProductController@apiGetProductos']);
+Route::get('/stock-venta/{codigo}', ['as' => 'stock-venta', 'uses' => 'ProductController@stockVenta']);
 Route::get('compras/detalle', ['as' => 'compras.detalle', 'uses' => 'ProductController@detalleCompras']);
 
 Route::get('ver-pdf', function () {
