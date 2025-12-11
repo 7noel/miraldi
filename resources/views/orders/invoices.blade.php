@@ -34,11 +34,12 @@
                             <tr>
                                 <th>Documento</th>
                                 <th>Fecha</th>
-                                <th>Cliente</th>
                                 <th class="d-none d-md-table-cell">RUC / DNI</th>
+                                <th>Cliente</th>
                                 <th>Importe</th>
                                 <th>Moneda</th>
                                 <th>Estado</th>
+                                <th>Guia</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,8 +57,8 @@
                                     </button>
                                 </td>
                                 <td data-label="Fecha">{{ $factura->fecha ? \Carbon\Carbon::parse($factura->fecha)->format('d/m/Y') : '' }}</td>
-                                <td data-label="Cliente" class="text-start">{{ $factura->cliente }}</td>
                                 <td data-label="RUC / DNI" class="d-none d-md-table-cell">{{ $factura->ruc }}</td>
+                                <td data-label="Cliente" class="text-start">{{ $factura->cliente }}</td>
                                 <td data-label="Importe" class="text-end">{{ number_format($factura->importe, 2) }}</td>
                                 <td data-label="Moneda">{{ $factura->moneda ?? '—' }}</td>
                                 <td data-label="Estado">
@@ -74,6 +75,11 @@
                                         <span class="badge bg-secondary">{{ $estado ?? '—' }}</span>
                                     @endif
                                 </td>
+                                <td data-label="Guia">
+                                    @if($factura->guia_numero != '')
+                                        <a href="{{ route('guia.view', ['id'=>$factura->guia]) }}">{{ $factura->guia_serie.'-'.$factura->guia_numero }}</a>
+                                    @endif
+                                 </td>
                             </tr>
 
                             @endforeach

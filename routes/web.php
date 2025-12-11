@@ -54,6 +54,9 @@ Route::get('movimientos/{codigo}', ['as' => 'movimientos', 'uses' => 'ProductCon
 Route::get('apiGetProductos/{term}', ['as' => 'apiGetProductos', 'uses' => 'ProductController@apiGetProductos']);
 Route::get('/stock-venta/{codigo}', ['as' => 'stock-venta', 'uses' => 'ProductController@stockVenta']);
 Route::get('compras/detalle', ['as' => 'compras.detalle', 'uses' => 'ProductController@detalleCompras']);
+Route::get('/get_guia/{id}', ['as' => 'guia.view', 'uses' => 'OrderController@get_guia']);
+Route::get('/etiquetas/cargar-logo', ['as' => 'etiquetas.cargar-logo', 'uses' => 'OrderController@cargarLogo']);
+Route::post('/etiquetas/imprimir', ['as' => 'etiquetas.imprimir', 'uses' => 'OrderController@imprimir']);
 
 Route::get('ver-pdf', function () {
     $ruta = request('ruta');

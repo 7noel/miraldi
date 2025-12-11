@@ -517,6 +517,9 @@ class OrderController extends Controller
                 'f.CFFECDOC as fecha',
                 'f.CFNOMBRE as cliente',
                 'f.CFCODCLI as ruc',
+                'f.CFRFNUMSER as guia_serie',
+                'f.CFRFNUMDOC as guia_numero',
+                'f.CFTEXGUIA as guia',
                 'c.IMPORTE_TOTAL_VENTA as importe',
                 'c.MONEDA as moneda',
                 'c.ESTADO_COMPROBANTE as estado',
@@ -527,5 +530,172 @@ class OrderController extends Controller
 
         return view('orders.invoices', compact('facturas', 'id'));
     }
+
+    public function get_guia($id)
+    {
+        $cab = \DB::connection('sqlsrv')->table('GREMISION_CAB as g')
+            ->leftJoin('FACCAB as f', 'f.CFTEXGUIA', '=', 'g.GRECANUMDOC')
+            ->leftJoin('PEDCAB as p', 'p.CFNUMPED', '=', 'f.CFNROPED')
+            ->where('g.GRECANUMDOC', $id)
+            ->select(
+                'g.*',
+                'f.CFTD as FAC_TIPO',
+                'f.CFNUMSER as FAC_SERIE',
+                'f.CFNUMDOC as FAC_NUMERO',
+                'f.CFNROPED as FAC_PEDIDO',
+                'p.CFNUMPED',
+                'p.CFNOMBRE',
+                'p.CFDIRECC',
+                'p.CFFECDOC'
+            )
+            ->first();
+
+        if (!$cab) {
+            return back()->with('error', 'Guía no encontrada');
+        }
+
+        return view('orders.etiquetas', compact('cab'));
+    }
+
+public function imprimir(Request $request)
+{
+    $pedido    = $request->pedido;
+    $cliente   = formatearRazonSocialPeru($request->cliente);
+    $guia      = $request->guia;
+    $direccion = $request->direccion;
+    $bultos    = (int) $request->bultos;
+    $pesos     = $request->pesos ?? [];
+
+    $clienteZpl   = str_replace(["\r\n", "\n", "\r"], " \\& ", $cliente);
+    $direccionZpl = str_replace(["\r\n", "\n", "\r"], " \\& ", $direccion);
+
+$lenCliente = mb_strlen($cliente, 'UTF-8');
+
+// Valores por defecto (nombre largo)
+$clienteFontH   = 70;   // altura
+$clienteFontW   = 60;   // ancho
+$clienteLines   = 4;    // máximo líneas en ^FB
+$clienteFOx     = 500;  // X en ^FO
+$clienteFOy     = 30;   // Y en ^FO
+
+if ($lenCliente <= 25) {
+    // Nombre corto → lo hacemos BIEN grande
+    $clienteFontH = 95;
+    $clienteFontW = 80;
+    $clienteLines = 2;   // casi siempre 1–2 líneas
+    $clienteFOx   = 520; // un poquito más arriba
+} elseif ($lenCliente <= 45) {
+    // Nombre medio
+    $clienteFontH = 80;
+    $clienteFontW = 70;
+    $clienteLines = 3;
+    $clienteFOx   = 510;
+} else {
+    // Nombre largo (como el de la foto) → parecido a lo que ya tenías
+    $clienteFontH = 70;
+    $clienteFontW = 60;
+    $clienteLines = 4;
+    $clienteFOx   = 500;
+}
+
+
+    $printerIp   = "192.168.1.108";
+    $printerPort = 9100;
+
+    for ($i = 1; $i <= $bultos; $i++) {
+
+        $peso = $pesos[$i] ?? '0.00';
+
+        $zpl = "
+^XA
+^PW812
+^LL1218
+^CI28
+
+************************************************************
+*   CLIENTE (hasta 4 líneas, tamaño dinámico)              *
+************************************************************
+^FO{$clienteFOx},{$clienteFOy}
+^A0R,{$clienteFontH},{$clienteFontW}
+^FB1190,{$clienteLines},6,C,0
+^FD{$cliente}^FS
+
+************************************************************
+*   DESTINO + DIRECCIÓN (3 líneas máx)                     *
+************************************************************
+^FO400,40
+^A0R,25,25
+^FDDESTINO: ^FS
+
+^FO250,200
+^A0R,60,40
+^FB1000,4,6,L,0
+^FD{$direccion}^FS
+
+************************************************************
+*   GUIA DE REMISIÓN                                       *
+************************************************************
+^FO190,40
+^A0R,25,25
+^FDGUÍA DE REM.:^FS
+
+^FO180,250
+^A0R,65,65
+^FD{$guia}^FS
+
+************************************************************
+*   BULTO Y PESO                                           *
+************************************************************
+^FO50,40
+^A0R,25,25
+^FDBULTO:^FS
+
+^FO50,200
+^A0R,65,65
+^FD{$i} de {$bultos}^FS
+
+^FO50,500
+^A0R,70,70
+^FD{$peso} kg^FS
+
+************************************************************
+*   LOGO 270° (posición que ya probaste)                   *
+************************************************************
+^FO50,850
+^XGLOGO90M.GRF,1,1^FS
+
+^XZ
+
+";
+
+        $fp = @fsockopen($printerIp, $printerPort, $errno, $errstr, 5);
+        if (!$fp) return back()->with('error', "No se pudo conectar: $errstr");
+
+        fwrite($fp, $zpl);
+        fclose($fp);
+    }
+
+    return back()->with('success', 'Etiquetas enviadas a imprimir.');
+}
+
+
+public function cargarLogo()
+{
+    $printerIp   = "192.168.1.108";
+    $printerPort = 9100;
+
+    $zpl = file_get_contents(public_path('logo_90_half_medium.grf.txt'));
+
+    $fp = fsockopen($printerIp, $printerPort, $errno, $errstr, 5);
+
+    if (!$fp) {
+        return "Error conectando: $errstr ($errno)";
+    }
+
+    fwrite($fp, $zpl);
+    fclose($fp);
+
+    return "Logo cargado correctamente en la impresora.";
+}
 
 }

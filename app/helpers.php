@@ -56,3 +56,173 @@ if (! function_exists('getTipoCambioMes')) {
 	   return json_decode($respuesta);
 	}
 }
+
+if (! function_exists('formatearRazonSocialPeru')) {
+
+    /**
+     * Normaliza una razón social peruana:
+     * - Detecta el tipo de empresa (texto largo y/o abreviado).
+     * - Lo reemplaza por una abreviatura canónica (S.A.C., S.A., S.R.L., etc.).
+     * - Evita duplicados y limpia espacios/guiones.
+     *
+     * @param  string  $nombre
+     * @return string
+     */
+    function formatearRazonSocialPeru(string $nombre): string
+    {
+        if (trim($nombre) === '') {
+            return '';
+        }
+
+        // === Normalizar espacios básicos ===
+        $nombre = trim(preg_replace('/\s+/', ' ', $nombre));
+
+        // === Pasar a MAYÚSCULAS con soporte UTF-8 ===
+        if (function_exists('mb_strtoupper')) {
+            $upper = mb_strtoupper($nombre, 'UTF-8');
+        } else {
+            $upper = strtoupper($nombre);
+        }
+
+        // === Lista de tipos de empresa más comunes en Perú ===
+        // Puedes agregar más patrones sin problema.
+        $tipos = [
+            // Sociedad Anónima Cerrada
+            [
+                'abbr'     => 'S.A.C.',
+                'patterns' => [
+                    '/\bSOCIEDAD\s+AN(Ó|O)NIMA\s+CERRADA\b/u',
+                    '/\bS\.?\s*A\.?\s*C\.?\b/u',
+                ],
+            ],
+
+            // Sociedad Anónima Abierta
+            [
+                'abbr'     => 'S.A.A.',
+                'patterns' => [
+                    '/\bSOCIEDAD\s+AN(Ó|O)NIMA\s+ABIERTA\b/u',
+                    '/\bS\.?\s*A\.?\s*A\.?\b/u',
+                ],
+            ],
+
+            // Sociedad Anónima (genérica)
+            [
+                'abbr'     => 'S.A.',
+                'patterns' => [
+                    '/\bSOCIEDAD\s+AN(Ó|O)NIMA\b/u',
+                    '/\bS\.?\s*A\.?(?!\s*C\.?|\.A\.)\b/u', // S.A. aislado
+                ],
+            ],
+
+            // Sociedad de Responsabilidad Limitada
+            [
+                'abbr'     => 'S.R.L.',
+                'patterns' => [
+                    '/\bSOCIEDAD\s+DE\s+RESPONSABILIDAD\s+LIMITADA\b/u',
+                    '/\bS\.?\s*R\.?\s*L\.?\b/u',
+                ],
+            ],
+
+            // Sociedad Comercial de Responsabilidad Limitada
+            [
+                'abbr'     => 'S.C.R.L.',
+                'patterns' => [
+                    '/\bSOCIEDAD\s+COMERCIAL\s+DE\s+RESPONSABILIDAD\s+LIMITADA\b/u',
+                    '/\bS\.?\s*C\.?\s*R\.?\s*L\.?\b/u',
+                ],
+            ],
+
+            // Empresa Individual de Responsabilidad Limitada
+            [
+                'abbr'     => 'E.I.R.L.',
+                'patterns' => [
+                    '/\bEMPRESA\s+INDIVIDUAL\s+DE\s+RESPONSABILIDAD\s+LIMITADA\b/u',
+                    '/\bE\.?\s*I\.?\s*R\.?\s*L\.?\b/u',
+                ],
+            ],
+
+            // Sociedad Civil
+            [
+                'abbr'     => 'S. CIVIL',
+                'patterns' => [
+                    '/\bSOCIEDAD\s+CIVIL\b/u',
+                    '/\bS\.?\s*CIVIL\b/u',
+                ],
+            ],
+
+            // Sociedad Civil de Responsabilidad Limitada
+            [
+                'abbr'     => 'S. CIVIL DE R.L.',
+                'patterns' => [
+                    '/\bSOCIEDAD\s+CIVIL\s+DE\s+RESPONSABILIDAD\s+LIMITADA\b/u',
+                    '/\bS\.?\s*CIVIL\s+DE\s+R\.?\s*L\.?\b/u',
+                ],
+            ],
+
+            // Asociación
+            [
+                'abbr'     => 'ASOC.',
+                'patterns' => [
+                    '/\bASOCIACI(Ó|O)N\b/u',
+                    '/\bASOC\.?\b/u',
+                ],
+            ],
+
+            // Cooperativa
+            [
+                'abbr'     => 'COOP.',
+                'patterns' => [
+                    '/\bCOOPERATIVA\b/u',
+                    '/\bCOOP\.?\b/u',
+                ],
+            ],
+
+            // Fundación
+            [
+                'abbr'     => 'FUND.',
+                'patterns' => [
+                    '/\bFUNDACI(Ó|O)N\b/u',
+                    '/\bFUND\.?\b/u',
+                ],
+            ],
+
+        ];
+
+        $tipoDetectado = null;
+        $base = $upper;
+
+        // Primero detectamos y a la vez vamos limpiando los textos/abreviaturas del tipo
+        foreach ($tipos as $tipo) {
+            foreach ($tipo['patterns'] as $pattern) {
+                if (preg_match($pattern, $base)) {
+                    // Guardamos el tipo solo la primera vez (para no sobreescribir si hay varios)
+                    if ($tipoDetectado === null) {
+                        $tipoDetectado = $tipo['abbr'];
+                    }
+
+                    // Eliminamos cualquier aparición del patrón del nombre base
+                    $base = preg_replace($pattern, ' ', $base);
+                }
+            }
+        }
+
+        // Limpiar guiones y separadores sobras del final
+        $base = preg_replace('/[\s\-,]+$/u', '', $base);
+        // Limpiar espacios múltiples intermedios
+        $base = preg_replace('/\s+/', ' ', $base);
+        $base = trim($base);
+
+        // Si no se detectó ningún tipo, devolvemos solo el nombre normalizado
+        if ($tipoDetectado === null) {
+            return $base;
+        }
+
+        // Si la base está vacía por alguna razón (todo era tipo), devolvemos solo la abreviatura
+        if ($base === '') {
+            return $tipoDetectado;
+        }
+
+        // Concatenar base + tipo en una sola forma canónica
+        return $base . ' ' . $tipoDetectado;
+    }
+}
