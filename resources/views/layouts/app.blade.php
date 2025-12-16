@@ -1190,8 +1190,9 @@ function verMovimientos(e, codigo) {
         $('#exampleModal').modal('show')
         $('#table-movimientos').empty()
         $('#codigo_descripcion').text(`Producto: ${codigo} - ${data.product.ADESCRI}`)
-        $('#stock').text(`Stock: ${0+data.stock}`)
-        $('#stock_disponible').text(`Stock sin Embalar: ${data.stock - data.in_picking}`)
+        $('#stock_01').text(`Stock_SJM: ${0+data.stock_01}`)
+        $('#stock_03').text(`Stock_PH: ${0+data.stock_03}`)
+        $('#stock_disponible').text(`Stock sin Embalar: ${data.stock_01 - data.in_picking}`)
         $.each(data.movimientos, function (index, Obj) {
             if (Obj.invoiced_at == null) {
                 $tr = `<tr>

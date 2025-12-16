@@ -565,44 +565,63 @@ public function imprimir(Request $request)
     $direccion = $request->direccion;
     $bultos    = (int) $request->bultos;
     $pesos     = $request->pesos ?? [];
+    
+    // === GUARDAR EN SESSION LA ÚLTIMA IMPRESIÓN ===
+    // (esto se sobrescribe cada vez que imprimes algo nuevo)
+    $request->session()->put('etiquetas.last_print', [
+        'pedido'    => $pedido,
+        'cliente'   => $cliente,
+        'guia'      => $guia,
+        'direccion' => $direccion,
+        'bultos'    => $bultos,
+        'pesos'     => $pesos,
+    ]);
 
-    $clienteZpl   = str_replace(["\r\n", "\n", "\r"], " \\& ", $cliente);
-    $direccionZpl = str_replace(["\r\n", "\n", "\r"], " \\& ", $direccion);
+    $lenCliente = mb_strlen($cliente, 'UTF-8');
 
-$lenCliente = mb_strlen($cliente, 'UTF-8');
+    // Valores por defecto (nombre largo)
+    $clienteFontH   = 70;   // altura
+    $clienteFontW   = 60;   // ancho
+    $clienteLines   = 4;    // máximo líneas en ^FB
+    $clienteFOx     = 500;  // X en ^FO
+    $clienteFOy     = 30;   // Y en ^FO
 
-// Valores por defecto (nombre largo)
-$clienteFontH   = 70;   // altura
-$clienteFontW   = 60;   // ancho
-$clienteLines   = 4;    // máximo líneas en ^FB
-$clienteFOx     = 500;  // X en ^FO
-$clienteFOy     = 30;   // Y en ^FO
-
-if ($lenCliente <= 25) {
-    // Nombre corto → lo hacemos BIEN grande
-    $clienteFontH = 95;
-    $clienteFontW = 80;
-    $clienteLines = 2;   // casi siempre 1–2 líneas
-    $clienteFOx   = 520; // un poquito más arriba
-} elseif ($lenCliente <= 45) {
-    // Nombre medio
-    $clienteFontH = 80;
-    $clienteFontW = 70;
-    $clienteLines = 3;
-    $clienteFOx   = 510;
-} else {
-    // Nombre largo (como el de la foto) → parecido a lo que ya tenías
-    $clienteFontH = 70;
-    $clienteFontW = 60;
-    $clienteLines = 4;
-    $clienteFOx   = 500;
-}
+    if ($lenCliente <= 25) {
+        // Nombre corto → lo hacemos BIEN grande
+        $clienteFontH = 95;
+        $clienteFontW = 80;
+        $clienteLines = 2;   // casi siempre 1–2 líneas
+        $clienteFOx   = 520; // un poquito más arriba
+    } elseif ($lenCliente <= 45) {
+        // Nombre medio
+        $clienteFontH = 80;
+        $clienteFontW = 70;
+        $clienteLines = 3;
+        $clienteFOx   = 510;
+    } else {
+        // Nombre largo (como el de la foto) → parecido a lo que ya tenías
+        $clienteFontH = 70;
+        $clienteFontW = 60;
+        $clienteLines = 4;
+        $clienteFOx   = 500;
+    }
 
 
     $printerIp   = "192.168.1.108";
     $printerPort = 9100;
 
-    for ($i = 1; $i <= $bultos; $i++) {
+    // 🚩 NUEVO: leer bultos específicos (opcional)
+    $bultosSeleccionados = parsearRangosBultos(
+        $request->input('bultos_seleccionados'),
+        $bultos
+    );
+
+    // Si no se especificó nada válido, imprimimos todos
+    if (empty($bultosSeleccionados)) {
+        $bultosSeleccionados = range(1, $bultos);
+    }
+
+    foreach ($bultosSeleccionados as $i) {
 
         $peso = $pesos[$i] ?? '0.00';
 
@@ -673,8 +692,9 @@ if ($lenCliente <= 25) {
 
         fwrite($fp, $zpl);
         fclose($fp);
+        // echo "bulto $i de $bultos - $peso kg <br>";
     }
-
+    // exit();
     return back()->with('success', 'Etiquetas enviadas a imprimir.');
 }
 

@@ -12,8 +12,9 @@
 			</div>
 			<div class="modal-body table-responsive">
 				<div class="font-weight-bold" id="codigo_descripcion"></div>
-				<div class="font-weight-bold" id="stock"></div>
 				<div class="font-weight-bold" id="stock_disponible"></div>
+				<div class="font-weight-bold" id="stock_01"></div>
+				<div class="font-weight-bold" id="stock_03"></div>
 				<br>
 				<table class="table table-hover table-sm">
 					<thead>

@@ -298,7 +298,6 @@ class ProductController extends Controller
     {
         $fechaLimite = date('Y-m-d 00:00:00', strtotime('-15 days'));
         $resultados['in_picking'] = 0;
-        $resultados['stock'] = 0;
         $in_picking = PickingDetail::where('codigo', $codigo)
                                    ->whereNull('invoiced_at')
                                    ->where('created_at', '>=', $fechaLimite)
@@ -306,18 +305,22 @@ class ProductController extends Controller
                                    ->selectRaw('codigo, SUM(quantity) as total_quantity')
                                    ->first();
 
-        $stock = Stock::where('STALMA', 1)->where('STCODIGO', $codigo)->first();
+        $stocks = Stock::where('STCODIGO', $codigo)
+                       ->whereIn('STALMA', ['01', '03'])
+                       ->get()
+                       ->keyBy('STALMA');
+
+        $resultados['stock_01'] = (float) ($stocks->get('01')->STSKDIS ?? 0);
+        $resultados['stock_03'] = (float) ($stocks->get('03')->STSKDIS ?? 0);
+
         $product = Product::where('ACODIGO', $codigo)->first();
         $resultados['product'] = $product;
-        if (!is_null($stock)) {
-            $resultados['stock'] = round($stock->STSKDIS, 2);
-        }
         if (!is_null($in_picking)) {
             $resultados['in_picking'] = round($in_picking->total_quantity, 2);
         }
         // Consulta para obtener movimientos de productos (facturas y picking)
         $resultados['movimientos'] = PickingDetail::where('codigo', $codigo)->with('picking', 'order', 'user')->orderBy('created_at', 'desc')->get();
-
+        //dd($resultados['stock_01']);
         // Devolver los resultados al cliente (por ejemplo, en formato JSON)
         return response()->json($resultados);
 

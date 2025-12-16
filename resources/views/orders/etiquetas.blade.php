@@ -1,29 +1,106 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 col-xl-6 mx-auto">
 
-    <h4>Etiquetas para Guia {{ $cab->GRENUMSER }}-{{ $cab->GRENUMDOC }}</h4>
-    <p><strong>Cliente:</strong> {{ $cab->RECEPTORRAZSOCIAL }}</p>
-    <p><strong>Dirección:</strong> {{ $cab->LLEGADADIRECCION }}</p>
+            {{-- CARD PRINCIPAL --}}
+            <div class="card shadow-sm border-0 card-etiquetas">
+                <div class="card-header bg-white border-0">
+                    <h5 class="mb-0">
+                        <i class="fa fa-tag text-primary mr-1"></i>
+                        Etiquetas para Guía {{ $cab->GRENUMSER }}-{{ $cab->GRENUMDOC }}
+                    </h5>
+                    <small class="text-muted d-block mt-2">
+                        <strong>Cliente:</strong> {{ $cab->RECEPTORRAZSOCIAL }}<br>
+                        <strong>Dirección:</strong> {{ $cab->LLEGADADIRECCION }}
+                    </small>
+                </div>
 
-    <form action="{{ route('etiquetas.imprimir') }}" method="POST" id="form-etiquetas">
-        @csrf
+                <div class="card-body">
 
-        <input type="hidden" name="cliente" value="{{ $cab->RECEPTORRAZSOCIAL }}">
-        <input type="hidden" name="guia" value="{{ $cab->GRENUMSER }}-{{ $cab->GRENUMDOC }}">
-        <input type="hidden" name="direccion" value="{{ $cab->LLEGADADIRECCION }}">
-        <input type="hidden" name="pedido" value="{{ $cab->CFNUMPED }}">
+                    <form action="{{ route('etiquetas.imprimir') }}" method="POST" id="form-etiquetas">
+                        @csrf
 
-        <div class="form-group">
-            <label>Cantidad de bultos</label>
-            <input type="number" id="bultos" name="bultos" class="form-control" min="1" autocomplete="off">
+                        <input type="hidden" name="cliente" value="{{ $cab->RECEPTORRAZSOCIAL }}">
+                        <input type="hidden" name="guia" value="{{ $cab->GRENUMSER }}-{{ $cab->GRENUMDOC }}">
+                        <input type="hidden" name="direccion" value="{{ $cab->LLEGADADIRECCION }}">
+                        <input type="hidden" name="pedido" value="{{ $cab->CFNUMPED }}">
+
+                        {{-- FILA: bultos a imprimir + cantidad --}}
+                        <div class="form-row">
+                            <div class="form-group col-md-7">
+                                <label for="bultos_seleccionados" class="mb-1">
+                                    Bultos a imprimir (opcional)
+                                </label>
+                                <input type="text" name="bultos_seleccionados" id="bultos_seleccionados" 
+                                    class="form-control form-control-sm" 
+                                    placeholder="Ej: 1-5,8,10">
+                                <small class="text-muted">
+                                    Si lo dejas vacío imprime todos.
+                                </small>
+                            </div>
+
+                            <div class="form-group col-md-5">
+                                <label for="bultos" class="mb-1">Cantidad de bultos</label>
+                                <input type="number" id="bultos" name="bultos" 
+                                    class="form-control form-control-sm" 
+                                    min="1" autocomplete="off">
+                            </div>
+                        </div>
+
+                        {{-- SECCIÓN PESOS --}}
+                        <div class="form-group mb-1">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-muted small text-uppercase font-weight-bold">
+                                    Pesos por bulto
+                                </span>
+                                <small class="text-muted">
+                                    Completa el peso de cada bulto (kg)
+                                </small>
+                            </div>
+                            <div id="contenedor-pesos"></div>
+                        </div>
+
+                        <div class="text-right mt-3">
+                            <button type="submit" class="btn btn-success btn-sm px-4">
+                                <i class="fa fa-print mr-1"></i> Imprimir etiquetas
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            {{-- BOTÓN REIMPRIMIR ÚLTIMA IMPRESIÓN --}}
+            @if(session()->has('etiquetas.last_print'))
+                @php
+                    $last = session('etiquetas.last_print');
+                @endphp
+
+                <div class="card border-0 shadow-sm mt-3 bg-light card-ultima-impresion">
+                    <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="text-muted text-uppercase small font-weight-bold mb-1">
+                                Última impresión guardada
+                            </div>
+                            <div class="small">
+                                <strong>Guía:</strong> {{ $last['guia'] ?? '' }}<br>
+                                <strong>Cliente:</strong> {{ $last['cliente'] ?? '' }}<br>
+                                <strong>Bultos:</strong> {{ $last['bultos'] ?? '' }}
+                            </div>
+                        </div>
+
+                        <button type="button" id="btn-reimprimir-llenar" class="btn btn-outline-warning btn-sm">
+                            <i class="fa fa-history mr-1"></i>
+                            Reimprimir última (llenar datos)
+                        </button>
+                    </div>
+                </div>
+            @endif
+
         </div>
-
-        <div id="contenedor-pesos"></div>
-
-        <button type="submit" class="btn btn-success mt-3">Imprimir etiquetas</button>
-    </form>
+    </div>
 </div>
 
 <script>
@@ -33,27 +110,30 @@
     const form             = document.getElementById('form-etiquetas');
 
     // 👉 Dar focus al cargar la página
-    bultosInput.focus();
+    if (bultosInput) bultosInput.focus();
 
     // 1. Generar inputs de pesos ni bien se escribe la cantidad de bultos
     bultosInput.addEventListener('input', function () {
         let cant = parseInt(this.value, 10) || 0;
         contenedorPesos.innerHTML = '';
 
-        if (cant <= 0) {
-            return;
-        }
+        if (cant <= 0) return;
 
         for (let i = 1; i <= cant; i++) {
             const group = document.createElement('div');
-            group.className = 'form-group mt-2';
+            group.className = 'form-group peso-row mb-2';
             group.innerHTML = `
-                <label>Peso del bulto ${i} (kg)</label>
-                <input type="number" step="0.01" min="0" 
-                       class="form-control peso-input"
-                       name="pesos[${i}]" 
-                       data-index="${i}" 
-                       autocomplete="off">
+                <label class="mb-1">Peso del bulto ${i}</label>
+                <div class="input-group input-group-sm">
+                    <input type="number" step="0.01" min="0" 
+                           class="form-control peso-input"
+                           name="pesos[${i}]" 
+                           data-index="${i}" 
+                           autocomplete="off">
+                    <div class="input-group-append">
+                        <span class="input-group-text">kg</span>
+                    </div>
+                </div>
             `;
             contenedorPesos.appendChild(group);
         }
@@ -96,7 +176,6 @@
         }
     });
 
-    // Helper: ir al siguiente input (bultos + pesos)
     function focusSiguienteInput(actual) {
         const inputs = Array.from(
             document.querySelectorAll('#bultos, .peso-input')
@@ -105,17 +184,14 @@
         const idx = inputs.indexOf(actual);
 
         if (idx >= 0 && idx < inputs.length - 1) {
-            // Hay siguiente input -> enfocar
             inputs[idx + 1].focus();
         } else if (idx === inputs.length - 1) {
-            // Último peso -> validar y enviar con confirmación
             if (validarPesos()) {
-                form.requestSubmit(); // dispara evento submit (con confirm)
+                form.requestSubmit();
             }
         }
     }
 
-    // 3 y 4. Enter en pesos -> siguiente; en el último -> confirmar e imprimir
     contenedorPesos.addEventListener('keydown', function (e) {
         if (e.target.classList.contains('peso-input') && e.key === 'Enter') {
             e.preventDefault();
@@ -123,20 +199,78 @@
         }
     });
 
-    // Confirmación y validación también al usar el botón "Imprimir etiquetas"
     form.addEventListener('submit', function (e) {
-        // Validar pesos
         if (!validarPesos()) {
             e.preventDefault();
             return;
         }
 
-        // Confirmar impresión
         const ok = confirm('¿Desea imprimir las etiquetas?');
         if (!ok) {
             e.preventDefault();
         }
     });
+
+    // === SI HAY DATOS EN SESSION, PREPARAMOS EL BOTÓN REIMPRIMIR ===
+    @if(session()->has('etiquetas.last_print'))
+        const lastPrint = @json(session('etiquetas.last_print'));
+        const btnReimprimir = document.getElementById('btn-reimprimir-llenar');
+
+        if (btnReimprimir && lastPrint) {
+            btnReimprimir.addEventListener('click', function () {
+                if (!lastPrint.bultos || !lastPrint.pesos) {
+                    alert('No hay datos suficientes de la última impresión.');
+                    return;
+                }
+
+                bultosInput.value = lastPrint.bultos;
+                bultosInput.dispatchEvent(new Event('input'));
+
+                const pesos = lastPrint.pesos || {};
+                Object.keys(pesos).forEach(function (idx) {
+                    const input = document.querySelector('input[name="pesos[' + idx + ']"]');
+                    if (input) {
+                        input.value = pesos[idx];
+                    }
+                });
+
+                const firstPeso = document.querySelector('.peso-input');
+                if (firstPeso) firstPeso.focus();
+            });
+        }
+    @endif
+    
 })();
 </script>
+
+<style>
+    .card-etiquetas .card-header h5 {
+        font-weight: 600;
+    }
+
+    .card-etiquetas label {
+        font-weight: 500;
+        font-size: 0.9rem;
+    }
+
+    .peso-row {
+        background-color: #f9fafb;
+        border-radius: .35rem;
+        padding: .35rem .5rem .6rem;
+    }
+
+    .peso-row:nth-child(odd) {
+        background-color: #f3f4f6;
+    }
+
+    .card-ultima-impresion {
+        border-left: 4px solid #ffc107;
+    }
+
+    @media (max-width: 767.98px) {
+        .card-etiquetas .card-header {
+            flex-direction: column;
+        }
+    }
+</style>
 @endsection

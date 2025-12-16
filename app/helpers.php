@@ -226,3 +226,45 @@ if (! function_exists('formatearRazonSocialPeru')) {
         return $base . ' ' . $tipoDetectado;
     }
 }
+
+if (! function_exists('parsearRangosBultos')) {
+    /**
+     * Convierte "1-5,8,10" en [1,2,3,4,5,8,10] limitado a 1..$maxBultos
+     */
+    function parsearRangosBultos(?string $input, int $maxBultos): array
+    {
+        if (!$input) return [];
+
+        $input   = str_replace(' ', '', $input);
+        $partes  = explode(',', $input);
+        $indices = [];
+
+        foreach ($partes as $parte) {
+            if ($parte === '') continue;
+
+            if (strpos($parte, '-') !== false) {
+                [$inicio, $fin] = explode('-', $parte, 2);
+                $inicio = (int) $inicio;
+                $fin    = (int) $fin;
+
+                if ($inicio > 0 && $fin > 0 && $inicio <= $fin) {
+                    for ($i = $inicio; $i <= $fin; $i++) {
+                        if ($i >= 1 && $i <= $maxBultos) {
+                            $indices[] = $i;
+                        }
+                    }
+                }
+            } else {
+                $num = (int) $parte;
+                if ($num >= 1 && $num <= $maxBultos) {
+                    $indices[] = $num;
+                }
+            }
+        }
+
+        $indices = array_values(array_unique($indices));
+        sort($indices);
+
+        return $indices;
+    }
+}

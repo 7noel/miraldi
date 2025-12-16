@@ -27,7 +27,7 @@
 		</div>
 	</div>
 	<div>
-		<div style="width:78%; display: inline-block; float: left;">
+		<div style="width:78%; float: left;">
 			<div>
 				<strong class="label_2">{{ config('options.client_doc.'.$model->company->CTIPO_DOCUMENTO) }}:</strong><span class="data-header">{{ $model->company->CCODCLI }}</span>
 			</div>
@@ -35,10 +35,10 @@
 				<strong class="label_2">Usuario:</strong><span class="data-header">Usuariox {{ date('d/m/Y h:i a') }}</span>
 			</div>
 			<div>
-				<strong class="label_2">Señor(a):</strong><strong class="data-header" style="width: 68%">{{ $model->CFNOMBRE }}</strong>
+				<strong class="label_2">Señor(a):</strong><strong class="data-header" style="width: 75%">{{ $model->CFNOMBRE }}</strong>
 			</div>
 			<div>
-				<strong class="label_2">Dirección:</strong><span class="data-header" style="width: 68%">{{ $model->company->CDIRCLI }}</span>
+				<strong class="label_2">Dirección:</strong><span class="data-header" style="width: 75%">{{ $model->company->CDIRCLI }}</span>
 			</div>
 			@php
 			if ($model->company->ubigeo) {
@@ -48,13 +48,13 @@
 			}
 			@endphp
 			<div>
-				<strong class="label_2">Lugar:</strong><strong class="data-header" style="width: 68%">{{ $lugar }}</strong>
+				<strong class="label_2">Lugar:</strong><strong class="data-header" style="width: 75%">{{ $lugar }}</strong>
 			</div>
 			<div>
-				<strong class="label_2">Condiciones:</strong><span class="data-header">{{ $model->condition->DES_FP }}</span>
+				<strong class="label_2">Condiciones:</strong><span class="data-header" style="width: 75%">{{ $model->condition->DES_FP }}</span>
 			</div>
 			<div>
-				<strong class="label_2">Vendedor:</strong><span class="data-header">{{ $model->seller->DES_VEN }}</span>
+				<strong class="label_2">Vendedor:</strong><span class="data-header" style="width: 75%">{{ $model->seller->DES_VEN }}</span>
 			</div>
 			@if(isset($model->shipper->TRANOMBRE))
 			<div>
@@ -64,11 +64,8 @@
 				<strong class="label_2">Dirección Agencia:</strong><span class="data-header">{{ $model->shipper->TRADIREMP }}</span>
 			</div>
 			@endif
-			<div>
-				<strong class="label_2">Observaciones</strong><strong class="data-header" style="width: 68%">{{ $model->CFGLOSA }}</strong>
-			</div>
 		</div>
-		<div style="width:20%; display: inline-block;">
+		<div style="width:20%; float:right;">
 			@php $_code=round($model->CFNUMPED).'|' @endphp
 			@foreach($model->details as $key => $detail)
 				@php
@@ -79,8 +76,15 @@
 				<img src="data:image/png;base64, {!! base64_encode(QrCode::size(150)->generate($_code)) !!} ">
 		</div>
 	</div>
-	<br><br><br>
-	<div class="container-items">
+	{{-- OBSERVACIONES EN BLOQUE COMPLETO --}}
+	<div style="clear: both; margin-top: 4px;" class="observaciones">
+	    <strong style="display: inline-block; width: 15%; vertical-align: top;">OBSERVACIONES:</strong>
+	    <span class="data-header"
+	          style="display:inline-block; width:82%; white-space:normal; word-wrap:break-word;">
+	        {{ $model->CFGLOSA }}
+	    </span>
+	</div>
+	<div class="container-items" style="margin-top: 8px;">
 		<table class="table-items">
 			<thead>
 				<tr>
