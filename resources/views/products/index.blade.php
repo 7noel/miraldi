@@ -22,7 +22,8 @@
 					            <th>Descripcion</th>
 					            <th class="text-center no-almacen">Precio</th>
 					            <th class="text-center">Unidad</th>
-					            <th class="text-center">PRES</th>
+					            <th class="text-center">Inner</th>
+					            <th class="text-center">Master</th>
 					            <th class="text-center">Ubicación</th>
 					            <th class="text-center">Acciones</th>
 					        </tr>

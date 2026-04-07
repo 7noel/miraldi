@@ -237,6 +237,33 @@
             </div>
         </nav>
 
+        <div class="modal fade" id="sessionExpiredModal" tabindex="-1" role="dialog" aria-labelledby="sessionExpiredLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-warning text-dark">
+                        <h5 class="modal-title" id="sessionExpiredLabel">
+                            Sesión expirada
+                        </h5>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p class="mb-2">
+                            Tu sesión ha caducado.
+                        </p>
+                        <p class="mb-0">
+                            Serás redirigido al login en unos segundos...
+                        </p>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button"
+                                class="btn btn-primary"
+                                onclick="window.location.href='{{ route('login') }}'">
+                            Ir al login ahora
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <main class="py-4">
             <div class="overlay" id="overlay"></div>
             <div id="spinner" class="text-center spinner-container">
@@ -247,6 +274,35 @@
         </main>
     </div>
     <script>
+var userLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
+
+function checkSession() {
+    if (!userLoggedIn) return;
+    return $.ajax({
+        url: "{{ route('session.check') }}",
+        type: "GET",
+        cache: false
+    })
+    .done(function (data) {
+        if (!data.active) {
+            $('#sessionExpiredModal').modal('show');
+            setTimeout(function () {
+                window.location.href = "{{ route('login') }}";
+            }, 5000);
+        }
+    });
+}
+
+setInterval(function () {
+    checkSession();
+}, 300000);
+
+document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) {
+        checkSession();
+    }
+});
+
 $(document).ready(function () {
     $('#inputBusqueda').on('input', function() {
         // Obtener el valor del input y eliminar los espacios en blanco al inicio y final
@@ -261,7 +317,7 @@ $(document).ready(function () {
 
                 $('#table-products').empty()
                 $.each(data, function (index, Obj) {
-                    presentacion = ((Obj.APESO>1) ? round(Obj.APESO) : 1)
+                    presentacion = ((Obj.APESO>1) ? Math.round(Obj.APESO) : 1)
                     precio = ((Obj.price == null) ? 0 : Number(Obj.price.PRE_ACT).toFixed(2))
                     stock_disponible = (Obj.stock == null) ? 0 : (parseInt(0+Obj.stock.STSKDIS));
                     // 🆕 Obtener ubicaciones (TCASILLERO)
@@ -282,6 +338,7 @@ $(document).ready(function () {
                                 <td class="text-center no-almacen">${Obj.ACODMON} ${precio}</td>
                                 <td class="text-center text-unidad">${Obj.AUNIDAD}</td>
                                 <td class="text-center text-presentacion">${presentacion}</td>
+                                <td class="text-center text-unidad">${Obj.ADESCRI2}</td>
                                 <td class="text-center">${ubicaciones}</td>
                                 <td class="text-center" style="white-space: nowrap;">
                                     <a href="#" onclick="verMovimientos(event, '${Obj.ACODIGO}')" class="btn btn-outline-info btn-sm" title="Historial"><i class="fas fa-history"></i></a>

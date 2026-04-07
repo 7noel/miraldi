@@ -8,7 +8,7 @@
                 <div class="{{ config('options.styles.card_header') }}">{{ __('Login') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('login') }}" id="loginForm">
                         @csrf
 
                         <div class="form-group row">
@@ -70,4 +70,16 @@
         </div>
     </div>
 </div>
+
+<script>
+$('#loginForm').on('submit', function (e) {
+    e.preventDefault();
+    // Obtener nuevo token antes de enviar
+    $.get("{{ route('refresh.csrf') }}", function (data) {
+        $('input[name="_token"]').val(data.token);
+        $('#loginForm')[0].submit();
+    });
+});
+</script>
+
 @endsection

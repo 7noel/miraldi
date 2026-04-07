@@ -45,6 +45,12 @@
 	<div class="col-sm-2">
 		{!! Field::text('ACODIGO2', ['label' => 'Código Fabricante', 'class'=>'form-control-sm text-uppercase']) !!}
 	</div>
+	<div class="col-sm-2">
+		{!! Field::number('APESO', ($model->APESO == 0) ? '' : round($model->APESO), ['label' => 'Inner', 'class'=>'form-control-sm text-uppercase']) !!}
+	</div>
+	<div class="col-sm-2">
+		{!! Field::number('ADESCRI2', ['label' => 'Master', 'class'=>'form-control-sm text-uppercase']) !!}
+	</div>
 	@php
 	    $stock01 = $model->stocks->firstWhere('STALMA', '01');
 	@endphp
@@ -53,7 +59,7 @@
 		<label for="codigox">Stock SJM</label>
 		<span class="form-control form-control-sm form-control-plaintext" id="codigox">{{ (isset($stock01)) ? round($stock01->STSKDIS, 2) : 0 }}</span>
 	</div>
-	<div class="col-sm-9">
+	<div class="col-sm-5">
 		<label for="ubicacion">Ubicación 01</label>
 		<input class="form-control form-control-sm text-uppercase" id="ubicacion" name="TCASILLERO" type="text" maxlength="12" value="{{ (isset($model->lockers[0])) ? $model->lockers[0]->TCASILLERO : '' }}">
 	</div>

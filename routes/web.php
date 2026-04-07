@@ -26,6 +26,23 @@ Route::get('demo', function () {
     return view('demo');
 });
 Route::get('/', 'HomeController@index');
+
+Route::get('/session-check', function () {
+    if (auth()->check()) {
+        // Solo responder: esto ya mantiene viva la sesión
+        return response()->json([
+            'active' => true
+        ]);
+    }
+    return response()->json([
+        'active' => false
+    ]);
+})->name('session.check');
+
+Route::get('/refresh-csrf', function () {
+    return response()->json(['token' => csrf_token()]);
+})->name('refresh.csrf');
+
 // Route::get('/', function ()
 // {
 // 	dd(OrderDetail::first());
