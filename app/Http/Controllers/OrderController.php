@@ -262,6 +262,14 @@ class OrderController extends Controller
     public function print($id)
     {
         $model = Order::findOrFail($id);
+        $original = $model->original;
+        if ($original) {
+            if ($original->print_count == 0) {
+                $original->printed_at = now();
+            }
+            $original->print_count += 1;
+            $original->save();
+        }
         $pdf = \PDF::loadView('pdfs.orders', compact('model'));
         return $pdf->stream();
     }
@@ -284,6 +292,49 @@ class OrderController extends Controller
         $model->activated_at = date('Y-m-d H:i:s');
         $model->read_only = '1';
         $model->save();
+        return redirect()->route( 'orders.show' , $id);
+    }
+
+    public function cambiarEstado($id)
+    {
+        $estado = request()->input('estado');
+        return response()->json([
+            'success' => true,
+            'estado' => $estado
+        ]);
+        if (!in_array($estado, ['AUTORIZADO', 'RECHAZADO'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Estado inválido'
+            ]);
+        }
+        $model = Order::findOrFail($id);
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pedido no encontrado'
+            ]);
+        }
+        // Validación opcional
+        if ($order->CFCOTIZA != 'EMITIDO') {
+            return response()->json([
+                'success' => false,
+                'message' => 'El pedido ya fue procesado'
+            ]);
+        }
+
+        $model->CFCOTIZA = $estado;
+        $model->save();
+
+        if ($estado == 'AUTORIZADO') {
+            $original = $model->original;
+            if ($original) {
+                $original->approved_at = now();
+                $original->save();
+            }
+        }
+
+
         return redirect()->route( 'orders.show' , $id);
     }
 
@@ -557,165 +608,165 @@ class OrderController extends Controller
         return view('orders.etiquetas', compact('cab'));
     }
 
-public function imprimir(Request $request)
-{
-    $pedido    = $request->pedido;
-    $cliente   = formatearRazonSocialPeru($request->cliente);
-    $guia      = $request->guia;
-    $direccion = $request->direccion;
-    $bultos    = (int) $request->bultos;
-    $pesos     = $request->pesos ?? [];
-    
-    // === GUARDAR EN SESSION LA ÚLTIMA IMPRESIÓN ===
-    // (esto se sobrescribe cada vez que imprimes algo nuevo)
-    $request->session()->put('etiquetas.last_print', [
-        'pedido'    => $pedido,
-        'cliente'   => $cliente,
-        'guia'      => $guia,
-        'direccion' => $direccion,
-        'bultos'    => $bultos,
-        'pesos'     => $pesos,
-    ]);
+    public function imprimir(Request $request)
+    {
+        $pedido    = $request->pedido;
+        $cliente   = formatearRazonSocialPeru($request->cliente);
+        $guia      = $request->guia;
+        $direccion = $request->direccion;
+        $bultos    = (int) $request->bultos;
+        $pesos     = $request->pesos ?? [];
+        
+        // === GUARDAR EN SESSION LA ÚLTIMA IMPRESIÓN ===
+        // (esto se sobrescribe cada vez que imprimes algo nuevo)
+        $request->session()->put('etiquetas.last_print', [
+            'pedido'    => $pedido,
+            'cliente'   => $cliente,
+            'guia'      => $guia,
+            'direccion' => $direccion,
+            'bultos'    => $bultos,
+            'pesos'     => $pesos,
+        ]);
 
-    $lenCliente = mb_strlen($cliente, 'UTF-8');
+        $lenCliente = mb_strlen($cliente, 'UTF-8');
 
-    // Valores por defecto (nombre largo)
-    $clienteFontH   = 70;   // altura
-    $clienteFontW   = 60;   // ancho
-    $clienteLines   = 4;    // máximo líneas en ^FB
-    $clienteFOx     = 500;  // X en ^FO
-    $clienteFOy     = 30;   // Y en ^FO
+        // Valores por defecto (nombre largo)
+        $clienteFontH   = 70;   // altura
+        $clienteFontW   = 60;   // ancho
+        $clienteLines   = 4;    // máximo líneas en ^FB
+        $clienteFOx     = 500;  // X en ^FO
+        $clienteFOy     = 30;   // Y en ^FO
 
-    if ($lenCliente <= 25) {
-        // Nombre corto → lo hacemos BIEN grande
-        $clienteFontH = 95;
-        $clienteFontW = 80;
-        $clienteLines = 2;   // casi siempre 1–2 líneas
-        $clienteFOx   = 520; // un poquito más arriba
-    } elseif ($lenCliente <= 45) {
-        // Nombre medio
-        $clienteFontH = 80;
-        $clienteFontW = 70;
-        $clienteLines = 3;
-        $clienteFOx   = 510;
-    } else {
-        // Nombre largo (como el de la foto) → parecido a lo que ya tenías
-        $clienteFontH = 70;
-        $clienteFontW = 60;
-        $clienteLines = 4;
-        $clienteFOx   = 500;
+        if ($lenCliente <= 25) {
+            // Nombre corto → lo hacemos BIEN grande
+            $clienteFontH = 95;
+            $clienteFontW = 80;
+            $clienteLines = 2;   // casi siempre 1–2 líneas
+            $clienteFOx   = 520; // un poquito más arriba
+        } elseif ($lenCliente <= 45) {
+            // Nombre medio
+            $clienteFontH = 80;
+            $clienteFontW = 70;
+            $clienteLines = 3;
+            $clienteFOx   = 510;
+        } else {
+            // Nombre largo (como el de la foto) → parecido a lo que ya tenías
+            $clienteFontH = 70;
+            $clienteFontW = 60;
+            $clienteLines = 4;
+            $clienteFOx   = 500;
+        }
+
+
+        $printerIp   = "192.168.1.108";
+        $printerPort = 9100;
+
+        // 🚩 NUEVO: leer bultos específicos (opcional)
+        $bultosSeleccionados = parsearRangosBultos(
+            $request->input('bultos_seleccionados'),
+            $bultos
+        );
+
+        // Si no se especificó nada válido, imprimimos todos
+        if (empty($bultosSeleccionados)) {
+            $bultosSeleccionados = range(1, $bultos);
+        }
+
+        foreach ($bultosSeleccionados as $i) {
+
+            $peso = $pesos[$i] ?? '0.00';
+
+            $zpl = "
+    ^XA
+    ^PW812
+    ^LL1218
+    ^CI28
+
+    ************************************************************
+    *   CLIENTE (hasta 4 líneas, tamaño dinámico)              *
+    ************************************************************
+    ^FO{$clienteFOx},{$clienteFOy}
+    ^A0R,{$clienteFontH},{$clienteFontW}
+    ^FB1190,{$clienteLines},6,C,0
+    ^FD{$cliente}^FS
+
+    ************************************************************
+    *   DESTINO + DIRECCIÓN (3 líneas máx)                     *
+    ************************************************************
+    ^FO400,40
+    ^A0R,25,25
+    ^FDDESTINO: ^FS
+
+    ^FO250,200
+    ^A0R,60,40
+    ^FB1000,4,6,L,0
+    ^FD{$direccion}^FS
+
+    ************************************************************
+    *   GUIA DE REMISIÓN                                       *
+    ************************************************************
+    ^FO190,40
+    ^A0R,25,25
+    ^FDGUÍA DE REM.:^FS
+
+    ^FO180,250
+    ^A0R,65,65
+    ^FD{$guia}^FS
+
+    ************************************************************
+    *   BULTO Y PESO                                           *
+    ************************************************************
+    ^FO50,40
+    ^A0R,25,25
+    ^FDBULTO:^FS
+
+    ^FO50,200
+    ^A0R,65,65
+    ^FD{$i} de {$bultos}^FS
+
+    ^FO50,500
+    ^A0R,70,70
+    ^FD{$peso} kg^FS
+
+    ************************************************************
+    *   LOGO 270° (posición que ya probaste)                   *
+    ************************************************************
+    ^FO50,850
+    ^XGLOGO90M.GRF,1,1^FS
+
+    ^XZ
+
+    ";
+
+            $fp = @fsockopen($printerIp, $printerPort, $errno, $errstr, 5);
+            if (!$fp) return back()->with('error', "No se pudo conectar: $errstr");
+
+            fwrite($fp, $zpl);
+            fclose($fp);
+            // echo "bulto $i de $bultos - $peso kg <br>";
+        }
+        // exit();
+        return back()->with('success', 'Etiquetas enviadas a imprimir.');
     }
 
 
-    $printerIp   = "192.168.1.108";
-    $printerPort = 9100;
+    public function cargarLogo()
+    {
+        $printerIp   = "192.168.1.108";
+        $printerPort = 9100;
 
-    // 🚩 NUEVO: leer bultos específicos (opcional)
-    $bultosSeleccionados = parsearRangosBultos(
-        $request->input('bultos_seleccionados'),
-        $bultos
-    );
+        $zpl = file_get_contents(public_path('logo_90_half_medium.grf.txt'));
 
-    // Si no se especificó nada válido, imprimimos todos
-    if (empty($bultosSeleccionados)) {
-        $bultosSeleccionados = range(1, $bultos);
-    }
+        $fp = fsockopen($printerIp, $printerPort, $errno, $errstr, 5);
 
-    foreach ($bultosSeleccionados as $i) {
-
-        $peso = $pesos[$i] ?? '0.00';
-
-        $zpl = "
-^XA
-^PW812
-^LL1218
-^CI28
-
-************************************************************
-*   CLIENTE (hasta 4 líneas, tamaño dinámico)              *
-************************************************************
-^FO{$clienteFOx},{$clienteFOy}
-^A0R,{$clienteFontH},{$clienteFontW}
-^FB1190,{$clienteLines},6,C,0
-^FD{$cliente}^FS
-
-************************************************************
-*   DESTINO + DIRECCIÓN (3 líneas máx)                     *
-************************************************************
-^FO400,40
-^A0R,25,25
-^FDDESTINO: ^FS
-
-^FO250,200
-^A0R,60,40
-^FB1000,4,6,L,0
-^FD{$direccion}^FS
-
-************************************************************
-*   GUIA DE REMISIÓN                                       *
-************************************************************
-^FO190,40
-^A0R,25,25
-^FDGUÍA DE REM.:^FS
-
-^FO180,250
-^A0R,65,65
-^FD{$guia}^FS
-
-************************************************************
-*   BULTO Y PESO                                           *
-************************************************************
-^FO50,40
-^A0R,25,25
-^FDBULTO:^FS
-
-^FO50,200
-^A0R,65,65
-^FD{$i} de {$bultos}^FS
-
-^FO50,500
-^A0R,70,70
-^FD{$peso} kg^FS
-
-************************************************************
-*   LOGO 270° (posición que ya probaste)                   *
-************************************************************
-^FO50,850
-^XGLOGO90M.GRF,1,1^FS
-
-^XZ
-
-";
-
-        $fp = @fsockopen($printerIp, $printerPort, $errno, $errstr, 5);
-        if (!$fp) return back()->with('error', "No se pudo conectar: $errstr");
+        if (!$fp) {
+            return "Error conectando: $errstr ($errno)";
+        }
 
         fwrite($fp, $zpl);
         fclose($fp);
-        // echo "bulto $i de $bultos - $peso kg <br>";
+
+        return "Logo cargado correctamente en la impresora.";
     }
-    // exit();
-    return back()->with('success', 'Etiquetas enviadas a imprimir.');
-}
-
-
-public function cargarLogo()
-{
-    $printerIp   = "192.168.1.108";
-    $printerPort = 9100;
-
-    $zpl = file_get_contents(public_path('logo_90_half_medium.grf.txt'));
-
-    $fp = fsockopen($printerIp, $printerPort, $errno, $errstr, 5);
-
-    if (!$fp) {
-        return "Error conectando: $errstr ($errno)";
-    }
-
-    fwrite($fp, $zpl);
-    fclose($fp);
-
-    return "Logo cargado correctamente en la impresora.";
-}
 
 }

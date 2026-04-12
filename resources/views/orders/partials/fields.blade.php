@@ -15,20 +15,41 @@
 @else
 	{!! Form::hidden('CFTIPCAM', null) !!}
 @endif
+<?php 
+$activo = (optional($model->original)->activated_at) ? 1 : 0 ;
+$has_original = ($model->original) ? 1 : 0 ;
+ ?>
 
 @if(isset($model))
-	@if(isset($model->original))
-		@if($model->original->activated_at)
-			<!-- si está activado -->
-			<button type="button" class="btn btn-primary btn-sm" title="Pedido Activo" disabled>{!! $icons['check'] !!} Activar</button>
-		@else
-			<!-- si no está activado -->
-			<button type="button" onclick="activarPedido('{{ $model->CFNUMPED }}')" class="btn btn-primary btn-sm" title="Activar Pedido" id="btnActivarPedido">{!! $icons['check'] !!} Activar</button>
-		@endif
+	@if($activo)
+	<!-- Cambiar de estado cuando el pedido está activo -->
+	<div class="alert alert-light border" id="estado-container">
+	    <strong>Estado:</strong>
+	    <span class="badge badge-warning" id="estado-badge">
+	        {{ $model->CFCOTIZA }}
+	    </span>
+	    @if($model->CFCOTIZA == 'EMITIDO')
+	        <button type="button" class="btn btn-success btn-sm ml-2 btn-estado" data-estado="AUTORIZADO" data-id="{{ $model->CFNUMPED }}">
+	            AUTORIZAR
+	        </button>
+	        <button type="button" class="btn btn-danger btn-sm btn-estado" data-estado="RECHAZADO" data-id="{{ $model->CFNUMPED }}">
+	            RECHAZAR
+	        </button>
+    	@endif
+	</div>
+
+	<!-- si está activado -->
+	<button type="button" class="btn btn-primary btn-sm" title="Pedido Activo" disabled>{!! $icons['check'] !!} Activar</button>
 	@else
+		@if($has_original)
+		<!-- si no está activado -->
+		<button type="button" onclick="activarPedido('{{ $model->CFNUMPED }}')" class="btn btn-primary btn-sm" title="Activar Pedido" id="btnActivarPedido">{!! $icons['check'] !!} Activar</button>
+		@else
 		<!-- No se puede activar pedido porque no existe un resgistro en la tabla "original" en mysql -->
 		<button type="button" class="btn btn-primary btn-sm" title="Activar Pedido" disabled>{!! $icons['check'] !!} Activarx</button>
+		@endif
 	@endif
+
 	<button type="button" onclick="printJS('{{ route( 'orders.print' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido Almacén">{!! $icons['printer'] !!} Almacén</button>
 	<a href="{{ route( 'orders.print_note' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-danger btn-sm" title="PDF Pedidos">{!! $icons['pdf'] !!} Pedido</a>
 	@if($model->original)

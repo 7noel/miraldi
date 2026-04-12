@@ -139,4 +139,5 @@ Route::group(['middleware'=>['auth', 'permissions']], function(){
     Route::post('update_prices2', ['as' => 'products.update_prices2', 'uses' => 'ProductController@update_prices2']);
     Route::get('get_invoices_by_order/{id}', ['as' => 'orders.get_invoices', 'uses' => 'OrderController@get_invoices']);
     Route::get('rotacion', ['as' => 'rotacion', 'uses' => 'ProductController@rotacion']);
+    Route::post('/orders/{id}/cambiar-estado', 'OrderController@cambiarEstado')->name('orders.cambiarEstado');
 });

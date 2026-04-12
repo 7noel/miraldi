@@ -62,7 +62,8 @@
 			</td>
 			<td class="text-center" style="white-space: nowrap;">
 				<a href="{{ route( 'orders.print_note' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-danger btn-sm" title="PDF Nota">{!! $icons['pdf'] !!}</a>
-				<button type="button" onclick="printJS('{{ route( 'orders.print' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido Almacén">{!! $icons['printer'] !!}</button>
+				<a href="{{ route( 'orders.print' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-success btn-sm" title="Imprimir Pedido Almacén">{!! $icons['printer'] !!}</a>
+				<!-- <button type="button" onclick="printJS('{{ route( 'orders.print' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido Almacén">{!! $icons['printer'] !!}</button> -->
 				@if($model->original)
 				<a href="{{ route( 'orders.print_original' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-info btn-sm" title="PDF Nota Original">{!! $icons['pdf'] !!}</a>
 				@else

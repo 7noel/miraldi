@@ -18,6 +18,11 @@ class CreateOriginalsTable extends Migration
             $table->string('CFNUMPED')->unique();
             $table->boolean('read_only');
             $table->string('discount_2');
+            $table->dateTime('activated_at')->nullable();
+            $table->dateTime('printed_at')->nullable();
+            $table->unsignedInteger('print_count')->default(0);
+            $table->dateTime('approved_at')->nullable();
+            $table->text('comments');
             $table->json('content')->nullable();
             $table->timestamps();
         });

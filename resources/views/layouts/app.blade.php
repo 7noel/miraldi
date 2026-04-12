@@ -274,6 +274,66 @@
         </main>
     </div>
     <script>
+
+$(document).on('click', '.btn-estado', function () {
+
+    let button = $(this)
+
+    let estado = button.data('estado')
+    let id = button.data('id')
+
+    let mensaje = '¿Seguro que desea ' + estado + ' este pedido?'
+
+    if (!confirm(mensaje)) {
+        return
+    }
+
+    $.ajax({
+        url: '/orders/' + id + '/cambiar-estado',
+        method: 'POST',
+        data: {
+            estado: estado,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function (response) {
+
+            if (response.success) {
+
+                // Actualizar texto
+                $('#estado-badge').text(response.estado)
+
+                // Cambiar color
+                $('#estado-badge')
+                    .removeClass('badge-warning badge-success badge-danger')
+
+                if (response.estado == 'AUTORIZADO') {
+                    $('#estado-badge').addClass('badge-success')
+                }
+
+                if (response.estado == 'RECHAZADO') {
+                    $('#estado-badge').addClass('badge-danger')
+                }
+
+                // Eliminar botones
+                $('.btn-estado').remove()
+
+            } else {
+
+                alert(response.message)
+
+            }
+
+        },
+        error: function () {
+
+            alert('Error al cambiar estado')
+
+        }
+
+    })
+
+})
+
 var userLoggedIn = {{ auth()->check() ? 'true' : 'false' }};
 
 function checkSession() {
@@ -351,15 +411,27 @@ $(document).ready(function () {
             });
         }
     });
-    $(".link").on('click', function (e) {
-        $('#overlay').show()
-        $('#spinner').show()
-    })
-    $(".form-loading").submit(function( event ) {
-        $('button[type=submit]').attr("disabled", true)
-        $('#overlay').show()
-        $('#spinner').show()
-    })
+    $(".link").on('click', function () {
+        $('#overlay, #spinner').show();
+    });
+
+    $(".form-loading").on('submit', function () {
+        $(this).find('button[type=submit]').attr("disabled", true);
+        $('#overlay, #spinner').show();
+    });
+    // Ocultar spinner siempre que la página se cargue
+    $(document).ready(function () {
+        $('#overlay').hide();
+        $('#spinner').hide();
+    });
+
+    // Importante: cuando vuelves con botón "Atrás"
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            $('#overlay').hide();
+            $('#spinner').hide();
+        }
+    });
     $('#precio_base, #gastos_admin, #utilidad').change(function () {
         base = parseFloat($('#precio_base').val())
         admin = parseFloat($('#gastos_admin').val())

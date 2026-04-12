@@ -10,9 +10,12 @@ class Original extends Model
     use HasFactory;
     protected $connection = "mysql";
 
-    protected $fillable = ['CFNUMPED', 'read_only', 'discount_2', 'activated_at', 'comments', 'content'];
+    protected $fillable = ['CFNUMPED', 'read_only', 'discount_2', 'activated_at', 'printed_at', 'print_count', 'approved_at', 'comments', 'content'];
     protected $casts = [
         'content' => 'object',
+        'activated_at' => 'datetime',
+        'printed_at'   => 'datetime',
+        'approved_at'  => 'datetime',
     ];
 
     public function order()
