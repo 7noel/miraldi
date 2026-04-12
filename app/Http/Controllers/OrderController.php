@@ -93,7 +93,8 @@ class OrderController extends Controller
         }
         $bloquea_original = false;
         $graba_original = true;
-        return view('partials.create', compact('conditions', 'sellers', 'cambio', 'bloquea_original', 'graba_original'));
+        $action = 'create';
+        return view('partials.create', compact('conditions', 'sellers', 'cambio', 'bloquea_original', 'graba_original', 'action'));
     }
 
     /**
@@ -145,7 +146,8 @@ class OrderController extends Controller
             $sellers = ['' => 'Seleccionar'] + Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
         }
         // $sellers = Seller::all()->pluck('DES_VEN', 'COD_VEN')->toArray();
-        return view('partials.show', compact('model', 'conditions', 'sellers'));
+        $action = 'show';
+        return view('partials.show', compact('model', 'conditions', 'sellers', 'action'));
     }
 
     /**
@@ -177,7 +179,8 @@ class OrderController extends Controller
             $graba_original = false;
         }
 
-        return view('partials.edit', compact('model', 'conditions', 'sellers', 'bloquea_original', 'graba_original'));
+        $action = 'edit';
+        return view('partials.edit', compact('model', 'conditions', 'sellers', 'bloquea_original', 'graba_original', 'action'));
     }
 
     /**
@@ -266,6 +269,7 @@ class OrderController extends Controller
         if ($original) {
             if ($original->print_count == 0) {
                 $original->printed_at = now();
+                $original->printed_by = auth()->id();
             }
             $original->print_count += 1;
             $original->save();
@@ -290,6 +294,7 @@ class OrderController extends Controller
     {
         $model = Original::where('CFNUMPED', $id)->first();
         $model->activated_at = date('Y-m-d H:i:s');
+        $model->activated_by = auth()->id();
         $model->read_only = '1';
         $model->save();
         return redirect()->route( 'orders.show' , $id);
@@ -298,10 +303,6 @@ class OrderController extends Controller
     public function cambiarEstado($id)
     {
         $estado = request()->input('estado');
-        return response()->json([
-            'success' => true,
-            'estado' => $estado
-        ]);
         if (!in_array($estado, ['AUTORIZADO', 'RECHAZADO'])) {
             return response()->json([
                 'success' => false,
@@ -322,6 +323,10 @@ class OrderController extends Controller
                 'message' => 'El pedido ya fue procesado'
             ]);
         }
+        return response()->json([
+            'success' => true,
+            'estado' => $estado
+        ]);
 
         $model->CFCOTIZA = $estado;
         $model->save();
@@ -330,6 +335,16 @@ class OrderController extends Controller
             $original = $model->original;
             if ($original) {
                 $original->approved_at = now();
+                $original->approved_by = auth()->id();
+                $original->save();
+            }
+        }
+
+        if ($estado == 'RECHAZADO') {
+            $original = $model->original;
+            if ($original) {
+                $original->rejected_at = now();
+                $original->rejected_by = auth()->id();
                 $original->save();
             }
         }

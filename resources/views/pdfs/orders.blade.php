@@ -19,10 +19,13 @@
 	</script>
 	<div class="header">
 		<div>
-			<div class="center">
-				<h2 class="center">
+			<div class="center" style="margin-top: 15px;">
+				<div class="center" style="font-size: 18px; font-weight: bold; ">
 					ORDEN DE PEDIDO: {{ $model->CFNUMPED }} <span style="margin-left: 50px; font-size: 14px;">IMPORTACIONES MIRALDI S.A.C.</span>
-				</h2>
+				</div>
+				<div style="font-size: 11px; color: #555;">
+					Impresión Nro {{ $model->original->print_count }}
+				</div>
 			</div>
 		</div>
 	</div>

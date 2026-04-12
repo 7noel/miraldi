@@ -276,18 +276,13 @@
     <script>
 
 $(document).on('click', '.btn-estado', function () {
-
     let button = $(this)
-
     let estado = button.data('estado')
     let id = button.data('id')
-
     let mensaje = '¿Seguro que desea ' + estado + ' este pedido?'
-
     if (!confirm(mensaje)) {
         return
     }
-
     $.ajax({
         url: '/orders/' + id + '/cambiar-estado',
         method: 'POST',
@@ -296,42 +291,28 @@ $(document).on('click', '.btn-estado', function () {
             _token: $('meta[name="csrf-token"]').attr('content')
         },
         success: function (response) {
-
             if (response.success) {
-
                 // Actualizar texto
                 $('#estado-badge').text(response.estado)
-
                 // Cambiar color
                 $('#estado-badge')
-                    .removeClass('badge-warning badge-success badge-danger')
-
+                    .removeClass('badge-warning badge-primary badge-info')
                 if (response.estado == 'AUTORIZADO') {
-                    $('#estado-badge').addClass('badge-success')
+                    $('#estado-badge').addClass('badge-primary')
                 }
-
                 if (response.estado == 'RECHAZADO') {
-                    $('#estado-badge').addClass('badge-danger')
+                    $('#estado-badge').addClass('badge-warning')
                 }
-
                 // Eliminar botones
                 $('.btn-estado').remove()
-
             } else {
-
                 alert(response.message)
-
             }
-
         },
         error: function () {
-
             alert('Error al cambiar estado')
-
         }
-
     })
-
 })
 
 var userLoggedIn = {{ auth()->check() ? 'true' : 'false' }};

@@ -15,33 +15,35 @@
 @else
 	{!! Form::hidden('CFTIPCAM', null) !!}
 @endif
+
 <?php 
 $activo = (optional($model->original)->activated_at) ? 1 : 0 ;
 $has_original = ($model->original) ? 1 : 0 ;
+if ($model->CFCOTIZA=='AUTORIZADO') {
+	$clase = 'badge badge-primary';
+} elseif ($model->CFCOTIZA=='ATENDIDO') {
+	$clase = 'badge badge-success';
+} elseif ($model->CFCOTIZA=='ANULADO') {
+	$clase = 'badge badge-danger';
+} elseif ($model->CFCOTIZA=='RECHAZADO') {
+	$clase = 'badge badge-warning';
+} elseif ($activo) {
+	$clase = 'badge badge-info';
+} else {
+	$clase = 'badge badge-secondary';
+}
  ?>
 
+<div class="form-row">
+<div class="col-sm-8 mb-3">
 @if(isset($model))
-	@if($activo)
-	<!-- Cambiar de estado cuando el pedido está activo -->
-	<div class="alert alert-light border" id="estado-container">
-	    <strong>Estado:</strong>
-	    <span class="badge badge-warning" id="estado-badge">
-	        {{ $model->CFCOTIZA }}
-	    </span>
-	    @if($model->CFCOTIZA == 'EMITIDO')
-	        <button type="button" class="btn btn-success btn-sm ml-2 btn-estado" data-estado="AUTORIZADO" data-id="{{ $model->CFNUMPED }}">
-	            AUTORIZAR
-	        </button>
-	        <button type="button" class="btn btn-danger btn-sm btn-estado" data-estado="RECHAZADO" data-id="{{ $model->CFNUMPED }}">
-	            RECHAZAR
-	        </button>
-    	@endif
-	</div>
 
+
+	@if($activo)
 	<!-- si está activado -->
 	<button type="button" class="btn btn-primary btn-sm" title="Pedido Activo" disabled>{!! $icons['check'] !!} Activar</button>
 	@else
-		@if($has_original)
+		@if($has_original and $action == 'edit')
 		<!-- si no está activado -->
 		<button type="button" onclick="activarPedido('{{ $model->CFNUMPED }}')" class="btn btn-primary btn-sm" title="Activar Pedido" id="btnActivarPedido">{!! $icons['check'] !!} Activar</button>
 		@else
@@ -50,7 +52,8 @@ $has_original = ($model->original) ? 1 : 0 ;
 		@endif
 	@endif
 
-	<button type="button" onclick="printJS('{{ route( 'orders.print' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido Almacén">{!! $icons['printer'] !!} Almacén</button>
+	<a href="{{ route( 'orders.print' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-success btn-sm" title="Imprimir Pedido Almacén">{!! $icons['printer'] !!} Almacén</a>
+	<!-- <button type="button" onclick="printJS('{{ route( 'orders.print' , $model->CFNUMPED ) }}')" class="btn btn-outline-success btn-sm" title="Imprimir Pedido Almacén">{!! $icons['printer'] !!} Almacén</button> -->
 	<a href="{{ route( 'orders.print_note' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-danger btn-sm" title="PDF Pedidos">{!! $icons['pdf'] !!} Pedido</a>
 	@if($model->original)
 	<a href="{{ route( 'orders.print_original' , $model->CFNUMPED ) }}" target="_blank" class="btn btn-outline-secondary btn-sm" title="PDF Nota Original">{!! $icons['pdf'] !!} Original</a>
@@ -59,8 +62,28 @@ $has_original = ($model->original) ? 1 : 0 ;
 	@endif
 	<a href="{{ route('orders.create') }}" class="btn btn-outline-primary btn-sm">{!! $icons['add'] !!} Nuevo</a>
 	<a href="{{ route('orders.index') }}" class="btn btn-outline-secondary btn-sm">{!! $icons['list'] !!} Listado</a>
-	<br><br>
+	<button type="button" class="btn btn-sm btn-link" data-toggle="modal" data-target="#modalHistorial"><i class="fas fa-history mr-1"></i> Historial</button>
 @endif
+	
+</div>
+<div class="col-sm-4 mb-3">
+	@if($activo)
+	<!-- Cambiar de estado cuando el pedido está activo -->
+	    <strong>Estado:</strong>
+	    <span class="{{ $clase }}" id="estado-badge">
+	        {{ $model->CFCOTIZA }}
+	    </span>
+	    @if($model->CFCOTIZA == 'EMITIDO')
+	        <button type="button" class="btn btn-outline-success btn-sm ml-2 btn-estado" data-estado="AUTORIZADO" data-id="{{ $model->CFNUMPED }}">
+	            <i class="fas fa-check-circle"></i> AUTORIZAR
+	        </button>
+	        <button type="button" class="btn btn-outline-danger btn-sm btn-estado" data-estado="RECHAZADO" data-id="{{ $model->CFNUMPED }}">
+	            <i class="fas fa-times-circle"></i> RECHAZAR
+	        </button>
+    	@endif
+	@endif
+</div>
+</div>
 
 <div class="form-row">
 	<div class="col-md-1 col-sm-2">
@@ -109,6 +132,130 @@ $has_original = ($model->original) ? 1 : 0 ;
 		</div>
 	</div>
 </div>
+
+<!-- Modal Historial -->
+<div class="modal fade" id="modalHistorial" tabindex="-1">
+    <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header py-2">
+                <h5 class="modal-title">
+                    <i class="fas fa-history mr-1"></i>
+                    Historial del Pedido
+                </h5>
+
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body p-2">
+
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered table-hover mb-0">
+
+                        <thead class="thead-light">
+                            <tr>
+                                <th style="width: 35%">Evento</th>
+                                <th style="width: 35%">Fecha</th>
+                                <th style="width: 30%">Usuario</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+							{{-- EMITIDO --}}
+							@if($model->original->created_at)
+							<tr>
+							    <td>
+							        <span class="badge badge-secondary"><i class="fas fa-file-alt mr-1"></i> EMITIDO </span>
+							    </td>
+							    <td>
+							        {{ \Carbon\Carbon::parse($model->original->created_at)->format('d/m/Y h:i a') }}
+							    </td>
+							    <td>
+							        {{ optional($model->original->createdUser)->name ?? '-' }}
+							    </td>
+							</tr>
+							@endif
+
+                            {{-- ACTIVADO --}}
+                            @if($model->original->activated_at)
+                            <tr>
+                                <td>
+                                    <span class="badge badge-info"><i class="fas fa-play mr-1"></i> ACTIVADO </span>
+                                </td>
+                                <td>
+                                    {{ \Carbon\Carbon::parse($model->original->activated_at)->format('d/m/Y h:i a') }}
+                                </td>
+                                <td>
+                                    {{ optional($model->original->activatedUser)->name ?? '-' }}
+                                </td>
+                            </tr>
+                            @endif
+
+							{{-- RECHAZADO --}}
+							@if($model->original->rejected_at)
+							<tr>
+							    <td>
+							        <span class="badge badge-warning"><i class="fas fa-times mr-1"></i> RECHAZADO </span>
+							    </td>
+							    <td>
+							        {{ \Carbon\Carbon::parse($model->original->rejected_at)->format('d/m/Y h:i a') }}
+							    </td>
+							    <td>
+							        {{ optional($model->original->rejectedUser)->name ?? '-' }}
+							    </td>
+							</tr>
+							@endif
+
+                            {{-- AUTORIZADO --}}
+                            @if($model->original->approved_at)
+                            <tr>
+                                <td>
+                                    <span class="badge badge-success"><i class="fas fa-check mr-1"></i> AUTORIZADO</span>
+                                </td>
+                                <td>
+                                    {{ \Carbon\Carbon::parse($model->original->approved_at)->format('d/m/Y h:i a') }}
+                                </td>
+                                <td>
+                                    {{ optional($model->original->approvedUser)->name ?? '-' }}
+                                </td>
+                            </tr>
+                            @endif
+
+                            {{-- IMPRESO --}}
+                            @if($model->original->printed_at)
+                            <tr>
+                                <td>
+                                    <span class="badge badge-primary"><i class="fas fa-print mr-1"></i> IMPRESO </span>
+                                </td>
+                                <td>
+                                    {{ \Carbon\Carbon::parse($model->original->printed_at)->format('d/m/Y h:i a') }}
+                                </td>
+                                <td>
+                                    {{ optional($model->original->printedUser)->name ?? '-' }}
+                                </td>
+                            </tr>
+                            @endif
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="modal-footer py-2">
+                <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i>
+                    Cerrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 @if(isset($model))
 	@include('orders.partials.details')
 @endif

@@ -16,10 +16,36 @@ class Original extends Model
         'activated_at' => 'datetime',
         'printed_at'   => 'datetime',
         'approved_at'  => 'datetime',
+        'rejected_by'  => 'datetime',
     ];
 
     public function order()
     {
         return $this->belongsTo(Order::class, 'CFNUMPED', 'CFNUMPED');
+    }
+    
+    public function createdUser()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function activatedUser()
+    {
+        return $this->belongsTo(User::class, 'activated_by');
+    }
+
+    public function approvedUser()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function printedUser()
+    {
+        return $this->belongsTo(User::class, 'printed_by');
+    }
+
+    public function rejectedUser()
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
     }
 }
