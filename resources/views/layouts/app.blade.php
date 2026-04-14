@@ -279,7 +279,7 @@ $(document).on('click', '.btn-estado', function () {
     let button = $(this)
     let estado = button.data('estado')
     let id = button.data('id')
-    let mensaje = '¿Seguro que desea ' + estado + ' este pedido?'
+    let mensaje = '¿Seguro que desea cambiar este pedido a ' + estado + '?'
     if (!confirm(mensaje)) {
         return
     }
@@ -325,6 +325,7 @@ function checkSession() {
         cache: false
     })
     .done(function (data) {
+        console.log("Respuesta session:", data);
         if (!data.active) {
             $('#sessionExpiredModal').modal('show');
             setTimeout(function () {

@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        \App\Console\Commands\SyncInvoicesFromERP::class,
     ];
 
     /**
@@ -24,6 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('sync:invoices')
+             ->hourly()
+             ->withoutOverlapping();
         // $schedule->command('inspire')->hourly();
     }
 

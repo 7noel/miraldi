@@ -310,23 +310,19 @@ class OrderController extends Controller
             ]);
         }
         $model = Order::findOrFail($id);
-        if (!$order) {
+        if (!$model) {
             return response()->json([
                 'success' => false,
                 'message' => 'Pedido no encontrado'
             ]);
         }
         // Validación opcional
-        if ($order->CFCOTIZA != 'EMITIDO') {
+        if ($model->CFCOTIZA != 'EMITIDO') {
             return response()->json([
                 'success' => false,
                 'message' => 'El pedido ya fue procesado'
             ]);
         }
-        return response()->json([
-            'success' => true,
-            'estado' => $estado
-        ]);
 
         $model->CFCOTIZA = $estado;
         $model->save();
@@ -340,6 +336,10 @@ class OrderController extends Controller
             }
         }
 
+        return response()->json([
+            'success' => true,
+            'estado' => $estado
+        ]);
         if ($estado == 'RECHAZADO') {
             $original = $model->original;
             if ($original) {

@@ -34,35 +34,6 @@ class PickingController extends Controller
      */
     public function create()
     {
-        $currentMinute = date('i');  // 'i' devuelve los minutos actuales
-
-        // Verificar si estamos dentro de los primeros 10 minutos de la hora
-        if ($currentMinute >= 0 && $currentMinute <= 9) {
-            $p_details = PickingDetail::whereNull('invoiced_at')->get();
-            foreach ($p_details as $detail) {
-                $factura = \DB::connection('sqlsrv')->table('FACCAB as f')
-                    ->join('FACDET as df', function($join) {
-                        $join->on('f.CFTD', '=', 'df.DFTD')
-                             ->on('f.CFNUMSER', '=', 'df.DFNUMSER')
-                             ->on('f.CFNUMDOC', '=', 'df.DFNUMDOC');
-                    })
-                    ->where('f.CFTD', '!=', 'NC')  // Filtro para evitar notas de credito
-                    ->where('f.CFESTADO', 'V')  // Filtro para evitar documentos anulados
-                    ->where('f.CFNROPED', '=', $detail->CFNUMPED)  // Filtro por número de pedido
-                    ->where('df.DFCODIGO', '=', $detail->codigo)  // Filtro por código de producto
-                    ->select('f.*','df.DFCANTID')  // Seleccionar todos los campos de la cabecera
-                    ->first();
-
-                //Actualizando picking
-                if ($factura) {
-                    $detail->quantity_invoiced = $factura->DFCANTID;
-                    $detail->quantity_pending_billing = $detail->quantity - $detail->quantity_invoiced;
-                    $detail->invoiced_at = $factura->CFFECDOC;
-                    $detail->invoice = $factura->CFNUMSER."-".$factura->CFNUMDOC;
-                    $detail->save();
-                }
-            }
-        }
 
         return view('pickings.create');
     }
