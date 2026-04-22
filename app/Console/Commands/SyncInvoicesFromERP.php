@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\PickingDetail;
 
 class SyncInvoicesFromERP extends Command
 {
@@ -11,14 +12,14 @@ class SyncInvoicesFromERP extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'sync:invoices';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Sincroniza pickings con facturas desde ERP';
 
     /**
      * Create a new command instance.
