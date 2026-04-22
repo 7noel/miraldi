@@ -46,10 +46,10 @@
 		{!! Field::text('ACODIGO2', ['label' => 'Código Fabricante', 'class'=>'form-control-sm text-uppercase']) !!}
 	</div>
 	<div class="col-sm-2">
-		{!! Field::number('APESO', ($model->APESO == 0) ? '' : round($model->APESO), ['label' => 'Inner', 'class'=>'form-control-sm text-uppercase']) !!}
+		{!! Field::number('APDIS', ($model->APDIS == 0) ? '' : round($model->APDIS), ['label' => 'Inner', 'class'=>'form-control-sm text-uppercase']) !!}
 	</div>
 	<div class="col-sm-2">
-		{!! Field::number('ADESCRI2', ['label' => 'Master', 'class'=>'form-control-sm text-uppercase']) !!}
+		{!! Field::number('APCOM', ($model->APCOM == 0) ? '' : round($model->APCOM), ['label' => 'Master', 'class'=>'form-control-sm text-uppercase']) !!}
 	</div>
 	@php
 	    $stock01 = $model->stocks->firstWhere('STALMA', '01');

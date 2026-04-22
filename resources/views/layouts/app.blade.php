@@ -359,7 +359,8 @@ $(document).ready(function () {
 
                 $('#table-products').empty()
                 $.each(data, function (index, Obj) {
-                    presentacion = ((Obj.APESO>1) ? Math.round(Obj.APESO) : 1)
+                    presentacion = ((Obj.APDIS>1) ? Math.round(Obj.APDIS) : 1)
+                    master = ((Obj.APCOM>1) ? Math.round(Obj.APCOM) : 1)
                     precio = ((Obj.price == null) ? 0 : Number(Obj.price.PRE_ACT).toFixed(2))
                     stock_disponible = (Obj.stock == null) ? 0 : (parseInt(0+Obj.stock.STSKDIS));
                     // 🆕 Obtener ubicaciones (TCASILLERO)
@@ -380,7 +381,7 @@ $(document).ready(function () {
                                 <td class="text-center no-almacen">${Obj.ACODMON} ${precio}</td>
                                 <td class="text-center text-unidad">${Obj.AUNIDAD}</td>
                                 <td class="text-center text-presentacion">${presentacion}</td>
-                                <td class="text-center text-unidad">${Obj.ADESCRI2}</td>
+                                <td class="text-center text-unidad">${master}</td>
                                 <td class="text-center">${ubicaciones}</td>
                                 <td class="text-center" style="white-space: nowrap;">
                                     <a href="#" onclick="verMovimientos(event, '${Obj.ACODIGO}')" class="btn btn-outline-info btn-sm" title="Historial"><i class="fas fa-history"></i></a>
@@ -1258,7 +1259,7 @@ function get_picking() {
         $('#table-picking').empty()
         i = 0
         $.each(data.products, function (index, pr) {
-            peso = ((pr.APESO > 1) ? parseInt(pr.APESO) : 1)
+            inner = ((pr.APDIS > 1) ? parseInt(pr.APDIS) : 1)
             ubicacion = pr.lockers.map(function(locker){return locker.TCASILLERO}).join(';')
             s01 = pr.stocks.find(s => s.STALMA == "01");
             s03 = pr.stocks.find(s => s.STALMA == "03");
@@ -1271,7 +1272,7 @@ function get_picking() {
                     <td>${pr.ADESCRI}</td>
                     <td class="text-center">${prs[pr.ACODIGO]}</td>
                     <td class="text-center">0</td>
-                    <td class="text-center">${peso}</td>
+                    <td class="text-center">${inner}</td>
                     <td class="text-center">${stock_disponible}</td>
                     <td class="text-center">${ubicacion}</td>
 

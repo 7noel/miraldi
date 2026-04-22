@@ -83,8 +83,9 @@ class ProductController extends Controller
         // dd($data);
         $model = Product::where('ACODIGO', $id)->first();
         $model->ACODIGO2 = $data['ACODIGO2']; // actualiza el codigo del fabricante
-        $model->APESO = ($data['APESO'] == '') ? 0 : $data['APESO']; // actualiza el Inner - APESO - Cantidad mínima para vender
-        $model->ADESCRI2 = $data['ADESCRI2']; // actualiza el Master ADESCRI2 - Cantidad por mayor que se vende
+        $model->APDIS = ($data['APDIS'] == '') ? 0 : $data['APDIS']; // actualiza el Inner - APDIS - Cantidad mínima para vender
+        $model->APCOM = ($data['APCOM'] == '') ? 0 : $data['APCOM']; // actualiza el Inner - APCOM - Cantidad mínima para vender
+        //$model->ADESCRI2 = $data['ADESCRI2']; // actualiza el Master ADESCRI2 - Cantidad por mayor que se vende
         $p_l = Price::where('COD_ARTI', $model->ACODIGO)->where('COD_LISPRE', '0001')->first();
         // Solo actualiza precio si tiene precio base
         if (isset($data['PRECIO_BASE'])) {
@@ -239,7 +240,7 @@ class ProductController extends Controller
             ->join('STKART', 'LISTA_PRECIOS.COD_ARTI', '=', 'STKART.STCODIGO')
             ->where('MAEART.AESTADO', 'V')
             // ->where('STKART.STSKDIS', '>', 0)
-            ->select('MAEART.ACODIGO', 'MAEART.ADESCRI', 'MAEART.AUNIDAD', 'LISTA_PRECIOS.PRE_ACT', 'STKART.STSKDIS', 'MAEART.APESO')
+            ->select('MAEART.ACODIGO', 'MAEART.ADESCRI', 'MAEART.AUNIDAD', 'LISTA_PRECIOS.PRE_ACT', 'STKART.STSKDIS', 'MAEART.APDIS', 'MAEART.APCOM')
             ->distinct()
             ->get();
         $pdf->PintaDetalle($models);
