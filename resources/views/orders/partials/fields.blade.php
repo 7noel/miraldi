@@ -67,7 +67,7 @@
 
                         <tbody>
 							{{-- EMITIDO --}}
-							@if($model->original->created_at)
+							@if(optional($model->original)->created_at)
 							<tr>
 							    <td> <span class="badge badge-secondary"><i class="fas fa-file-alt mr-1"></i> EMITIDO </span> </td>
 							    <td> {{ \Carbon\Carbon::parse($model->original->created_at)->format('d/m/Y h:i a') }} </td>
@@ -76,7 +76,7 @@
 							@endif
 
                             {{-- ACTIVADO --}}
-                            @if($model->original->activated_at)
+                            @if(optional($model->original)->activated_at)
                             <tr>
                                 <td> <span class="badge badge-info"><i class="fas fa-play mr-1"></i> ACTIVADO </span> </td>
                                 <td> {{ \Carbon\Carbon::parse($model->original->activated_at)->format('d/m/Y h:i a') }} </td>
@@ -85,7 +85,7 @@
                             @endif
 
 							{{-- RECHAZADO --}}
-							@if($model->original->rejected_at)
+							@if(optional($model->original)->rejected_at)
 							<tr>
 							    <td> <span class="badge badge-warning"><i class="fas fa-times mr-1"></i> RECHAZADO </span> </td>
 							    <td> {{ \Carbon\Carbon::parse($model->original->rejected_at)->format('d/m/Y h:i a') }} </td>
@@ -94,7 +94,7 @@
 							@endif
 
                             {{-- AUTORIZADO --}}
-                            @if($model->original->approved_at)
+                            @if(optional($model->original)->approved_at)
                             <tr>
                                 <td> <span class="badge badge-success"><i class="fas fa-check mr-1"></i> AUTORIZADO</span> </td>
                                 <td> {{ \Carbon\Carbon::parse($model->original->approved_at)->format('d/m/Y h:i a') }} </td>
@@ -103,7 +103,7 @@
                             @endif
 
                             {{-- IMPRESO --}}
-                            @if($model->original->printed_at)
+                            @if(optional($model->original)->printed_at)
                             <tr>
                                 <td> <span class="badge badge-primary"><i class="fas fa-print mr-1"></i> IMPRESO </span></td>
                                 <td> {{ \Carbon\Carbon::parse($model->original->printed_at)->format('d/m/Y h:i a') }} </td>

@@ -180,7 +180,12 @@ class OrderController extends Controller
         }
 
         $action = 'edit';
-        return view('partials.edit', compact('model', 'conditions', 'sellers', 'bloquea_original', 'graba_original', 'action'));
+        // Solo mostrar información de stock/compras cuando el pedido está AUTORIZADO o PARCIAL
+        $viewData = compact('model', 'conditions', 'sellers', 'bloquea_original', 'graba_original', 'action');
+        if (in_array($model->CFCOTIZA, ['AUTORIZADO', 'PARCIAL'])) {
+            $viewData['stockInfo'] = $this->getStockComprasInfo($model);
+        }
+        return view('partials.edit', $viewData);
     }
 
     /**
@@ -385,10 +390,6 @@ class OrderController extends Controller
                 $join->on('PEDDET.DFCODIGO', '=', 'stk01.STCODIGO')
                      ->where('stk01.STALMA', '=', '01');
             })
-            ->leftJoin('STKART as stk03', function ($join) {
-                $join->on('PEDDET.DFCODIGO', '=', 'stk03.STCODIGO')
-                     ->where('stk03.STALMA', '=', '03');
-            })
             ->where('PEDCAB.CFFECDOC', '>=', $fechaLimite)
             ->where('PEDCAB.CFCOTIZA', 'AUTORIZADO')
             ->select(
@@ -396,27 +397,178 @@ class OrderController extends Controller
                 'MAEART.ADESCRI',
                 'MAEART.AUNIDAD',
                 \DB::raw('ISNULL(stk01.STSKDIS, 0) as stock_01'),
-                \DB::raw('ISNULL(stk03.STSKDIS, 0) as stock_03'),
                 \DB::raw('STRING_AGG(PEDCAB.CFNUMPED, \', \') as numeros_pedidos'),
                 \DB::raw('SUM(PEDDET.DFCANTID) as total_cantidad'),
-                // ✅ nuevo cálculo del faltante total (considerando ambos almacenes)
+                // Faltante considerando solo Stock SJM (almacén 01)
                 \DB::raw('CASE 
-                            WHEN SUM(PEDDET.DFCANTID) - (ISNULL(stk01.STSKDIS, 0) + ISNULL(stk03.STSKDIS, 0)) > 0 
-                            THEN SUM(PEDDET.DFCANTID) - (ISNULL(stk01.STSKDIS, 0) + ISNULL(stk03.STSKDIS, 0))
+                            WHEN SUM(PEDDET.DFCANTID) - ISNULL(stk01.STSKDIS, 0) > 0 
+                            THEN SUM(PEDDET.DFCANTID) - ISNULL(stk01.STSKDIS, 0)
                             ELSE 0 END as diferencia')
             )
             ->groupBy(
                 'MAEART.ACODIGO',
                 'MAEART.ADESCRI',
                 'MAEART.AUNIDAD',
-                'stk01.STSKDIS',
-                'stk03.STSKDIS'
+                'stk01.STSKDIS'
             )
             ->havingRaw('SUM(PEDDET.DFCANTID) - ISNULL(stk01.STSKDIS, 0) > 0')
             ->orderBy('diferencia', 'desc')
             ->get();
 
         return view('products.por_comprar', compact('models'));
+    }
+
+    /**
+     * Calcula el stock SJM, la demanda de pedidos AUTORIZADOS (15 días),
+     * otros pedidos que requieren el mismo producto y la rotación mensual (90 días)
+     * para los productos del pedido actual.
+     *
+     * @param  \App\Order  $model
+     * @return \Illuminate\Support\Collection
+     */
+    public function getStockComprasInfo($model)
+    {
+        // Códigos de productos del pedido
+        $codigos = $model->details->pluck('DFCODIGO')->unique()->values()->toArray();
+        if (empty($codigos)) {
+            return collect();
+        }
+
+        $fechaLimite = date('Y-d-m 00:00:00', strtotime('-15 days'));
+        $fechaInicioRotacion = date('Y-d-m 00:00:00', strtotime('-89 days'));
+        $fechaFin = date('Y-d-m 23:59:59');
+
+        // 1. Stock SJM (almacén 01) por producto
+        $stocks = \DB::connection('sqlsrv')
+            ->table('STKART')
+            ->whereIn('STCODIGO', $codigos)
+            ->where('STALMA', '01')
+            ->pluck('STSKDIS', 'STCODIGO');
+
+        // 2. Demanda de pedidos AUTORIZADOS (últimos 15 días)
+        $demandas = \DB::connection('sqlsrv')
+            ->table('PEDDET')
+            ->join('PEDCAB', 'PEDCAB.CFNUMPED', '=', 'PEDDET.DFNUMPED')
+            ->whereIn('PEDDET.DFCODIGO', $codigos)
+            ->where('PEDCAB.CFFECDOC', '>=', $fechaLimite)
+            ->where('PEDCAB.CFCOTIZA', 'AUTORIZADO')
+            ->select(
+                'PEDDET.DFCODIGO',
+                \DB::raw('SUM(PEDDET.DFCANTID) as total_demanda'),
+                \DB::raw('STRING_AGG(PEDCAB.CFNUMPED, \', \') as pedidos')
+            )
+            ->groupBy('PEDDET.DFCODIGO')
+            ->get();
+
+        // 3. Rotación: ventas de los últimos 90 días → promedio mensual
+        $rotaciones = \DB::connection('sqlsrv')
+            ->table('FACDET as D')
+            ->join('FACCAB as F', function ($join) {
+                $join->on('F.CFTD', '=', 'D.DFTD')
+                     ->on('F.CFNUMSER', '=', 'D.DFNUMSER')
+                     ->on('F.CFNUMDOC', '=', 'D.DFNUMDOC');
+            })
+            ->whereIn('D.DFCODIGO', $codigos)
+            ->whereIn('F.CFTD', ['FT', 'BV'])
+            ->whereBetween('F.CFFECDOC', [$fechaInicioRotacion, $fechaFin])
+            ->select('D.DFCODIGO', \DB::raw('SUM(D.DFCANTID) as cant_ven'))
+            ->groupBy('D.DFCODIGO')
+            ->get()
+            ->keyBy('DFCODIGO');
+
+        $stockInfo = collect();
+        foreach ($model->details as $detail) {
+            $codigo = $detail->DFCODIGO;
+            $stock = (float) ($stocks[$codigo] ?? 0);
+            $demandaRow = $demandas->firstWhere('DFCODIGO', $codigo);
+            $demandaTotal = (float) ($demandaRow->total_demanda ?? 0);
+            $faltante = max(0, $demandaTotal - $stock);
+
+            // Otros pedidos AUTORIZADOS que requieren el producto (excluye el actual)
+            $otrosPedidos = [];
+            if ($demandaRow) {
+                $otrosPedidos = array_values(array_filter(
+                    explode(', ', $demandaRow->pedidos),
+                    function ($p) use ($model) {
+                        return trim($p) != $model->CFNUMPED;
+                    }
+                ));
+            }
+
+            // Rotación promedio mensual (ventas 90 días / 90 * 30)
+            $rot = $rotaciones->get($codigo);
+            $cantVen = (float) ($rot->cant_ven ?? 0);
+            $promMes = round(($cantVen / 90) * 30, 2);
+
+            // Stock libre después de cubrir la demanda autorizada
+            $stockLibre = $stock - $demandaTotal;
+
+            // Lógica de colores:
+            // - 'comprar'  (rojo): el stock NO cubre la demanda autorizada (faltante > 0)
+            // - 'atencion' (amarillo): cubre la demanda pero el stock libre es menor a 1 mes de rotación → conviene reabastecer
+            // - 'ok'       (verde): cubre la demanda y queda ≥ 1 mes de rotación de reserva
+            if ($faltante > 0) {
+                $estado = 'comprar';
+            } elseif ($promMes > 0 && $stockLibre < $promMes) {
+                $estado = 'atencion';
+            } else {
+                $estado = 'ok';
+            }
+
+            $stockInfo->push((object) [
+                'codigo'        => $codigo,
+                'descripcion'   => $detail->DFDESCRI,
+                'unidad'        => $detail->DFUNIDAD,
+                'cantidad'      => (float) $detail->DFCANTID,
+                'stock_sjm'     => $stock,
+                'demanda_total' => $demandaTotal,
+                'faltante'      => $faltante,
+                'otros_pedidos' => $otrosPedidos,
+                'rotacion_mes'  => $promMes,
+                'stock_libre'   => $stockLibre,
+                'estado'        => $estado,
+            ]);
+        }
+
+        return $stockInfo;
+    }
+
+    /**
+     * Retorna el contenido del modal de stock/compras actualizado (AJAX)
+     * junto con los estados de los productos para repintar la tabla de detalle.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function stockComprasContent($id)
+    {
+        $model = Order::findOrFail($id);
+        // Solo aplica para pedidos AUTORIZADO o PARCIAL
+        if (!in_array($model->CFCOTIZA, ['AUTORIZADO', 'PARCIAL'])) {
+            return response()->json([
+                'modal_html' => '<div class="alert alert-info mb-0">Este pedido no requiere verificación de stock.</div>',
+                'estados'    => [],
+                'criticos'   => 0,
+                'atencion'   => 0,
+            ]);
+        }
+
+        $stockInfo = $this->getStockComprasInfo($model);
+        $html = view('orders.partials.stock_modal_content', compact('stockInfo', 'model'))->render();
+
+        $estados = [];
+        foreach ($stockInfo as $item) {
+            $estados[$item->codigo] = $item->estado;
+        }
+        $criticos = $stockInfo->filter(function($item) { return $item->estado == 'comprar'; })->count();
+        $atencion = $stockInfo->filter(function($item) { return $item->estado == 'atencion'; })->count();
+
+        return response()->json([
+            'modal_html' => $html,
+            'estados'    => $estados,
+            'criticos'   => $criticos,
+            'atencion'   => $atencion,
+        ]);
     }
 
     public function get_picking($qr)

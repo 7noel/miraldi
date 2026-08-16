@@ -686,14 +686,13 @@ $(document).ready(function () {
                 $('#txtDscto2').val(window.descuento2)
                 $('#txtCantidad').val(1)
                 stock01 = 0;
-                stock03 = 0;
 
                 if ($p.stocks && $p.stocks.length > 0) {
                     $p.stocks.forEach(s => {
                         if (s.STALMA == "01") stock01 = parseFloat(s.STSKDIS*1) || 0;
-                        if (s.STALMA == "03") stock03 = parseFloat(s.STSKDIS*1) || 0;
                     });
                 }
+                window.lastStock01 = stock01;
                 // if ($p.stock.hasOwnProperty('STSKDIS') && $p.stock.STSKDIS != null) {
                 //     stk = ($p.stock.STSKDIS*1).toFixed(0)
                 // }
@@ -706,18 +705,11 @@ $(document).ready(function () {
                 //     $('#alert-stock').addClass(`badge-danger`)
                 // }
                 $('#alert-stock').text(`Stk SJM: ${stock01} ${$p.AUNIDAD}`)
-                $('#alert-stock_03').text(`Stk PH: ${stock03} ${$p.AUNIDAD}`)
 
                 if (stock01 > 0) {
                     $('#alert-stock').removeClass('badge-danger').addClass('badge-info')
                 } else {
                     $('#alert-stock').removeClass('badge-info').addClass('badge-danger')
-                }
-
-                if (stock03 > 0) {
-                    $('#alert-stock_03').removeClass('badge-danger').addClass('badge-info')
-                } else {
-                    $('#alert-stock_03').removeClass('badge-info').addClass('badge-danger')
                 }
 
                 $.get(`/stock-venta/${$p.ACODIGO}`, function(res) {
@@ -819,6 +811,29 @@ $(document).ready(function () {
         cargaDistritos()
     })
 
+    $('#btnStockCompras').click(function(e){
+        e.preventDefault()
+        var url = $(this).data('url')
+        var $body = $('#modalStockComprasBody')
+        $body.html('<div class="text-center text-muted py-3"><i class="fa fa-spinner fa-spin"></i> Cargando...</div>')
+        $.get(url, function(res){
+            if (res.modal_html) { $body.html(res.modal_html) }
+            else { $body.html('<div class="alert alert-warning mb-0">No se pudo cargar la información.</div>') }
+        }).fail(function(){
+            $body.html('<div class="alert alert-danger mb-0">Error al cargar la información.</div>')
+        })
+    })
+    $(document).on('click', '.btn-expand-pedidos', function(e){
+        e.preventDefault()
+        $(this).addClass('d-none')
+        $(this).next('.pedidos-extra').removeClass('d-none')
+    })
+    $(document).on('click', '.btn-collapse-pedidos', function(e){
+        e.preventDefault()
+        var $extra = $(this).closest('.pedidos-extra')
+        $extra.addClass('d-none')
+        $extra.prev('.btn-expand-pedidos').removeClass('d-none')
+    })
     $(document).on('change', '.text-uppercase', function (e) {
         var cadena=$(this).val().trim()
         cadena = cadena.replace("  "," ")
@@ -957,7 +972,6 @@ function clearModalProduct() {
     $('#alert-stock').addClass("badge-info")
     $('#alert-stock').removeClass("badge-danger")
     $('#alert-stock').text("")
-    $('#alert-stock_03').text("")
     items = $('#items').val()
     max = 50
     $('#alert-items').text(`Items registrados: ${items}`)
@@ -1033,9 +1047,11 @@ function addRowProduct2() {
     if (typeof window.el === 'undefined') { // Si no existe la variable window.el (producto a editar) se agrega una fila
         items = $('#items').val()
         //preparando fila <tr>
+        let stock01 = (typeof window.lastStock01 !== 'undefined' ? window.lastStock01 : 0);
+        let codigoClass = stock01 > 0 ? 'table-success' : 'table-danger';
         tr = `<tr>
             <input class="unitId" name="details[${items}][DFUNIDAD]" type="hidden" value="${u}">
-            <td><span class='spanCodigo'>${codigo}</span><input class="productId" name="details[${items}][DFCODIGO]" type="hidden" value="${codigo}"></td>
+            <td class="${codigoClass}"><span class='spanCodigo'>${codigo}</span><input class="productId" name="details[${items}][DFCODIGO]" type="hidden" value="${codigo}"></td>
             <td><span class='spanProduct'>${desc}</span><input class="txtProduct" name="details[${items}][DFDESCRI]" type="hidden" value=""></td>
             <td class="text-center"><span class='spanCantidad text-right'>${q} ${u}</span><input class="txtCantidad" name="details[${items}][DFCANTID]" type="hidden" value="${q}"></td>
             <td class="withTax text-right"><span class='spanPrecio'>${v*1.18}</span><input class="txtPrecio" name="details[${items}][price]" type="text" value="${v*1.18}"></td>
@@ -1094,6 +1110,7 @@ function addRowProduct2() {
         success: function(response) {
             // Manejar la respuesta exitosa
             console.log('Datos guardados con éxito: ' + response)
+            refrescarStockInfo()
         },
         error: function(xhr, status, error) {
             // Manejar el error
@@ -1101,6 +1118,43 @@ function addRowProduct2() {
         }
     })
 
+}
+
+// Actualiza los colores de los códigos en la tabla de detalle y los contadores del botón
+function refrescarStockInfo() {
+    var $btn = $('#btnStockCompras')
+    if ($btn.length === 0) return
+    var url = $btn.data('url')
+    if (!url) return
+    $.get(url, function(res) {
+        if (res.estados) {
+            // Repintar celda de código en cada fila de la tabla de detalle
+            $('#tableItems tr').each(function() {
+                var $codigoTd = $(this).find('.spanCodigo').closest('td')
+                var codigo = $(this).find('.productId').val()
+                if (codigo && res.estados.hasOwnProperty(codigo)) {
+                    var estado = res.estados[codigo]
+                    var cls = estado == 'comprar' ? 'table-danger' : (estado == 'atencion' ? 'table-warning' : 'table-success')
+                    $codigoTd.removeClass('table-danger table-warning table-success').addClass(cls)
+                }
+            })
+        }
+        // Actualizar contadores del botón
+        var $badgeC = $('#badgeCriticos')
+        var $badgeA = $('#badgeAtencion')
+        if (res.criticos > 0) {
+            if ($badgeC.length) { $badgeC.text(res.criticos) }
+            else { $btn.append('<span class="badge badge-danger ml-1" id="badgeCriticos">' + res.criticos + '</span>') }
+        } else if ($badgeC.length) {
+            $badgeC.remove()
+        }
+        if (res.atencion > 0) {
+            if ($badgeA.length) { $badgeA.text(res.atencion) }
+            else { $btn.append('<span class="badge badge-warning ml-1" id="badgeAtencion">' + res.atencion + '</span>') }
+        } else if ($badgeA.length) {
+            $badgeA.remove()
+        }
+    })
 }
 
 function get_product() {

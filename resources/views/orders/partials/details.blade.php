@@ -1,6 +1,19 @@
 @php $i=0; @endphp
 @if(request()->route()->getName() == 'orders.edit')
-<a href="#" id="btnAddProduct" class="btn btn-outline-info btn-sm mb-3" data-toggle="modal" data-target="#exampleModalx" title="Agregar Producto">{!! $icons['add'] !!} Agregar</a>
+<div class="mb-3">
+<a href="#" id="btnAddProduct" class="btn btn-outline-info btn-sm" data-toggle="modal" data-target="#exampleModalx" title="Agregar Producto">{!! $icons['add'] !!} Agregar</a>
+@if(isset($stockInfo))
+<button type="button" class="btn btn-outline-primary btn-sm" id="btnStockCompras" data-url="{{ route('orders.stockComprasContent', $model->CFNUMPED) }}" data-toggle="modal" data-target="#modalStockCompras" title="Ver Stock / Compras">
+<i class="fas fa-boxes"></i> Ver Stock / Compras
+@if($stockInfo->filter(function($item){ return $item->estado == 'comprar'; })->count() > 0)
+<span class="badge badge-danger ml-1" id="badgeCriticos">{{ $stockInfo->filter(function($item){ return $item->estado == 'comprar'; })->count() }}</span>
+@endif
+@if($stockInfo->filter(function($item){ return $item->estado == 'atencion'; })->count() > 0)
+<span class="badge badge-warning ml-1" id="badgeAtencion">{{ $stockInfo->filter(function($item){ return $item->estado == 'atencion'; })->count() }}</span>
+@endif
+</button>
+@endif
+</div>
 @endif
 <div class="table-responsive">
 <table class="table table-sm table-hover">
@@ -23,15 +36,18 @@
 	@if(isset($model->details))
 	@foreach($model->details as $detail)
 		@php
-		$class = "";
-		if($detail->DFPREC_ORI != $detail->product->price->PRE_ACT) {
-			$class = "table-danger";
+		$infoItem = isset($stockInfo) ? $stockInfo->firstWhere('codigo', $detail->DFCODIGO) : null;
+		// Solo se sombrea la celda del código según el estado del stock (verde/amarillo/rojo)
+		$codigoClass = '';
+		if ($infoItem) {
+			$codigoClass = $infoItem->estado == 'comprar' ? 'table-danger'
+				: ($infoItem->estado == 'atencion' ? 'table-warning' : 'table-success');
 		}
 		@endphp
-		<tr class="{{ $class }}">
+		<tr>
 			{!! Form::hidden("details[$i][DFSECUEN]", $detail->DFSECUEN, ['class'=>'detailId','data-detailId'=>'']) !!}
 			{!! Form::hidden("details[$i][DFUNIDAD]", $detail->DFUNIDAD, ['class'=>'unitId']) !!}
-			<td><span class='spanCodigo'>{{ $detail->DFCODIGO }}</span>{!! Form::hidden("details[$i][DFCODIGO]", $detail->DFCODIGO, ['class'=>'productId']); !!}</td>
+			<td class="{{ $codigoClass }}"><span class='spanCodigo'>{{ $detail->DFCODIGO }}</span>{!! Form::hidden("details[$i][DFCODIGO]", $detail->DFCODIGO, ['class'=>'productId']); !!}</td>
 			<td><span class='spanProduct'>{{ $detail->DFDESCRI }}</span>{!! Form::hidden("details[$i][DFDESCRI]", $detail->DFDESCRI, ['class'=>'txtProduct']); !!}</td>
 			<td class="text-center"><span class='spanCantidad'>{{ $detail->DFCANTID + 0 }} {{ $detail->DFUNIDAD }}</span>{!! Form::hidden("details[$i][DFCANTID]", $detail->DFCANTID + 0, ['class'=>'txtCantidad']) !!}</td>
 			<td class="withTax text-right"><span class='spanPrecio'>{{ number_format(round($detail->DFPREC_ORI*1.18, 2), 2, '.', '') }}</span>{!! Form::hidden("details[$i][price]", $detail->DFPREC_ORI*1.18, ['class'=>'txtPrecio']) !!}</td>
@@ -51,6 +67,28 @@
 	@endif
 	</tbody>
 </table>
+</div>
+
+<!-- Modal Stock / Compras -->
+<div class="modal fade" id="modalStockCompras" tabindex="-1" role="dialog" aria-labelledby="modalStockComprasLabel" aria-hidden="true">
+	<div class="modal-dialog modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-header py-2">
+				<h5 class="modal-title" id="modalStockComprasLabel">
+					<i class="fas fa-boxes"></i> Stock / Compras
+					<small class="text-muted">Pedido {{ isset($model) ? $model->CFNUMPED : '' }}</small>
+				</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body" id="modalStockComprasBody">
+				<div class="text-center text-muted py-3">
+					<i class="fa fa-spinner fa-spin"></i> Cargando...
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
 {!! Form::hidden('items', $i, ['id'=>'items']) !!}
@@ -73,7 +111,6 @@
 					<span class="badge badge-light" id="alert-items" title="Cantidad de items en el pedido"></span>
 					<span class="badge badge-info" id="alert-stock-venta" title="Stock Disponible para Venta en el almacén de SJM"></span>
 					<span class="badge badge-info" id="alert-stock" title="Stock del Sistema en San Juan de Miraflores"></span>
-					<span class="badge badge-info" id="alert-stock_03" title="Stock del Sistema en Punta Hermosa"></span>
 					<input type="hidden" id="txtProduct">
 					<input type="hidden" id="unitId">
 				</div>
