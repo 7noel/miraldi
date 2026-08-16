@@ -71,7 +71,7 @@
 
 <!-- Modal Stock / Compras -->
 <div class="modal fade" id="modalStockCompras" tabindex="-1" role="dialog" aria-labelledby="modalStockComprasLabel" aria-hidden="true">
-	<div class="modal-dialog modal-xl" role="document">
+	<div class="modal-dialog" role="document" style="max-width: 95vw;">
 		<div class="modal-content">
 			<div class="modal-header py-2">
 				<h5 class="modal-title" id="modalStockComprasLabel">

@@ -13,7 +13,6 @@
                 <th class="text-center">Ctd</th>
                 <th class="text-right">Stock SJM</th>
                 <th class="text-right">Demanda</th>
-                <th class="text-right">Libre</th>
                 <th class="text-right">Faltante</th>
                 <th>Otros Pedidos</th>
                 <th class="text-right">Rot/Mes</th>
@@ -36,10 +35,9 @@
                 <tr>
                     <td class="{{ $codigoClass }}">{{ $item->codigo }}</td>
                     <td style="white-space: nowrap;">{{ $item->descripcion }}</td>
-                    <td class="text-center">{{ number_format($item->cantidad, 2) }} {{ $item->unidad }}</td>
+                    <td class="text-center">{{ number_format($item->cantidad, 2) }}</td>
                     <td class="text-right">{{ number_format($item->stock_sjm, 2) }}</td>
                     <td class="text-right">{{ number_format($item->demanda_total, 2) }}</td>
-                    <td class="text-right">{{ number_format($item->stock_libre, 2) }}</td>
                     <td class="text-right">
                         @if($item->faltante > 0)
                             <strong class="text-danger">{{ number_format($item->faltante, 2) }}</strong>
