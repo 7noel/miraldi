@@ -55,6 +55,7 @@ class MenuController extends Controller
                 ['name' => 'Código de barras', 'route' => 'products.excel_codbars'],
                 ['name' => 'Pendientes', 'route' => 'por_comprar'],
                 ['name' => 'Rotacion', 'route' => 'rotacion'],
+                ['name' => 'Reporte Importados', 'route' => 'reporte.importados'],
             ],
             'Ventas'=>[
                 //['name' => 'Cotizaciones', 'route' => 'quotes.index'],

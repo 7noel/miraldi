@@ -917,6 +917,182 @@ class OrderController extends Controller
     }
 
 
+    /**
+     * Reporte de ventas de productos importados en un rango de fechas.
+     * Muestra ventas (FACDET/FACCAB) de productos que existen en importaciones,
+     * con costos de importación (última importación con costo > 0 anterior a la venta),
+     * precios, descuentos, margen real y ganancia.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function reporteImportados()
+    {
+        // Rango de fechas: por defecto el mes actual
+        $desde = request('desde') ? date('Y-d-m 00:00:00', strtotime(request('desde'))) : date('Y-d-m 00:00:00', strtotime('first day of this month'));
+        $hasta = request('hasta') ? date('Y-d-m 23:59:59', strtotime(request('hasta'))) : date('Y-d-m 23:59:59');
+        $desdeInput = request('desde') ? date('Y-m-d', strtotime(request('desde'))) : date('Y-m-d', strtotime('first day of this month'));
+        $hastaInput = request('hasta') ? date('Y-m-d', strtotime(request('hasta'))) : date('Y-m-d');
+        // La comparación de FENTREGA usa el mismo formato StarSoft (Y-d-m)
+        $hastaComparar = $hasta;
+
+        // 1. Ventas del rango de productos (facturas y boletas) que son importados.
+        // Usamos WHERE EXISTS para filtrar solo productos que existen en importaciones,
+        // evitando que el join duplique las filas de venta por cada importación del producto.
+        $ventas = \DB::connection('sqlsrv')
+            ->table('FACDET as d')
+            ->join('FACCAB as c', function ($j) {
+                $j->on('c.CFTD', '=', 'd.DFTD')
+                  ->on('c.CFNUMSER', '=', 'd.DFNUMSER')
+                  ->on('c.CFNUMDOC', '=', 'd.DFNUMDOC');
+            })
+            ->join('MAEART as m', 'm.ACODIGO', '=', 'd.DFCODIGO')
+            ->whereIn('c.CFTD', ['FT', 'BV'])
+            ->where('c.CFFECDOC', '>=', $desde)
+            ->where('c.CFFECDOC', '<=', $hasta)
+            ->whereExists(function ($q) {
+                $q->selectRaw('1')
+                  ->from('IMPORGASDET as ig')
+                  ->whereRaw('ig.CCODARTIC = d.DFCODIGO');
+            })
+            ->select(
+                'd.DFCODIGO as codigo',
+                'm.ADESCRI as descripcion',
+                'm.AUNIDAD as unidad',
+                'm.AORIGEN as origen',
+                'm.AULTPAISPROV as ult_pais_prov',
+                \DB::raw('SUM(d.DFCANTID) as cantidad'),
+                \DB::raw('SUM(d.DFIMPMN) as importe_total')
+            )
+            ->groupBy('d.DFCODIGO', 'm.ADESCRI', 'm.AUNIDAD', 'm.AORIGEN', 'm.AULTPAISPROV')
+            ->orderBy('d.DFCODIGO')
+            ->get();
+
+        // Códigos de productos vendidos
+        $codigos = $ventas->pluck('codigo')->unique()->values()->toArray();
+
+        // 2. Última importación con costo > 0 y FENTREGA <= fin del rango, por producto
+        $importaciones = collect();
+        if (!empty($codigos)) {
+            $lastImports = \DB::connection('sqlsrv')
+                ->table('IMPORGASDET as ig')
+                ->join('IMPORC as ic', 'ic.CNUMERO', '=', 'ig.CNUMIMPOR')
+                ->whereIn('ig.CCODARTIC', $codigos)
+                ->where('ig.HCCOSTOUNI', '>', 0)
+                ->where('ic.FENTREGA', '<=', $hastaComparar)
+                ->get([
+                    'ig.CCODARTIC as codigo',
+                    'ig.CNUMIMPOR as importacion',
+                    'ig.NCANTIDAD as cant_importada',
+                    'ig.NVALOR as valor_fob',
+                    'ig.HCFLETE as flete',
+                    'ig.HCCSEGURO as seguro',
+                    'ig.HCGASTOSVPE as gastos_vpe',
+                    'ig.HCGASAGEN as gastos_agente',
+                    'ig.HCAGADUANA as gastos_aduan',
+                    'ig.HCADVAL as ad_valorem',
+                    'ig.HCTRANSPORTE as transporte',
+                    'ig.HCGASBAN as gastos_banc',
+                    'ig.HCCOSTOTOT as costo_total',
+                    'ig.HCCOSTOUNI as costo_unit',
+                    'ic.FEMISION as fecha_imp',
+                    'ic.FENTREGA as fecha_ingreso',
+                    'ic.CDESPROVE as proveedor',
+                    'ic.NTIPCAMBI as tipo_cambio'
+                ])
+                ->sortByDesc('fecha_ingreso')
+                ->groupBy('codigo')
+                ->map(function ($grupo) {
+                    // Última importación con costo > 0 anterior a la venta (la más reciente)
+                    return $grupo->first();
+                });
+
+            $importaciones = $lastImports;
+        }
+
+        // 3. Precios de lista para los productos
+        $precios = \DB::connection('sqlsrv')
+            ->table('LISTA_PRECIOS')
+            ->whereIn('COD_ARTI', $codigos)
+            ->where('COD_LISPRE', '0001')
+            ->get()
+            ->keyBy('COD_ARTI');
+
+        // 4. Armar el reporte combinando ventas + importación + precio lista
+        $models = collect();
+        foreach ($ventas as $v) {
+            $imp = isset($importaciones[$v->codigo]) ? $importaciones[$v->codigo] : null;
+            $precio = isset($precios[$v->codigo]) ? $precios[$v->codigo] : null;
+
+            $cantidad = (float) $v->cantidad;
+            $ventaTotal = (float) $v->importe_total;
+            $precioLista = $precio ? (float) $precio->PRE_ACT : 0;
+            $precioVenta = $cantidad > 0 ? $ventaTotal / $cantidad : 0;
+
+            // Costos de importación (USD)
+            $cantImportada = $imp ? (float) $imp->cant_importada : 0;
+            $fobGlobal = $imp ? (float) $imp->valor_fob : 0;
+            $fobUnit = $cantImportada > 0 ? $fobGlobal / $cantImportada : 0;
+            $flete = $imp ? (float) $imp->flete : 0;
+            $seguro = $imp ? (float) $imp->seguro : 0;
+            $gastosVpe = $imp ? (float) $imp->gastos_vpe : 0;
+            $gastosAgente = $imp ? (float) $imp->gastos_agente : 0;
+            $gastosAduana = $imp ? (float) $imp->gastos_aduan : 0;
+            $adValorem = $imp ? (float) $imp->ad_valorem : 0;
+            $transporte = $imp ? (float) $imp->transporte : 0;
+            $gastosBanc = $imp ? (float) $imp->gastos_banc : 0;
+            $costoUnitUsd = $imp ? (float) $imp->costo_unit : 0;
+            $tipoCambio = $imp ? (float) $imp->tipo_cambio : 0;
+
+            // País de origen: AORIGEN (si tiene valor), sino el último país del proveedor
+            $paisOrigen = trim((string) ($v->origen ?? ''));
+            if ($paisOrigen === '' || $paisOrigen === ' ') {
+                $paisOrigen = trim((string) ($v->ult_pais_prov ?? ''));
+            }
+            if ($paisOrigen === '') {
+                $paisOrigen = '-';
+            }
+
+            // Conversión a soles para los resultados
+            $costoUnitSoles = $costoUnitUsd * $tipoCambio;
+            $costoVendidoSoles = $costoUnitSoles * $cantidad;
+            $ganancia = $ventaTotal - $costoVendidoSoles;
+            $margen = $ventaTotal > 0 ? ($ganancia / $ventaTotal) * 100 : 0;
+
+            $models->push((object) [
+                'codigo'          => $v->codigo,
+                'descripcion'     => $v->descripcion,
+                'unidad'          => $v->unidad,
+                'pais_origen'     => $paisOrigen,
+                'importacion'     => $imp ? $imp->importacion : '-',
+                'proveedor'       => $imp ? $imp->proveedor : '-',
+                'fob_global'      => $fobGlobal,
+                'fob_unit'        => $fobUnit,
+                'flete'           => $flete,
+                'seguro'          => $seguro,
+                'gastos_vpe'      => $gastosVpe,
+                'gastos_agente'   => $gastosAgente,
+                'gastos_aduan'    => $gastosAduana,
+                'ad_valorem'      => $adValorem,
+                'transporte'      => $transporte,
+                'gastos_banc'     => $gastosBanc,
+                'costo_unit_usd'  => $costoUnitUsd,
+                'tipo_cambio'     => $tipoCambio,
+                'costo_unit_sol'  => $costoUnitSoles,
+                'fecha_ingreso'   => $imp ? $imp->fecha_ingreso : null,
+                'cant_importada'  => $cantImportada,
+                'cantidad'        => $cantidad,
+                'precio_lista'    => $precioLista,
+                'precio_venta'    => $precioVenta,
+                'importe_total'   => $ventaTotal,
+                'costo_vendido'   => $costoVendidoSoles,
+                'ganancia'        => $ganancia,
+                'margen'          => $margen,
+            ]);
+        }
+
+        return view('orders.reporte_importados', compact('models', 'desdeInput', 'hastaInput'));
+    }
+
     public function cargarLogo()
     {
         $printerIp   = "192.168.1.108";
