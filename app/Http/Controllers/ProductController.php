@@ -724,4 +724,53 @@ class ProductController extends Controller
         ]);
     }
 
+    /**
+     * Cantidad vendida por mes de los últimos 12 meses
+     * basado en facturas (FT) y boletas (BV), no en pedidos.
+     *
+     * @param  string  $codigo
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function ventasMensuales($codigo)
+    {
+        // Últimos 12 meses: primer día del mes hace 11 meses hasta hoy
+        $fechaInicio = date('Y-d-m 00:00:00', strtotime('first day of -11 months'));
+        $fechaFin = date('Y-d-m 23:59:59');
+
+        $rows = \DB::connection('sqlsrv')
+            ->table('FACDET as d')
+            ->join('FACCAB as c', function ($j) {
+                $j->on('c.CFTD', '=', 'd.DFTD')
+                  ->on('c.CFNUMSER', '=', 'd.DFNUMSER')
+                  ->on('c.CFNUMDOC', '=', 'd.DFNUMDOC');
+            })
+            ->whereIn('c.CFTD', ['FT', 'BV'])
+            ->where('d.DFCODIGO', $codigo)
+            ->where('c.CFFECDOC', '>=', $fechaInicio)
+            ->where('c.CFFECDOC', '<=', $fechaFin)
+            ->select(
+                \DB::raw("CONVERT(CHAR(7), c.CFFECDOC, 23) as mes"),
+                \DB::raw('SUM(d.DFCANTID) as cantidad')
+            )
+            ->groupBy(\DB::raw("CONVERT(CHAR(7), c.CFFECDOC, 23)"))
+            ->orderBy(\DB::raw("CONVERT(CHAR(7), c.CFFECDOC, 23)"))
+            ->get();
+
+        // Construir los 12 meses completos (meses sin ventas → 0)
+        $result = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $result[] = ['mes' => date('Y-m', strtotime("first day of -$i months")), 'cantidad' => 0];
+        }
+        foreach ($rows as $row) {
+            foreach ($result as &$r) {
+                if ($r['mes'] === $row->mes) {
+                    $r['cantidad'] = (float) $row->cantidad;
+                    break;
+                }
+            }
+        }
+
+        return response()->json($result);
+    }
+
 }

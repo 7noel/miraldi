@@ -146,15 +146,30 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="tituloModal">Últimas Compras</h5>
+        <h5 class="modal-title" id="tituloModal">Detalle del Producto</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
 
       <div class="modal-body">
-        <div id="contenidoModal" class="table-responsive text-center text-muted">
-            Cargando información...
+        <ul class="nav nav-tabs mb-2" id="modalTabs" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="tab-compras" data-toggle="tab" href="#panel-compras" role="tab" aria-controls="panel-compras" aria-selected="true"><i class="fa fa-shopping-cart"></i> Compras</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="tab-ventas" data-toggle="tab" href="#panel-ventas" role="tab" aria-controls="panel-ventas" aria-selected="false"><i class="fa fa-chart-bar"></i> Ventas 12 meses</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="modalTabsContent">
+          <div class="tab-pane fade show active" id="panel-compras" role="tabpanel" aria-labelledby="tab-compras">
+            <div id="contenidoModal" class="table-responsive text-center text-muted">
+                Cargando información...
+            </div>
+          </div>
+          <div class="tab-pane fade" id="panel-ventas" role="tabpanel" aria-labelledby="tab-ventas">
+            <div id="graficoVentas" style="height: 320px;"></div>
+          </div>
         </div>
       </div>
 
@@ -182,6 +197,9 @@ $(document).ready(function () {
 <script>
 $(document).ready(function () {
 
+    // almacena el código actual para el gráfico
+    window.codigoActual = null;
+
     // cuando se hace clic en un código de producto
     $(document).on('click', '.ver-compras', function (e) {
         e.preventDefault();
@@ -191,8 +209,15 @@ $(document).ready(function () {
         const $modal = $('#modalCompras');
         const $contenido = $('#contenidoModal');
 
+        // guarda el código para cargar el gráfico bajo demanda
+        window.codigoActual = codigo;
+
         // título del modal
-        $('#tituloModal').html(`Últimas Compras<br><small class="text-primary">${codigo} - ${descripcion}</small>`);
+        $('#tituloModal').html(`Detalle del Producto<br><small class="text-primary">${codigo} - ${descripcion}</small>`);
+
+        // limpiar gráfico previo y reset pestaña compras
+        $('#graficoVentas').html('');
+        $('#tab-compras').tab('show');
 
         // contenido temporal
         $contenido.html('<div class="py-3 text-secondary">Cargando <i class="fa fa-spinner fa-spin"></i></div>');
@@ -232,6 +257,41 @@ $(document).ready(function () {
         });
 
         actualizarContador();
+    });
+
+    // al activar la pestaña de ventas, cargar el gráfico (bajo demanda)
+    $('#tab-ventas').on('shown.bs.tab', function (e) {
+        if (!window.codigoActual) return;
+        const codigo = window.codigoActual;
+        const $grafico = $('#graficoVentas');
+
+        // si ya tiene contenido, no volver a cargar
+        if ($grafico.html() !== '') return;
+
+        $grafico.html('<div class="text-center text-muted py-4"><i class="fa fa-spinner fa-spin"></i> Cargando gráfico...</div>');
+
+        $.get(`/ventas-mensuales/${codigo}`)
+            .done(function (data) {
+                const meses = data.map(function (r) { return r.mes; });
+                const cantidades = data.map(function (r) { return r.cantidad; });
+
+                const options = {
+                    chart: { type: 'bar', height: 320, toolbar: { show: false } },
+                    series: [{ name: 'Cantidad Vendida', data: cantidades }],
+                    xaxis: { categories: meses },
+                    title: { text: 'Ventas por mes (últimos 12 meses) — Facturas y Boletas', align: 'center' },
+                    plotOptions: { bar: { columnWidth: '60%' } },
+                    dataLabels: { enabled: false },
+                    colors: ['#17a2b8'],
+                    tooltip: { y: { formatter: function (val) { return val.toLocaleString('es-PE') + ' und'; } } }
+                };
+
+                $grafico.html('');
+                new ApexCharts($grafico[0], options).render();
+            })
+            .fail(function () {
+                $grafico.html('<div class="text-danger py-3">Error al cargar el gráfico.</div>');
+            });
     });
 });
 </script>
