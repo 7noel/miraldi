@@ -11,6 +11,8 @@ use App\Condition;
 use App\Company;
 use App\Original;
 use App\PickingDetail;
+use App\Exports\ProductsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
@@ -918,14 +920,11 @@ class OrderController extends Controller
 
 
     /**
-     * Reporte de ventas de productos importados en un rango de fechas.
-     * Muestra ventas (FACDET/FACCAB) de productos que existen en importaciones,
-     * con costos de importación (última importación con costo > 0 anterior a la venta),
-     * precios, descuentos, margen real y ganancia.
+     * Calcula los datos del reporte de ventas de productos importados.
      *
-     * @return \Illuminate\Http\Response
+     * @return array [models, desdeInput, hastaInput]
      */
-    public function reporteImportados()
+    private function getReporteImportadosData()
     {
         // Rango de fechas: por defecto el mes actual
         $desde = request('desde') ? date('Y-d-m 00:00:00', strtotime(request('desde'))) : date('Y-d-m 00:00:00', strtotime('first day of this month'));
@@ -1090,7 +1089,34 @@ class OrderController extends Controller
             ]);
         }
 
-        return view('orders.reporte_importados', compact('models', 'desdeInput', 'hastaInput'));
+        return ['models' => $models, 'desdeInput' => $desdeInput, 'hastaInput' => $hastaInput];
+    }
+
+    /**
+     * Reporte de ventas de productos importados en un rango de fechas.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function reporteImportados()
+    {
+        $data = $this->getReporteImportadosData();
+        return view('orders.reporte_importados', $data);
+    }
+
+    /**
+     * Descarga en Excel el reporte de ventas de productos importados.
+     *
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function reporteImportadosExcel()
+    {
+        $data = $this->getReporteImportadosData();
+        $models = $data['models'];
+        $desdeInput = $data['desdeInput'];
+        $hastaInput = $data['hastaInput'];
+
+        $nombre = 'reporte_importados_' . $desdeInput . '_' . $hastaInput . '.xlsx';
+        return Excel::download(new ProductsExport('orders.excel_importados', $models), $nombre);
     }
 
     public function cargarLogo()

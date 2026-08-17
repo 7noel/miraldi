@@ -4,6 +4,9 @@
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
         <h4><i class="fa fa-ship text-primary"></i> Ventas de Productos Importados</h4>
+        <a href="{{ route('reporte.importados.excel', ['desde' => $desdeInput, 'hasta' => $hastaInput]) }}" class="btn btn-success btn-sm">
+            <i class="fa fa-file-excel"></i> Descargar Excel
+        </a>
     </div>
 
     <div class="card shadow-sm border-0 mb-3">

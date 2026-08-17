@@ -2,6 +2,12 @@
 
 use Maatwebsite\Excel\Excel;
 
+// Asegurar que el directorio temporal de Excel exista (compatible con determinados entornos)
+$excelTempPath = storage_path('framework/laravel-excel');
+if (!is_dir($excelTempPath)) {
+    @mkdir($excelTempPath, 0775, true);
+}
+
 return [
 
     'exports' => [
@@ -163,7 +169,7 @@ return [
         | storing reading or downloading. Here you can customize that path.
         |
         */
-        'local_path'  => sys_get_temp_dir(),
+        'local_path'  => $excelTempPath,
 
         /*
         |--------------------------------------------------------------------------
