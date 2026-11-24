@@ -49,9 +49,8 @@
 
 		@php
 			$_code = $model->CFNUMPED.'|';
-			$details = json_decode($model->details);
 		@endphp
-		@foreach($details as $key => $detail)
+		@foreach($model->details as $key => $detail)
 			@php
 				$_code = $_code."$detail->codigo $detail->quantity|";
 			@endphp
@@ -100,7 +99,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				@foreach($details as $key => $detail)
+				@foreach($model->details as $key => $detail)
 					<tr>
 						<td class="border center">{{ $key + 1 }}</td>
 						<td class="border center"></td>

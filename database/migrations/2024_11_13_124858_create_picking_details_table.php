@@ -30,7 +30,7 @@ class CreatePickingDetailsTable extends Migration
             $table->timestamps();
             
             // Índices para optimizar consultas futuras
-            $table->index(['codigo', 'is_invoiced']); // Índice para buscar por producto y estado de facturación
+            $table->index(['codigo', 'invoiced_at']); // Índice para buscar por producto y estado de facturación
             $table->index('quantity_pending_billing');
         });
     }
