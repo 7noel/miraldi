@@ -11,14 +11,14 @@
 		</tr>
 	</thead>
 	<tbody id="tableItems">
-	@php $details = json_decode($model->details); @endphp
-	@foreach($details as $detail)
+	
+	@foreach($model->details as $detail)
 		<tr>
 			<td>{{ $detail->codigo }}</td>
 			<td>{{ isset($detail->codigo2) ? $detail->codigo2 : '' }}</td>
 			<td>{{ $detail->name }}</td>
-			<td>{{ $detail->quantity }}</td>
 			<td>{{ $detail->quantity_ordered }}</td>
+			<td>{{ $detail->quantity }}</td>
 		</tr>
 		@php $i++; @endphp
 	@endforeach
