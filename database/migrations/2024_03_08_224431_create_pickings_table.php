@@ -16,7 +16,7 @@ class CreatePickingsTable extends Migration
         Schema::create('pickings', function (Blueprint $table) {
             $table->id();
             $table->string('CFNUMPED');
-            $table->json('details')->nullable();
+            $table->json('detalles')->nullable();
             $table->bigInteger('user_id')->unsigned();
             $table->decimal('items', 12, 2);
             $table->decimal('pl', 12, 2);
