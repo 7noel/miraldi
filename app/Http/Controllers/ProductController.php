@@ -309,12 +309,12 @@ class ProductController extends Controller
                                    ->first();
 
         $stocks = Stock::where('STCODIGO', $codigo)
-                       ->whereIn('STALMA', ['01', '03'])
+                       ->whereIn('STALMA', ['01', '04'])
                        ->get()
                        ->keyBy('STALMA');
 
         $resultados['stock_01'] = (float) ($stocks->get('01')->STSKDIS ?? 0);
-        $resultados['stock_03'] = (float) ($stocks->get('03')->STSKDIS ?? 0);
+        $resultados['stock_04'] = (float) ($stocks->get('04')->STSKDIS ?? 0);
 
         $product = Product::where('ACODIGO', $codigo)->first();
         $resultados['product'] = $product;
@@ -373,7 +373,7 @@ class ProductController extends Controller
     //             SUM(D.DFCANTID) AS Cant_Ven,
     //             CAST(SUM(D.DFCANTID) / NULLIF(? , 0) * 30 AS DECIMAL(18,2)) AS Prom_Mes,
     //             ISNULL(S01.STSKDIS, 0) AS Stock_01,
-    //             ISNULL(S03.STSKDIS, 0) AS Stock_03,
+    //             ISNULL(S04.STSKDIS, 0) AS Stock_04,
 
     //             -- Moneda: si no hay compra nacional pero sí importación, usar 'ME'
     //             CASE 
@@ -420,7 +420,7 @@ class ProductController extends Controller
     //             AND F.CFNUMSER = D.DFNUMSER 
     //             AND F.CFNUMDOC = D.DFNUMDOC
     //         LEFT JOIN STKART S01 ON S01.STCODIGO = A.ACODIGO AND S01.STALMA = '01'
-    //         LEFT JOIN STKART S03 ON S03.STCODIGO = A.ACODIGO AND S03.STALMA = '03'
+    //         LEFT JOIN STKART S04 ON S04.STCODIGO = A.ACODIGO AND S04.STALMA = '04'
 
     //         -- Última compra nacional
     //         OUTER APPLY (
@@ -447,7 +447,7 @@ class ProductController extends Controller
 
     //         GROUP BY 
     //             A.ACODIGO, A.ADESCRI, A.AUNIDAD,
-    //             S01.STSKDIS, S03.STSKDIS,
+    //             S01.STSKDIS, S04.STSKDIS,
     //             C.CCCODMON, C.DCPREC_COM, C.DCCANTID, 
     //             C.CCFECDOC, C.CCCODPRO, P.PRVCNOMBRE, 
     //             IMP.CDESPROVE, IMP.FEMISION
@@ -526,7 +526,7 @@ class ProductController extends Controller
             CAST(ISNULL(V.Cant_Ven, 0) / NULLIF(? , 0) * 30 AS DECIMAL(18,2)) AS Prom_Mes,
 
             ISNULL(S01.STSKDIS, 0) AS Stock_01,
-            ISNULL(S03.STSKDIS, 0) AS Stock_03,
+            ISNULL(S04.STSKDIS, 0) AS Stock_04,
 
             -- Moneda
             CASE 
@@ -573,7 +573,7 @@ class ProductController extends Controller
         FROM VentasRango V
         INNER JOIN MAEART A WITH (NOLOCK) ON A.ACODIGO = V.DFCODIGO
         LEFT JOIN STKART S01 WITH (NOLOCK) ON S01.STCODIGO = A.ACODIGO AND S01.STALMA = '01'
-        LEFT JOIN STKART S03 WITH (NOLOCK) ON S03.STCODIGO = A.ACODIGO AND S03.STALMA = '03'
+        LEFT JOIN STKART S04 WITH (NOLOCK) ON S04.STCODIGO = A.ACODIGO AND S04.STALMA = '04'
 
         -- Última compra nacional
         OUTER APPLY (

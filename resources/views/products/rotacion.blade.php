@@ -90,8 +90,8 @@
                 @forelse($data as $item)
 				    @php
 				        $stock01     = $item->Stock_01 ?? 0;
-				        $stock03     = $item->Stock_03 ?? 0;
-				        $stockTotal  = $stock01 + $stock03;
+				        $stock04     = $item->Stock_04 ?? 0;
+				        $stockTotal  = $stock01 + $stock04;
 				        $prom        = $item->Prom_Mes ?? 0;
 				        $promClass   = '';   // color solo para la celda
 				        $icon        = '';   // icono para indicar estado
@@ -121,7 +121,7 @@
 				            {!! number_format($prom, 2) . '' . $icon !!}
 				        </td>
                         <td class="text-right">{{ number_format($item->Stock_01, 2) }}</td>
-                        <td class="text-right">{{ number_format($item->Stock_03, 2) }}</td>
+                        <td class="text-right">{{ number_format($item->Stock_04, 2) }}</td>
                         <td>{{ $item->Moneda }}</td>
                         <td class="text-right">{{ number_format($item->Costo, 2) }}</td>
                         <td class="text-right">{{ number_format($item->Cant_Comp, 2) }}</td>

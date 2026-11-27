@@ -1319,9 +1319,9 @@ function get_picking() {
             inner = ((pr.APDIS > 1) ? parseInt(pr.APDIS) : 1)
             ubicacion = pr.lockers.map(function(locker){return locker.TCASILLERO}).join(';')
             s01 = pr.stocks.find(s => s.STALMA == "01");
-            s03 = pr.stocks.find(s => s.STALMA == "03");
+            s04 = pr.stocks.find(s => s.STALMA == "04");
             stk01 = s01 ? parseInt(0+s01.STSKDIS) : 0;
-            stk03 = s03 ? parseInt(0+s03.STSKDIS) : 0;
+            stk04 = s04 ? parseInt(0+s04.STSKDIS) : 0;
             stock_disponible = (typeof stk01 === 'undefined') ? 0 : (stk01 - data.in_pickings[pr.ACODIGO]);
             tr=`<tr>
                     <td><a href="#" class="mi-enlace" onclick="verMovimientos(event, '${pr.ACODIGO}')" data-toggle="modal" data-target="#myModal">${pr.ACODIGO}</a></td>
@@ -1360,7 +1360,7 @@ function verMovimientos(e, codigo) {
         $('#table-movimientos').empty()
         $('#codigo_descripcion').text(`Producto: ${codigo} - ${data.product.ADESCRI}`)
         $('#stock_01').text(`Stock_SJM: ${0+data.stock_01}`)
-        $('#stock_03').text(`Stock_PH: ${0+data.stock_03}`)
+        $('#stock_04').text(`Stock_PH: ${0+data.stock_04}`)
         $('#stock_disponible').text(`Stock sin Embalar: ${data.stock_01 - data.in_picking}`)
         $.each(data.movimientos, function (index, Obj) {
             if (Obj.invoiced_at == null) {
